@@ -514,7 +514,7 @@
     }
   </style>
 <base target="_blank">
-  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <script src="https://unpkg.com/lucide@0.292.0/dist/umd/lucide.min.js"></script>
 </head>
 <body>
   <div class="chat-container">
@@ -551,11 +551,22 @@
       </button>
     </form>
   </div>
-
   <script>
-    const CHAT_API = "https://hotel-chat-proxy.vercel.app/api/chat";
+    (function () {
+      function waitForLucide(onReady, onTimeout, retries = 20) {
+        if (window.lucide && typeof window.lucide.createIcons === "function") {
+          onReady(window.lucide);
+        } else if (retries > 0) {
+          setTimeout(() => waitForLucide(onReady, onTimeout, retries - 1), 60);
+        } else if (typeof onTimeout === "function") {
+          onTimeout();
+        }
+      }
 
-    const SYSTEM_PROMPT = `
+      function initializeApp() {
+        const CHAT_API = "https://hotel-chat-proxy.vercel.app/api/chat";
+
+        const SYSTEM_PROMPT = `
 Tu es "Sommelier Tomos.bot", un sommelier parisien contemporain reconnu pour ton goût sûr et ton élégance naturelle.
 Tu parles uniquement en français, dans un style moderne, fluide et chaleureux — précis mais jamais académique.
 Tes réponses sont courtes (deux ou trois phrases maximum), avec une touche poétique, comme si tu conseillais un client à table dans un restaurant étoilé à Paris.
@@ -572,357 +583,394 @@ Si le vin est prestigieux, évoque subtilement sa renommée ou son style sans ex
 
 N’invente jamais de vins imaginaires : cite uniquement des appellations ou domaines français réels.
 Ton ton doit évoquer la confiance, la passion et la simplicité d’un grand sommelier parisien moderne.
-    `.trim();
+        `.trim();
 
-    const THEME_STORAGE_KEY = "theme-preference";
+        const THEME_STORAGE_KEY = "theme-preference";
 
-    let messages = [{ role: "system", content: SYSTEM_PROMPT }];
-    let isTyping = false;
-    let recognition;
-    let isRecording = false;
+        let messages = [{ role: "system", content: SYSTEM_PROMPT }];
+        let isTyping = false;
+        let recognition;
+        let isRecording = false;
+        let activeTheme = "light";
 
-    const messagesContainer = document.getElementById("messages");
-    const form = document.getElementById("form");
-    const input = document.getElementById("input");
-    const sendButton = document.getElementById("sendButton");
-    const micButton = document.getElementById("micButton");
-    const micIcon = document.getElementById("micIcon");
-    const sendIcon = document.getElementById("sendIcon");
-    const headerIcon = document.getElementById("headerIcon");
-    const themeToggleButton = document.getElementById("themeToggle");
-    const themeIcon = document.getElementById("themeIcon");
+        const messagesContainer = document.getElementById("messages");
+        const form = document.getElementById("form");
+        const input = document.getElementById("input");
+        const sendButton = document.getElementById("sendButton");
+        const micButton = document.getElementById("micButton");
+        const micIcon = document.getElementById("micIcon");
+        const sendIcon = document.getElementById("sendIcon");
+        const headerIcon = document.getElementById("headerIcon");
+        const themeToggleButton = document.getElementById("themeToggle");
+        const themeIcon = document.getElementById("themeIcon");
 
-    function renderIcon(element, name, options = {}, retries = 10) {
-      if (!element || retries <= 0) return;
-      if (!window.lucide || !window.lucide.icons || !window.lucide.icons[name]) {
-        setTimeout(() => renderIcon(element, name, options, retries - 1), 80);
-        return;
-      }
+        function renderIcon(element, name, options = {}) {
+          const lucideApi = window.lucide;
+          if (!element || !lucideApi || typeof lucideApi.createIcon !== "function") return;
+          const icon = lucideApi.createIcon(name, { size: 24, strokeWidth: 1.6, ...options });
+          if (icon) {
+            element.innerHTML = "";
+            element.appendChild(icon);
+          }
+        }
 
-      const defaults = { width: 24, height: 24, strokeWidth: 1.6 };
-      element.innerHTML = window.lucide.icons[name].toSvg({ ...defaults, ...options });
-    }
+        function renderInitialIcons() {
+          renderIcon(headerIcon, "wine", { size: 32, strokeWidth: 1.4 });
+          renderIcon(micIcon, isRecording ? "mic-off" : "mic", {
+            size: 20,
+            strokeWidth: isRecording ? 1.8 : 1.6,
+          });
+          renderIcon(sendIcon, "send", { size: 20, strokeWidth: 1.6 });
+          renderIcon(themeIcon, activeTheme === "dark" ? "sun" : "moon", { size: 22, strokeWidth: 1.6 });
+        }
 
-    renderIcon(headerIcon, "wine", { width: 32, height: 32, strokeWidth: 1.4 });
-    renderIcon(micIcon, "mic", { width: 20, height: 20, strokeWidth: 1.6 });
-    renderIcon(sendIcon, "send", { width: 20, height: 20, strokeWidth: 1.6 });
+        function applyTheme(theme, { persist = true } = {}) {
+          const normalized = theme === "dark" ? "dark" : "light";
+          activeTheme = normalized;
+          document.body.setAttribute("data-theme", normalized);
+          if (persist) {
+            localStorage.setItem(THEME_STORAGE_KEY, normalized);
+          }
+          const iconName = normalized === "dark" ? "sun" : "moon";
+          renderIcon(themeIcon, iconName, { size: 22, strokeWidth: 1.6 });
+          if (themeToggleButton) {
+            themeToggleButton.setAttribute(
+              "aria-label",
+              normalized === "dark" ? "Revenir au mode clair" : "Activer le mode nuit"
+            );
+          }
+        }
 
-    function applyTheme(theme, { persist = true } = {}) {
-      const normalized = theme === "dark" ? "dark" : "light";
-      document.body.setAttribute("data-theme", normalized);
-      if (persist) {
-        localStorage.setItem(THEME_STORAGE_KEY, normalized);
-      }
-      const iconName = normalized === "dark" ? "sun" : "moon";
-      renderIcon(themeIcon, iconName, { width: 22, height: 22, strokeWidth: 1.6 });
-      if (themeToggleButton) {
-        themeToggleButton.setAttribute(
-          "aria-label",
-          normalized === "dark" ? "Revenir au mode clair" : "Activer le mode nuit"
+        function determineInitialTheme() {
+          const stored = localStorage.getItem(THEME_STORAGE_KEY);
+          if (stored === "dark" || stored === "light") {
+            return stored;
+          }
+          const hour = new Date().getHours();
+          return hour >= 19 ? "dark" : "light";
+        }
+
+        activeTheme = determineInitialTheme();
+        applyTheme(activeTheme, { persist: false });
+
+        if (themeToggleButton) {
+          themeToggleButton.addEventListener("click", () => {
+            const nextTheme = activeTheme === "dark" ? "light" : "dark";
+            applyTheme(nextTheme);
+          });
+        }
+
+        function startChatExperience() {
+          messages = [{ role: "system", content: SYSTEM_PROMPT }];
+          messagesContainer.innerHTML = "";
+          showWelcome();
+          setTimeout(() => {
+            const welcome = document.querySelector(".welcome-screen");
+            if (welcome) {
+              welcome.remove();
+            }
+            showInitialOptions();
+          }, 1600);
+          if (input) {
+            input.focus();
+          }
+        }
+
+        function setupSpeechRecognition() {
+          if (!micButton) return;
+
+          const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+          if (!SpeechRecognition) {
+            micButton.disabled = true;
+            micButton.setAttribute("title", "Reconnaissance vocale non disponible sur ce navigateur.");
+            return;
+          }
+
+          recognition = new SpeechRecognition();
+          recognition.lang = "fr-FR";
+          recognition.interimResults = false;
+          recognition.continuous = false;
+
+          recognition.addEventListener("start", () => {
+            isRecording = true;
+            micButton.classList.add("recording");
+            renderIcon(micIcon, "mic-off", { size: 20, strokeWidth: 1.8 });
+          });
+
+          recognition.addEventListener("end", () => {
+            isRecording = false;
+            micButton.classList.remove("recording");
+            renderIcon(micIcon, "mic", { size: 20, strokeWidth: 1.6 });
+          });
+
+          recognition.addEventListener("error", () => {
+            isRecording = false;
+            micButton.classList.remove("recording");
+            renderIcon(micIcon, "mic", { size: 20, strokeWidth: 1.6 });
+          });
+
+          recognition.addEventListener("result", (event) => {
+            const transcript = Array.from(event.results)
+              .map((result) => result[0].transcript)
+              .join(" ")
+              .trim();
+
+            if (transcript) {
+              input.value = transcript;
+              input.focus();
+            }
+          });
+
+          micButton.addEventListener("click", () => {
+            if (isRecording) {
+              recognition.stop();
+              return;
+            }
+
+            try {
+              recognition.start();
+            } catch {
+              recognition.stop();
+            }
+          });
+        }
+
+        function addMessage(role, content, options = []) {
+          const messageDiv = document.createElement("div");
+          messageDiv.className = `message ${role}`;
+
+          const bubble = document.createElement("div");
+          bubble.className = "message-bubble";
+          bubble.textContent = content;
+
+          messageDiv.appendChild(bubble);
+          messagesContainer.appendChild(messageDiv);
+
+          if (options.length > 0) {
+            const optionsContainer = document.createElement("div");
+            optionsContainer.className = "options-container";
+
+            options.forEach((option) => {
+              const button = document.createElement("button");
+              button.type = "button";
+              button.className = "option-button";
+              button.textContent = option.text;
+              button.onclick = () => {
+                optionsContainer.remove();
+                option.action();
+              };
+              optionsContainer.appendChild(button);
+            });
+
+            messageDiv.appendChild(optionsContainer);
+          }
+
+          messagesContainer.scrollTop = messagesContainer.scrollHeight;
+          return messageDiv;
+        }
+
+        function showTypingIndicator() {
+          const typingDiv = document.createElement("div");
+          typingDiv.className = "message assistant";
+
+          const typingIndicator = document.createElement("div");
+          typingIndicator.className = "typing-indicator";
+
+          for (let i = 0; i < 3; i++) {
+            const dot = document.createElement("div");
+            dot.className = "typing-dot";
+            typingIndicator.appendChild(dot);
+          }
+
+          typingDiv.appendChild(typingIndicator);
+          messagesContainer.appendChild(typingDiv);
+          messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+          return typingDiv;
+        }
+
+        async function sendMessage(text) {
+          if (isTyping) return;
+
+          const sanitizedText = text.trim();
+          if (!sanitizedText) return;
+
+          isTyping = true;
+          messages.push({ role: "user", content: sanitizedText });
+          addMessage("user", sanitizedText);
+
+          const typingIndicator = showTypingIndicator();
+          if (sendButton) {
+            sendButton.disabled = true;
+          }
+
+          try {
+            const response = await fetch(CHAT_API, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ messages, system: messages[0]?.content || SYSTEM_PROMPT }),
+            });
+
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+
+            const data = await response.json();
+            const reply = data?.choices?.[0]?.message?.content || "Erreur lors de la récupération de la réponse.";
+
+            messages.push({ role: "assistant", content: reply });
+            typingIndicator.remove();
+            addMessage("assistant", reply);
+          } catch (error) {
+            typingIndicator.remove();
+            addMessage("assistant", "Je suis désolé, une erreur est survenue lors de la connexion au serveur. Veuillez réessayer.");
+          } finally {
+            isTyping = false;
+            if (sendButton) {
+              sendButton.disabled = false;
+            }
+            if (input) {
+              input.focus();
+            }
+          }
+        }
+
+        function showWelcome() {
+          const welcomeDiv = document.createElement("div");
+          welcomeDiv.className = "welcome-screen";
+
+          const icon = document.createElement("span");
+          icon.className = "welcome-icon";
+          renderIcon(icon, "sparkles", { size: 48, strokeWidth: 1.4 });
+
+          const title = document.createElement("h2");
+          title.className = "welcome-title";
+          title.textContent = "Bienvenue auprès de votre Sommelier Virtuel !";
+
+          const subtitle = document.createElement("p");
+          subtitle.className = "welcome-subtitle";
+          subtitle.textContent = "Découvrez les plus grands vins français pour chaque occasion.";
+
+          welcomeDiv.appendChild(icon);
+          welcomeDiv.appendChild(title);
+          welcomeDiv.appendChild(subtitle);
+
+          messagesContainer.appendChild(welcomeDiv);
+        }
+
+        function showInitialOptions() {
+          const options = [
+            {
+              text: "🍽️ Déjeuner",
+              action: () => showMealOptions("déjeuner"),
+            },
+            {
+              text: "🍷 Dîner",
+              action: () => showMealOptions("dîner"),
+            },
+            {
+              text: "🥂 Apéritif",
+              action: () => sendMessage("Suggère-moi un vin français pour un apéritif"),
+            },
+            {
+              text: "🎉 Occasion spéciale",
+              action: () => showSpecialOccasionOptions(),
+            },
+          ];
+
+          addMessage("assistant", "Pour quelle occasion souhaitez-vous une recommandation ?", options);
+        }
+
+        function showMealOptions(mealType) {
+          const options = [
+            {
+              text: "🥩 Viandes rouges",
+              action: () => sendMessage(`Suggère-moi un vin français pour accompagner des viandes rouges lors du ${mealType}`),
+            },
+            {
+              text: "🐟 Poissons",
+              action: () => sendMessage(`Suggère-moi un vin français pour accompagner des poissons lors du ${mealType}`),
+            },
+            {
+              text: "🍝 Pâtes",
+              action: () => sendMessage(`Suggère-moi un vin français pour accompagner des pâtes lors du ${mealType}`),
+            },
+            {
+              text: "🥗 Salades",
+              action: () => sendMessage(`Suggère-moi un vin français pour accompagner des salades lors du ${mealType}`),
+            },
+          ];
+
+          addMessage("assistant", `Parfait pour le ${mealType}, quel type de plat servirez-vous ?`, options);
+        }
+
+        function showSpecialOccasionOptions() {
+          const options = [
+            {
+              text: "🎂 Anniversaire",
+              action: () => sendMessage("Suggère-moi un vin français d'exception pour un anniversaire"),
+            },
+            {
+              text: "💕 Dîner romantique",
+              action: () => sendMessage("Suggère-moi un vin français pour un dîner romantique"),
+            },
+            {
+              text: "🎁 Cadeau",
+              action: () => sendMessage("Suggère-moi un vin français mémorable à offrir"),
+            },
+            {
+              text: "🏆 Grande célébration",
+              action: () => sendMessage("Suggère-moi un vin français prestigieux pour une grande célébration"),
+            },
+          ];
+
+          addMessage("assistant", "Magnifique ! Pour quel type d'occasion spéciale souhaitez-vous être conseillé ?", options);
+        }
+
+        let interfaceInitialized = false;
+        function initializeInterface() {
+          if (interfaceInitialized) return;
+          interfaceInitialized = true;
+          renderInitialIcons();
+          applyTheme(activeTheme, { persist: false });
+          setupSpeechRecognition();
+          startChatExperience();
+        }
+
+        waitForLucide(
+          (lucideApi) => {
+            lucideApi.createIcons();
+            initializeInterface();
+          },
+          () => {
+            console.warn("Lucide n'a pas pu être chargé correctement.");
+            initializeInterface();
+          }
         );
-      }
-    }
 
-    function initializeTheme() {
-      const stored = localStorage.getItem(THEME_STORAGE_KEY);
-      if (stored === "dark" || stored === "light") {
-        applyTheme(stored, { persist: false });
+        form.addEventListener("submit", (e) => {
+          e.preventDefault();
+          const text = input.value.trim();
+          if (!text || isTyping) return;
+          input.value = "";
+          sendMessage(text);
+        });
+
+        input.addEventListener("keypress", (e) => {
+          if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
+            form.dispatchEvent(new Event("submit"));
+          }
+        });
+      }
+
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", initializeApp);
       } else {
-        const hour = new Date().getHours();
-        const prefersDark = hour >= 19;
-        applyTheme(prefersDark ? "dark" : "light", { persist: false });
+        initializeApp();
       }
-    }
-
-    initializeTheme();
-
-    if (themeToggleButton) {
-      themeToggleButton.addEventListener("click", () => {
-        const currentTheme = document.body.getAttribute("data-theme") === "dark" ? "dark" : "light";
-        const nextTheme = currentTheme === "dark" ? "light" : "dark";
-        applyTheme(nextTheme);
-      });
-    }
-
-    function startChatExperience() {
-      messages = [{ role: "system", content: SYSTEM_PROMPT }];
-      messagesContainer.innerHTML = "";
-      showWelcome();
-      setTimeout(() => {
-        const welcome = document.querySelector(".welcome-screen");
-        if (welcome) {
-          welcome.remove();
-        }
-        showInitialOptions();
-      }, 1600);
-      input.focus();
-    }
-
-    function setupSpeechRecognition() {
-      if (!micButton) return;
-
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-
-      if (!SpeechRecognition) {
-        micButton.disabled = true;
-        micButton.setAttribute("title", "Reconnaissance vocale non disponible sur ce navigateur.");
-        return;
-      }
-
-      recognition = new SpeechRecognition();
-      recognition.lang = "fr-FR";
-      recognition.interimResults = false;
-      recognition.continuous = false;
-
-      recognition.addEventListener("start", () => {
-        isRecording = true;
-        micButton.classList.add("recording");
-        renderIcon(micIcon, "mic-off", { width: 20, height: 20, strokeWidth: 1.8 });
-      });
-
-      recognition.addEventListener("end", () => {
-        isRecording = false;
-        micButton.classList.remove("recording");
-        renderIcon(micIcon, "mic", { width: 20, height: 20, strokeWidth: 1.6 });
-      });
-
-      recognition.addEventListener("error", () => {
-        isRecording = false;
-        micButton.classList.remove("recording");
-        renderIcon(micIcon, "mic", { width: 20, height: 20, strokeWidth: 1.6 });
-      });
-
-      recognition.addEventListener("result", (event) => {
-        const transcript = Array.from(event.results)
-          .map((result) => result[0].transcript)
-          .join(" ")
-          .trim();
-
-        if (transcript) {
-          input.value = transcript;
-          input.focus();
-        }
-      });
-
-      micButton.addEventListener("click", () => {
-        if (isRecording) {
-          recognition.stop();
-          return;
-        }
-
-        try {
-          recognition.start();
-        } catch {
-          recognition.stop();
-        }
-      });
-    }
-
-    setupSpeechRecognition();
-    startChatExperience();
-
-    function addMessage(role, content, options = []) {
-      const messageDiv = document.createElement("div");
-      messageDiv.className = `message ${role}`;
-
-      const bubble = document.createElement("div");
-      bubble.className = "message-bubble";
-      bubble.textContent = content;
-
-      messageDiv.appendChild(bubble);
-      messagesContainer.appendChild(messageDiv);
-
-      if (options.length > 0) {
-        const optionsContainer = document.createElement("div");
-        optionsContainer.className = "options-container";
-
-        options.forEach((option) => {
-          const button = document.createElement("button");
-          button.type = "button";
-          button.className = "option-button";
-          button.textContent = option.text;
-          button.onclick = () => {
-            optionsContainer.remove();
-            option.action();
-          };
-          optionsContainer.appendChild(button);
-        });
-
-        messageDiv.appendChild(optionsContainer);
-      }
-
-      messagesContainer.scrollTop = messagesContainer.scrollHeight;
-      return messageDiv;
-    }
-
-    function showTypingIndicator() {
-      const typingDiv = document.createElement("div");
-      typingDiv.className = "message assistant";
-
-      const typingIndicator = document.createElement("div");
-      typingIndicator.className = "typing-indicator";
-
-      for (let i = 0; i < 3; i++) {
-        const dot = document.createElement("div");
-        dot.className = "typing-dot";
-        typingIndicator.appendChild(dot);
-      }
-
-      typingDiv.appendChild(typingIndicator);
-      messagesContainer.appendChild(typingDiv);
-      messagesContainer.scrollTop = messagesContainer.scrollHeight;
-
-      return typingDiv;
-    }
-
-    async function sendMessage(text) {
-      if (isTyping) return;
-
-      const sanitizedText = text.trim();
-      if (!sanitizedText) return;
-
-      isTyping = true;
-      messages.push({ role: "user", content: sanitizedText });
-      addMessage("user", sanitizedText);
-
-      const typingIndicator = showTypingIndicator();
-      sendButton.disabled = true;
-
-      try {
-        const response = await fetch(CHAT_API, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ messages, system: messages[0]?.content || SYSTEM_PROMPT }),
-        });
-
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-
-        const data = await response.json();
-        const reply = data?.choices?.[0]?.message?.content || "Erreur lors de la récupération de la réponse.";
-
-        messages.push({ role: "assistant", content: reply });
-        typingIndicator.remove();
-        addMessage("assistant", reply);
-      } catch (error) {
-        typingIndicator.remove();
-        addMessage("assistant", "Je suis désolé, une erreur est survenue lors de la connexion au serveur. Veuillez réessayer.");
-      } finally {
-        isTyping = false;
-        sendButton.disabled = false;
-        input.focus();
-      }
-    }
-
-    function showWelcome() {
-      const welcomeDiv = document.createElement("div");
-      welcomeDiv.className = "welcome-screen";
-
-      const icon = document.createElement("span");
-      icon.className = "welcome-icon";
-      if (window.lucide?.icons?.sparkles) {
-        icon.innerHTML = window.lucide.icons.sparkles.toSvg({ width: 48, height: 48, strokeWidth: 1.4 });
-      }
-
-      const title = document.createElement("h2");
-      title.className = "welcome-title";
-      title.textContent = "Bienvenue auprès de votre Sommelier Virtuel !";
-
-      const subtitle = document.createElement("p");
-      subtitle.className = "welcome-subtitle";
-      subtitle.textContent = "Découvrez les plus grands vins français pour chaque occasion.";
-
-      welcomeDiv.appendChild(icon);
-      welcomeDiv.appendChild(title);
-      welcomeDiv.appendChild(subtitle);
-
-      messagesContainer.appendChild(welcomeDiv);
-    }
-
-    function showInitialOptions() {
-      const options = [
-        {
-          text: "🍽️ Déjeuner",
-          action: () => showMealOptions("déjeuner"),
-        },
-        {
-          text: "🍷 Dîner",
-          action: () => showMealOptions("dîner"),
-        },
-        {
-          text: "🥂 Apéritif",
-          action: () => sendMessage("Suggère-moi un vin français pour un apéritif"),
-        },
-        {
-          text: "🎉 Occasion spéciale",
-          action: () => showSpecialOccasionOptions(),
-        },
-      ];
-
-      addMessage("assistant", "Pour quelle occasion souhaitez-vous une recommandation ?", options);
-    }
-
-    function showMealOptions(mealType) {
-      const options = [
-        {
-          text: "🥩 Viandes rouges",
-          action: () => sendMessage(`Suggère-moi un vin français pour accompagner des viandes rouges lors du ${mealType}`),
-        },
-        {
-          text: "🐟 Poissons",
-          action: () => sendMessage(`Suggère-moi un vin français pour accompagner des poissons lors du ${mealType}`),
-        },
-        {
-          text: "🍝 Pâtes",
-          action: () => sendMessage(`Suggère-moi un vin français pour accompagner des pâtes lors du ${mealType}`),
-        },
-        {
-          text: "🥗 Salades",
-          action: () => sendMessage(`Suggère-moi un vin français pour accompagner des salades lors du ${mealType}`),
-        },
-      ];
-
-      addMessage("assistant", `Parfait pour le ${mealType}, quel type de plat servirez-vous ?`, options);
-    }
-
-    function showSpecialOccasionOptions() {
-      const options = [
-        {
-          text: "🎂 Anniversaire",
-          action: () => sendMessage("Suggère-moi un vin français d'exception pour un anniversaire"),
-        },
-        {
-          text: "💕 Dîner romantique",
-          action: () => sendMessage("Suggère-moi un vin français pour un dîner romantique"),
-        },
-        {
-          text: "🎁 Cadeau",
-          action: () => sendMessage("Suggère-moi un vin français mémorable à offrir"),
-        },
-        {
-          text: "🏆 Grande célébration",
-          action: () => sendMessage("Suggère-moi un vin français prestigieux pour une grande célébration"),
-        },
-      ];
-
-      addMessage("assistant", "Magnifique ! Pour quel type d'occasion spéciale souhaitez-vous être conseillé ?", options);
-    }
-
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const text = input.value.trim();
-      if (!text || isTyping) return;
-      input.value = "";
-      sendMessage(text);
-    });
-
-    input.addEventListener("keypress", (e) => {
-      if (e.key === "Enter" && !e.shiftKey) {
-        e.preventDefault();
-        form.dispatchEvent(new Event("submit"));
-      }
-    });
+    })();
   </script>
 
 
