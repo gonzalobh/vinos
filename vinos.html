@@ -182,6 +182,27 @@
       box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
     }
 
+    .icon,
+    .header-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text);
+    }
+
+    .icon svg,
+    .header-icon svg {
+      display: block;
+    }
+
+    .header-icon {
+      color: var(--primary);
+    }
+
+    body[data-theme="dark"] .header-icon {
+      color: var(--accent-strong);
+    }
+
     .icon-button:hover {
       transform: translateY(-2px);
       border-color: rgba(197, 163, 79, 0.5);
@@ -466,91 +487,6 @@
       font-family: var(--font-body);
     }
 
-    .mood-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(17, 17, 17, 0.55);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      z-index: 20;
-      transition: opacity 0.4s ease;
-    }
-
-    .mood-overlay.hidden {
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    .mood-panel {
-      max-width: 480px;
-      width: 100%;
-      background: rgba(255, 255, 255, 0.95);
-      padding: 40px 36px;
-      border-radius: 28px;
-      text-align: center;
-      box-shadow: 0 40px 80px rgba(0, 0, 0, 0.2);
-      border: 1px solid rgba(255, 255, 255, 0.35);
-      backdrop-filter: blur(18px);
-    }
-
-    body[data-theme="dark"] .mood-panel {
-      background: rgba(26, 26, 26, 0.94);
-      border: 1px solid rgba(197, 163, 79, 0.25);
-      box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6);
-    }
-
-    .mood-title {
-      font-family: var(--font-display);
-      font-size: 28px;
-      margin-bottom: 12px;
-      color: var(--text);
-    }
-
-    .mood-subtitle {
-      font-size: 15px;
-      color: var(--muted);
-      margin-bottom: 28px;
-      line-height: 1.6;
-    }
-
-    .mood-options {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-      gap: 14px;
-    }
-
-    .mood-button {
-      padding: 16px 18px;
-      border-radius: 16px;
-      border: 1px solid rgba(197, 163, 79, 0.4);
-      background: rgba(255, 255, 255, 0.85);
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: var(--transition);
-      font-family: var(--font-display);
-      color: var(--text);
-    }
-
-    .mood-button:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 18px 26px rgba(31, 27, 22, 0.18);
-      background: rgba(197, 163, 79, 0.22);
-      border-color: rgba(197, 163, 79, 0.6);
-    }
-
-    body[data-theme="dark"] .mood-button {
-      background: rgba(30, 30, 30, 0.9);
-      color: var(--text);
-    }
-
-    body[data-theme="dark"] .mood-button:hover {
-      background: rgba(197, 163, 79, 0.22);
-      box-shadow: 0 18px 30px rgba(0, 0, 0, 0.55);
-    }
-
     .wine-image {
       max-width: 220px;
       border-radius: 16px;
@@ -578,22 +514,9 @@
     }
   </style>
 <base target="_blank">
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 </head>
 <body>
-  <div class="mood-overlay" id="moodOverlay">
-    <div class="mood-panel">
-      <h2 class="mood-title">Choisissez votre humeur 🍷</h2>
-      <p class="mood-subtitle">Pour une recommandation plus inspirée, sélectionnez l'ambiance de votre dégustation.</p>
-      <div class="mood-options">
-        <button class="mood-button" data-mood="Détendu">🍷 Détendu</button>
-        <button class="mood-button" data-mood="Festif">🎉 Festif</button>
-        <button class="mood-button" data-mood="Romantique">💕 Romantique</button>
-        <button class="mood-button" data-mood="Inspiré">✨ Inspiré</button>
-      </div>
-    </div>
-  </div>
-
   <div class="chat-container">
     <header class="header">
       <div class="header-content">
@@ -653,7 +576,6 @@ Ton ton doit évoquer la confiance, la passion et la simplicité d’un grand so
 
     const THEME_STORAGE_KEY = "theme-preference";
 
-    let userMood = "";
     let messages = [{ role: "system", content: SYSTEM_PROMPT }];
     let isTyping = false;
     let recognition;
@@ -669,11 +591,14 @@ Ton ton doit évoquer la confiance, la passion et la simplicité d’un grand so
     const headerIcon = document.getElementById("headerIcon");
     const themeToggleButton = document.getElementById("themeToggle");
     const themeIcon = document.getElementById("themeIcon");
-    const moodOverlay = document.getElementById("moodOverlay");
-    const moodButtons = document.querySelectorAll(".mood-button");
 
-    function renderIcon(element, name, options = {}) {
-      if (!element || !window.lucide || !window.lucide.icons || !window.lucide.icons[name]) return;
+    function renderIcon(element, name, options = {}, retries = 10) {
+      if (!element || retries <= 0) return;
+      if (!window.lucide || !window.lucide.icons || !window.lucide.icons[name]) {
+        setTimeout(() => renderIcon(element, name, options, retries - 1), 80);
+        return;
+      }
+
       const defaults = { width: 24, height: 24, strokeWidth: 1.6 };
       element.innerHTML = window.lucide.icons[name].toSvg({ ...defaults, ...options });
     }
@@ -719,12 +644,8 @@ Ton ton doit évoquer la confiance, la passion et la simplicité d’un grand so
       });
     }
 
-    function resetConversation() {
-      const basePrompt = `${SYSTEM_PROMPT}\n\nPrends en compte l'humeur suivante de l'utilisateur : ${userMood}.`;
-      messages = [{ role: "system", content: basePrompt }];
-    }
-
     function startChatExperience() {
+      messages = [{ role: "system", content: SYSTEM_PROMPT }];
       messagesContainer.innerHTML = "";
       showWelcome();
       setTimeout(() => {
@@ -736,22 +657,6 @@ Ton ton doit évoquer la confiance, la passion et la simplicité d’un grand so
       }, 1600);
       input.focus();
     }
-
-    moodButtons.forEach((button) => {
-      button.addEventListener("click", () => {
-        const selectedMood = button.getAttribute("data-mood");
-        if (!selectedMood) return;
-        userMood = selectedMood;
-        resetConversation();
-        if (moodOverlay) {
-          moodOverlay.classList.add("hidden");
-          moodOverlay.setAttribute("aria-hidden", "true");
-        }
-        setTimeout(() => {
-          startChatExperience();
-        }, 200);
-      });
-    });
 
     function setupSpeechRecognition() {
       if (!micButton) return;
@@ -814,6 +719,7 @@ Ton ton doit évoquer la confiance, la passion et la simplicité d’un grand so
     }
 
     setupSpeechRecognition();
+    startChatExperience();
 
     function addMessage(role, content, options = []) {
       const messageDiv = document.createElement("div");
@@ -875,14 +781,8 @@ Ton ton doit évoquer la confiance, la passion et la simplicité d’un grand so
       const sanitizedText = text.trim();
       if (!sanitizedText) return;
 
-      if (!userMood) {
-        return;
-      }
-
       isTyping = true;
-      const contentForModel = userMood ? `Humeur: ${userMood}\n${sanitizedText}` : sanitizedText;
-
-      messages.push({ role: "user", content: contentForModel });
+      messages.push({ role: "user", content: sanitizedText });
       addMessage("user", sanitizedText);
 
       const typingIndicator = showTypingIndicator();
