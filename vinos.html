@@ -121,13 +121,17 @@
 
     .wine-icon {
       font-size: 24px;
-      animation: bounce 2s infinite;
+      transition: transform 0.6s ease, filter 0.6s ease;
     }
 
-    @keyframes bounce {
-      0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-      40% { transform: translateY(-10px); }
-      60% { transform: translateY(-5px); }
+    .wine-icon.thinking {
+      animation: iconSway 2.4s ease-in-out infinite;
+      filter: drop-shadow(0 0 6px rgba(197, 163, 79, 0.5));
+    }
+
+    @keyframes iconSway {
+      0%, 100% { transform: rotate(-4deg) translateY(0); }
+      50% { transform: rotate(4deg) translateY(-4px); }
     }
 
     .header-title {
@@ -213,7 +217,20 @@
       background: var(--light-secondary);
       color: var(--text);
       border-bottom-left-radius: 8px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 12px 32px rgba(197, 163, 79, 0.25), 0 2px 0 rgba(197, 163, 79, 0.25);
+      position: relative;
+    }
+
+    .message.assistant .message-bubble::after {
+      content: "";
+      position: absolute;
+      inset: -8px;
+      border-radius: 24px;
+      border-bottom-left-radius: 12px;
+      background: radial-gradient(circle at top left, rgba(197, 163, 79, 0.25), transparent 65%);
+      z-index: -1;
+      filter: blur(12px);
+      opacity: 0.8;
     }
 
     .typing-indicator {
@@ -225,6 +242,19 @@
       border-radius: 20px;
       border-bottom-left-radius: 8px;
       width: fit-content;
+      position: relative;
+      overflow: visible;
+    }
+
+    .typing-indicator::before {
+      content: "";
+      position: absolute;
+      inset: -12px;
+      background: radial-gradient(circle, rgba(197, 163, 79, 0.45), transparent 70%);
+      border-radius: 28px;
+      filter: blur(10px);
+      animation: glow 1.8s ease-in-out infinite;
+      z-index: -1;
     }
 
     .typing-dot {
@@ -241,6 +271,28 @@
     @keyframes typing {
       0%, 60%, 100% { transform: translateY(0); }
       30% { transform: translateY(-10px); }
+    }
+
+    /* --- Animaciones --- */
+    @keyframes glow {
+      0%, 100% {
+        opacity: 0.5;
+        transform: scale(0.98);
+      }
+      50% {
+        opacity: 1;
+        transform: scale(1.05);
+      }
+    }
+
+    @keyframes avatarBlink {
+      0%, 48%, 52%, 100% { transform: scaleY(1); }
+      50% { transform: scaleY(0.1); }
+    }
+
+    @keyframes avatarSway {
+      0%, 100% { transform: rotate(-3deg) translateY(0); }
+      50% { transform: rotate(3deg) translateY(-2px); }
     }
 
     .options-container {
@@ -269,6 +321,51 @@
       border-color: var(--secondary);
       transform: translateY(-2px);
       box-shadow: 0 4px 12px rgba(197, 163, 79, 0.3);
+    }
+
+    .icon-button {
+      background: white;
+      border: 2px solid var(--border);
+      color: var(--text);
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .icon-button:hover {
+      color: var(--primary);
+      border-color: rgba(197, 163, 79, 0.6);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(197, 163, 79, 0.25);
+    }
+
+    .icon-button:active {
+      transform: scale(0.95);
+    }
+
+    .icon-button.active {
+      background: var(--gradient-secondary);
+      color: white;
+      border-color: transparent;
+      box-shadow: 0 8px 20px rgba(197, 163, 79, 0.35);
+    }
+
+    .icon-button.listening {
+      background: var(--gradient-secondary);
+      color: white;
+      border-color: transparent;
+      box-shadow: 0 8px 20px rgba(197, 163, 79, 0.35);
+    }
+
+    .icon-button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
     }
 
     .input-container {
@@ -336,11 +433,104 @@
       border-radius: 12px;
       margin-top: 12px;
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-      transition: transform 0.3s ease;
+      opacity: 0;
+      transform: translateY(12px) scale(0.98);
+      filter: blur(8px);
+      transition: transform 0.4s ease, opacity 0.4s ease, filter 0.6s ease;
     }
 
     .wine-image:hover {
       transform: scale(1.05);
+    }
+
+    .wine-image.visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      filter: blur(0px);
+    }
+
+    .sommelier-avatar {
+      position: absolute;
+      top: 96px;
+      left: 24px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: radial-gradient(circle at top, #ffffff 0%, #f6e7c8 70%);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transform: translateY(10px) scale(0.9);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    .sommelier-avatar.active {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    .avatar-face {
+      position: relative;
+      width: 34px;
+      height: 34px;
+      background: #f7d8a6;
+      border-radius: 50%;
+      box-shadow: inset 0 -4px 0 rgba(0, 0, 0, 0.1);
+      animation: avatarSway 2.8s ease-in-out infinite;
+    }
+
+    .avatar-hat {
+      position: absolute;
+      top: -12px;
+      left: 4px;
+      width: 26px;
+      height: 18px;
+      border-radius: 50% 50% 10% 10%;
+      background: var(--primary);
+      box-shadow: 0 4px 0 rgba(0, 0, 0, 0.15);
+    }
+
+    .avatar-hat::after {
+      content: "";
+      position: absolute;
+      bottom: -6px;
+      left: -4px;
+      width: 34px;
+      height: 8px;
+      background: var(--primary-light);
+      border-radius: 12px;
+    }
+
+    .avatar-eyes {
+      position: absolute;
+      top: 14px;
+      left: 9px;
+      width: 16px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .avatar-eye {
+      width: 4px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--dark);
+      animation: avatarBlink 5s infinite;
+    }
+
+    .avatar-moustache {
+      position: absolute;
+      bottom: 8px;
+      left: 6px;
+      width: 22px;
+      height: 8px;
+      background: radial-gradient(circle, var(--dark) 40%, transparent 70%);
+      border-radius: 50% 50% 30% 30%;
+      filter: drop-shadow(0 2px 0 rgba(0, 0, 0, 0.3));
     }
 
     .welcome-screen {
@@ -409,6 +599,17 @@
       <span class="header-badge">par Tomos.bot</span>
     </header>
 
+    <div class="sommelier-avatar" id="sommelierAvatar">
+      <div class="avatar-face">
+        <div class="avatar-hat"></div>
+        <div class="avatar-eyes">
+          <div class="avatar-eye"></div>
+          <div class="avatar-eye"></div>
+        </div>
+        <div class="avatar-moustache"></div>
+      </div>
+    </div>
+
     <main class="messages-container" id="messages"></main>
 
     <form class="input-container" id="form">
@@ -421,6 +622,12 @@
           autocomplete="off"
         />
       </div>
+      <button type="button" class="icon-button" id="micButton" title="Dicter un message">
+        <i class="fas fa-microphone"></i>
+      </button>
+      <button type="button" class="icon-button" id="audioToggle" title="Activer/Désactiver l'audio">
+        <i class="fas fa-volume-up"></i>
+      </button>
       <button type="submit" class="send-button" id="sendButton">
         <i class="fas fa-paper-plane"></i>
       </button>
@@ -429,7 +636,7 @@
 
   <script>
     const CHAT_API = "https://hotel-chat-proxy.vercel.app/api/chat";
-    
+
 const SYSTEM_PROMPT = `
 Tu es "Sommelier Tomos.bot", un sommelier français de renommée mondiale, formé dans les plus grands restaurants étoilés de France.
 Tu parles exclusivement en français, avec un ton raffiné, élégant et précis, empreint de passion pour le vin.
@@ -449,33 +656,108 @@ Ton objectif est d’offrir une expérience immersive, comme si l’utilisateur 
 
     let messages = [{ role: "system", content: SYSTEM_PROMPT }];
     let isTyping = false;
+    let userMood = null;
+    let hasShownInitialOptions = false;
+    let audioEnabled = true;
+    let speechVoice = null;
+    let recognition = null;
+    let isRecognitionActive = false;
 
     const messagesContainer = document.getElementById("messages");
     const form = document.getElementById("form");
     const input = document.getElementById("input");
     const sendButton = document.getElementById("sendButton");
+    const micButton = document.getElementById("micButton");
+    const audioToggleButton = document.getElementById("audioToggle");
+    const wineIcon = document.querySelector(".wine-icon");
+    const sommelierAvatar = document.getElementById("sommelierAvatar");
+
+    audioToggleButton.classList.add("active");
+    audioToggleButton.title = "Désactiver l'audio";
+
+    // --- Sonidos
+    const POP_MP3_SRC = "data:audio/mp3;base64,//uQZH+Ad3xxjXJ8jHOJeYWNjnN4eH+EhXVzcnKMgYB8ioZ1goqAeodxdIh4fIuNgHuKcoyIhHx1d4CHjXiFf4R1coR1h3lyh4p4hYKNhXJ+jnF7i4Vyh3aDeXSMdISDi3WFfItxgH1zhnGIfIZ9iYl/e46JiId3dIyIgHiOdHeIinKChHWDenVxiHiOiHGKeYl2fHyKi3+FdH2KhYGEjHh1i4lydXR2fY12doeAhnJ4jIaLhYdzjHOOgnmCfXpyhIF7eH6AiYd8jndzgXaAe3V8dXh+hYV8jYxyhX+EjolxeXuCiox2eoR2gI1yjoGMc4B7iY5+iYt2eo6FhISFe4l2gXKLf3txeIuGgnd5coR+dod2enN/fXmAiohzfIh1f3mMdHyCeHN6dId2f4B6gI51hoV+gn+AjYCMhId0f3N/eXSNiHKLhX2NhnaMfIVxi3eOdIKAfYqEc3WOh315c3uFdXp1dnd5jox4eX2Ke354h3t3hn6Ih4SKc4uHgnWFdHZ/fH5+fnqEinJ6dXaGiYaGcYt6e3Zxcot8fYSDeI6K//uQZHKAdI6LeHSHdoF0eIF7eoB5g4OLjX97iIyEdYaMgXR8d3Rxg3p9i4V7jYt/gIx2g4iMeYZ6jniBiHqFd3V6ho6Lh45zeIt/iIFygoKJf391jX99fYONc46CfnF1f4J8fnKOhXRyd3yJjXeGi394gXiNg31/fI56gIGBdXKGiHJzcYOBdoSJjYKOjIB6hISJjXR+g32Dh4N3iXqJgH+KgH6NgISGfHiGdnuNhoyLcYF+gHhzcYaBjnGKf3VxfIyOeoBzgHOBi4R1joiEc35+d4uDjXJ8iIJ3d4iGeoWLg3lzcXN1g3eJi3qHe392fI1ygIt0dIB4end1g3F8fnmGfYiDdod3hnuKfnSFeHx7eXZ3hHp0ind8fHl8i3Rzh3yJh39ze4B0d4ZzfoJzdotyhIOIf4iDd4KJhH2CiIF5fHiHhI13ent5e3uDiXh8dYhxeXuMdIJzcnSKenGFiIZ3hYl1joKIe3V7hoKGdn6MioFxeoh9hIeAioR6gIGCgXl/jXKOjH2ChIeIdIl2hH12iY1ygX2HhYGIf3aNd3uN//uQZHaAfIuDioaFiYCKjnqJfnt7fYx5h4txh4yIe3mFd3WJhIJ7dYqCfnR/eYh5dnJ6goSKiIiEenyEgH+Fc4F1jnJ9eIWFjYKBhIZ1d4F1c3KEc4eJfot3g3SKeIR+gHd5fX+Mf4Jzfop7c3p4dIl8dIt0gXKCdHqAfHSLd392joV5d3t1fo5xiYmEd3GChYVxcXOOe32Hdol8g4mJgX2Dhod3dHN0e4KAdYCEgYiGjXZ2d4ONenFzhYt9eX+Bfoh5coOLdX13d3KOe3OJgXF9eYSFc3l3hIN4cXp/dY6Ngnd7jXSKcX9ze3F0f4aDf4d6g3+KfoV+dI1ye4pxeIN/hn6Oi4Z/hHqJfIl8g3yJe3iGf3pxi3R1dnp3f4t/fXZ/hoh5jniGdXyNinl4hH19e4h3dn2BfIyBjHyEcoN9h31ycYB0cXJ4dniAdYCFeXV2h3uBeXZ2jn93gnWNiXN7c4p2eH16dHp1fHSGjo17c4x9jnh4enmIcYqLeYl9jHWHfHmJcX52hnt1f3ZyfXWAh4B6dHaNcXWEgXJ4eo58//uQZIaGfYCIe3pxiXd7inJ1e3mMhYGNdoaFdYCJi3SHfH2NfYp9hIF+gn+GjoR7jXyGeHqCeHaKf3OLf459c3JyhYV+dYuHf3h9couGfIR5i412dIaFjHSIfnJ3gH6FeYtyi3h/e4p+i3VxioN1iX2JdX+CdoJzc3N9h3iLhIp5cnZ+dIl4g3V3hXh2f3h3fHyLd4CDcXmKdHeJjXV1dHpxdotye4x+iIh5gX5zc4N2eIqIioJ5jHeIcnN1gYJ/fnGKeH+FenqIhYB6gYh4c4F6dXaNfI52cY1ygHOIjoeCfIWEdX1+jHmAhIeNgnGChn+HcnqBfYFxgYiFcolxjod5cYB8c4qAgHdxin55dIZ7dHt9jHyDeoyKgXp6cY2Gi4lzio6Gd3GKeX52i4yDiYN8d3uMjXh5g3p/e4WNhX98gH2CgnN7fYJ5fXZ4fHp4eHuGen18h3aNgIJ1cYx5iYaAfYh4coeKjn94co5ygYJ5i3uOjnFzdX1+eH6Mhox8g4t/dH6Bd4l+io5xdnODfneCgoZ6dHl2dnOFcoh4iYKJ//uQZIhyiHF/dIqLjXR9hHV6iIWJc3GCgXuJg4aNdot9gYJ5eYWNeIN8gHl/hYF7dnuDdYBycYSChnyIf42BcYqKi391hI14c3R6dXyAh3x6dHV/fXyMg3OLfYJ2i39+hH6BdYSAdnKLdnlxeHZzi4p+co52cYF4d3iLhIRzd4OIhXqEhohzfYpxdIV6hnZ+iIZ4dIh+fIl8fIaDh4h/cnh2eo5+cXGLjHl8i3d2hHOKgol0f3+FfnyMcX50dYCHg4xzinl5fH+JgHWOjIFzfHR0en99c4N7dnWJdXWHjnF0eniNf4R1g3F4gXODhH55iYGGeoiGg418d3+Ncox1god2fXKBiIh0eneDhXiLiHV2iIeJfYB6gn13enWChnh/h4l3gXeFiXN6fXWCg4eCi3uFfomBi4CIiI57h3d6fIiMjHWHcXOBfXiHhnh3cYSFhX18enqIhHR7hoZ2hXOLenN6cYaFfYNyhYR4ioCNjY5+jo5yi4yAg4eGfol2fXN1gYCAfXeJc3Nye4mCjXF9iYx/dX2EeIF2g3J/jI2JjoN1//uQZHyAiX2AfI19fnSHdHN0eXl4jn6Kfo5zcYB2dIJ8hImLfHtxeXJ7hH6Jcop2hXmNh4yIiYmHgoR2c4p6cnKLgXh0h4qCiICJc3mAd3Nze42De3qOgYFye4J5jIl+eY6HdoWDe4KNho2MinJ1cnRxfHKFd4uHe4SIfXiKdYJ1hYd5dXaEhoCCfHyDdouLeHZ0gYSGc4l9e4J8i3mFjn+JenOGcnyNgIGBhYuHdol0eYKAdnZ5en6Feop5fnxyeod4hnJ9goqDe4CJcn1yeo5ycnJ3d3WEdnN2goWLenpyiIR7h4WAcYZ+hXxycnmNhYdydXh7hnuMc3aIfIF5hYiDenx+e4SEiX2Nc4V0c457hYeEgIZ9iImEhnmOg4uKd3OJfod7dYd1d32Geo1/hnWGcYl0fXKNi4qChneJhoCKc4x8e4NxgYmAgI1xiHyGgHeKenpxcnh4gH2Fd3R2g3l/g3x6eHeBdIh0hHd5hXuOe3eCg4t/gouAiop+jYeGeYp1fnSBe3OLeY6CgHtydYuJeHuJe411hIZ+fX6Ig4GI";
+    const CLINK_MP3_SRC = "data:audio/mp3;base64,//uQZH6Je36JfH99hoSGfYWGhn58g4B3g3h4iX92d36FgXyHhIN2eYJ5fISEf4KAgIOGe4KDgYJ/dnZ5h36Eg4GEg314iYWCf3p/fH+HiYWCeIh5doV4eH2EgHl2iIN/e4eIhYWBd4N6eHaEgXd/gXeDgYiIfH16f32GgXaGgH9/goiBhICDiXx6dn6Ef32BgH97fImCfXiBfX1+hHuJeoB6e4GBe4B+hoB7eHp2eYh3fn6Ie3d9gYN/eIV5gH56enyIiX13d36BeIaGdnZ2hXuHg4l8foN7enqIh4SBhX14doZ2eoF6gnyCh3mId4J6fX5/en94fn2JgnyHhnt4hYJ5gIh5e4SGe4N6fHmIiHt7god8iHh/fYB8fHx2eXiEdnuJeoF2fnZ7en+BeYh5eYJ4gIWFh4KGhXiFeoF9eX95fIGGh3d/eHl8fn+DgX6Gdoh7d4J6gH93en53f32IeYN/d4V6iISDgIR8iXaHd4mDe3mFdoh+e4KAgH+EfHt8hoeGdoiHe3mGh36Fe3Z/eHqCfoeFd3d7g4aCfIB7homF//uQZHuDeoKIenaGgHyDhoGJhoJ7fYl3doR4en+Ff4CAeoB9fomBfoV8h4mCh4B9h3aDg3yDeYGHdoZ+eYZ9foOGeXyIfICBfYN+gYJ5eHeBgIV/fH+Be3+Gd4R6d4GBf4h6d3d6iYSJh4N9d4eJhnd7eIeHfYZ/gIR8eoF2f3+Ggnl3h4CBhH56g3+EeH2Fe4d6hHh9iHiDh3+DeHaDhXmGf3t7e3uDdoJ7fH+Fe3p9hIaGeYF5iIWFeHaJe4R3hYZ6iH6HiYCEdneBd3qDeYB5fXqBd3yJf4KDgol/eYB3hod4eYiEfol3hHiCiXh3iX+AhoN3fIB8iHt3dn6Je4R5d4KIh4OJfXd/dnuAgIZ8eIJ9iId3fYiJe4KAd4N6d3x3hYh/g3l6gX6EfX15d4WCh4SFhHd2gHl9eYCEiXd5h3t9gX2BgH92d4h4f4J8f4Z9gH1+d397f4SDgnZ4gH96eHt7eHh+f4GJiXh+hoR6h3h+e32CenZ4ent/doaIhXx3f4OEg3d6fIV9hn98eX5+dnh7f32AeId7fn6JfYiE//uQZHp7g3h4hn6IgX99f4Z+fIF/iHuJg4l5h3p5hnyGfoSFfoV2gYh7g36EgYaAhYSCeYh8goKHenaDiH9+e3t8dol8hXx7eoN/eoh2fIN9h3t4fYeGe3Z3hod+eol2d4V5gIJ7goOJgoiFhX6CfXZ/goOAgHl5fomEeICCfXt3hnl3fIZ6hXx6fIeEhoV6g4R6d4SIgoCAgnmCg4eFeHaAhIR9gHeIiIh6hIF7h3x8fIF7f4F7h3mDd3p6gnqFh4GHhHqEdn16f3l3f3+EhYB3hYSGgnqBgoOCe4GGgIh3fX18dnyFd36IiYJ/gYd+e4WIg3qEhHmJeHuEdneDfH12f4KIdoF5gHaFgomHiHt4eX+JfnuHiYZ6d4KGfnaJeYl7iIaDfoZ4gIGBd4CFg4l5doGEfn93hn2AhIN/gn56iYh6eYaJeH+BeIZ7f4KEfHuDgYV8hYN2hICDdnyBd3d+gHl6iYWAgHeGeYOGfXd3d3h+gYSHeYCHg4V2eXt3gHeHfISCgXeIe3iEfIZ6g4WJhIOHg4R8fnuAenuJhn2E//uQZIR9h3iCfoZ+g317gXx+g3d/fYN6eYV4hIiBe4WEfoeGfnyHfIR9gX6CiHd/iYOCfYh9hHx+hIaGfoKBeYl5gHl6h32Id3p3gIKHiXyEg3d8doCFhoN3g4F5foh7fIN8g3d3fICCgnuBhHuJfXd3g4mChoR+fnyFgnd/gIOAdn5/fIeIeHuGd3h7iHmCfoKHd4B5hH6BfnZ/iYWFeXx/doOFh3uEgnmIgn13d4N8eX13eYN/eHd5eIN7eIWBeId6gHyIfoaFhn2Gd3eAhX+HdnyFfXt6fn+EgHeCe4aHg4CEd4KAf3Z6eX19hIh4hIGDhHl5doF3hH2IeYiCgHeCfXyDe4N5gH56gIN4en6JhIaEg4mHenyEfoF9hISIeIZ2hoV2eHh4h4Z+g3eAf3uFf4d5hXx9g3l9iYKIeIWFf4eBgod9doaFfHp4gXmBhnqEiHh7gYl3domCiHp+fH+ChoN/fHp8eYKGhHh/h4mDdnaCeXiCgIWFeXZ8doR9iYSDiYl5doKAhIB5goWCeHx/hniEfIaFd4OEiHx5fYiD//uQZHiAiXZ2iHh4eXt9f3+EgnaEhnaFiH98e4V3hHuBhoh5iH+AiIl3f3yCfH9/fIaGfYWFfXt3goaDgYOGen99hniHhYB/g4OJhnt2eoV5fnh+gIF6hXeIhH+Ah3yGd32FiIJ5hnd8eX19fIWBiHaHhX92hneEfIh7hIh4foJ5hIF5gn2HfHeJhXyIeId/hXp9dn54g4OBgoV5eYF6gHt8d3aEh4h/d358doh+hYN4dnl8d3h6gYSDgHeEh4WIhneFf4ODenuAgH+BdoV/fIF7gIJ9hYaEe4KDeX98fXaBgHt/gYiDiXp4fXeHdoZ2fnp+d4d8hoCEhX12h4CIe3h+hH2IfXp7g4GEiIGHeX14enZ4iIZ5fHl3hYaChoh7iXmFeH18doOFhYWHfn52foV/iYWGe4WCfX12hYB2gHh4g4WDeYOAeoaGeXeBg3yFhYR7fId3goCFiXh8hXqBfnaHg31+gIh4hHl7g3+Je3mFfn+Ed3yFeIR+g4V4gH+CiXiCh4B3hoaHfX+BhIF4hH6HgIJ8fH2Dg4iDhneFeICH//uQZHp5gnaAiIV4fHyDgn+HhYZ/fH9+hnaEiH92eYeHhYWIfXeHh31/d3t3d4F7gnaJiHmDg4WIgX55enZ5f4aFgHp7iYB8gH53eniJeoGBg4h3fHqEgHZ3h3t5f3eHhoaAiYR3eYd3f4V8hX92fX98iHd+g36Bh3+IhIeFhoKCiH6Ch4l9gISBiYN8f3x4eYZ7f4Z5gXd6gIF+foiDeHl4doOCfnh+e3Z6iIF2fXt5foh2goGEdneDfXeAhYJ3iIN6gHmCfHqIg4GAhoF8e3iAfHiAeH2JgoiEiYaIeXp/fn2Jh4CFgoOGg3l+eYl2h4N/fnyCg4aGeImGdoSGhnZ2gn+DhXiCfIeCdnuAiXp8foB3eH6Hdn15end+g3eGhnqFhn59g4d+gH2CfX6BgIh/gneDfHyEhHp4h3x9eXqFhnp7e4GAe3h4hXx5hIOBeoOBe3aIfYl5foN3iXmJfYeDeIiBeHmFfXZ8hnh8fn14gH96e393hn56goV2f4KEf4N+goOJhYN8hId3hYB/fnmHgnmIgnp/eYOAhn5/hn2H";
+    const sendSound = new Audio(POP_MP3_SRC);
+    const receiveSound = new Audio(CLINK_MP3_SRC);
+    sendSound.volume = 0.25;
+    receiveSound.volume = 0.22;
+
+    function playFallbackTone(frequency) {
+      if (!audioEnabled || !(window.AudioContext || window.webkitAudioContext)) return;
+      const Context = window.AudioContext || window.webkitAudioContext;
+      const ctx = new Context();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = frequency < 500 ? "triangle" : "sine";
+      osc.frequency.value = frequency;
+      gain.gain.value = 0.09;
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.14);
+      setTimeout(() => {
+        osc.stop();
+        ctx.close();
+      }, 160);
+    }
+
+    function playSound(baseAudio) {
+      if (!audioEnabled) return;
+      const clip = baseAudio.cloneNode();
+      clip.volume = baseAudio.volume;
+      clip.play().catch(() => {
+        playFallbackTone(baseAudio === sendSound ? 260 : 960);
+      });
+    }
+
+    // --- Animaciones
+    function startThinkingAnimation() {
+      wineIcon?.classList.add("thinking");
+      sommelierAvatar?.classList.add("active");
+    }
+
+    function stopThinkingAnimation() {
+      wineIcon?.classList.remove("thinking");
+      setTimeout(() => sommelierAvatar?.classList.remove("active"), 180);
+    }
+
+    // --- Generación de imagen del vino
+    function maybeAttachWineImage(bubble, reply) {
+      const keywords = /(vin|rouge|blanc|rosé|champagne|bordeaux|bourgogne|côte|côtes|pinot|merlot|sancerre|loire|rhone|rhône|chablis)/i;
+      if (!reply || !keywords.test(reply)) return;
+      const img = document.createElement("img");
+      img.src = `https://image.pollinations.ai/prompt/${encodeURIComponent(reply + ' bouteille de vin français sur table élégante, lumière douce')}`;
+      img.className = "wine-image";
+      bubble.appendChild(img);
+      requestAnimationFrame(() => img.classList.add("visible"));
+    }
 
     function addMessage(role, content, options = []) {
       const messageDiv = document.createElement("div");
       messageDiv.className = `message ${role}`;
-      
+
       const bubble = document.createElement("div");
       bubble.className = "message-bubble";
-      
-      if (typeof content === 'string') {
+
+      if (typeof content === "string") {
         bubble.textContent = content;
       } else {
         bubble.appendChild(content);
       }
-      
+
       messageDiv.appendChild(bubble);
       messagesContainer.appendChild(messageDiv);
-      
+
+      if (role === "assistant" && typeof content === "string") {
+        maybeAttachWineImage(bubble, content);
+      }
+
       if (options.length > 0) {
         const optionsContainer = document.createElement("div");
         optionsContainer.className = "options-container";
-        
-        options.forEach(option => {
+
+        options.forEach((option) => {
           const button = document.createElement("button");
           button.className = "option-button";
           button.textContent = option.text;
@@ -485,59 +767,78 @@ Ton objectif est d’offrir une expérience immersive, comme si l’utilisateur 
           };
           optionsContainer.appendChild(button);
         });
-        
+
         messageDiv.appendChild(optionsContainer);
       }
-      
+
       messagesContainer.scrollTop = messagesContainer.scrollHeight;
-      return messageDiv;
+      return { messageDiv, bubble };
     }
 
     function showTypingIndicator() {
+      startThinkingAnimation();
       const typingDiv = document.createElement("div");
       typingDiv.className = "message assistant";
-      
+
       const typingIndicator = document.createElement("div");
       typingIndicator.className = "typing-indicator";
-      
+
       for (let i = 0; i < 3; i++) {
         const dot = document.createElement("div");
         dot.className = "typing-dot";
         typingIndicator.appendChild(dot);
       }
-      
+
       typingDiv.appendChild(typingIndicator);
       messagesContainer.appendChild(typingDiv);
       messagesContainer.scrollTop = messagesContainer.scrollHeight;
-      
+
       return typingDiv;
+    }
+
+    function removeTypingIndicator(typingDiv) {
+      typingDiv?.remove();
+      stopThinkingAnimation();
     }
 
     async function sendMessage(text) {
       if (isTyping) return;
-      
+
       isTyping = true;
-      messages.push({ role: "user", content: text });
+      const userMessage = { role: "user", content: text };
+      messages.push(userMessage);
       addMessage("user", text);
-      
+      playSound(sendSound);
+
       const typingIndicator = showTypingIndicator();
       sendButton.disabled = true;
-      
+
       try {
+        const payloadMessages = [...messages];
+        if (userMood) {
+          payloadMessages.push({
+            role: "system",
+            content: `Contexte additionnel : l'humeur déclarée de l'utilisateur est "${userMood}". Ajuste ton ton et tes conseils en conséquence.`,
+          });
+        }
+
         const res = await fetch(CHAT_API, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ messages, system: SYSTEM_PROMPT }),
+          body: JSON.stringify({ messages: payloadMessages, system: SYSTEM_PROMPT }),
         });
-        
+
         const data = await res.json();
         const reply = data?.choices?.[0]?.message?.content || "Erreur lors de la récupération de la réponse.";
-        
+
         messages.push({ role: "assistant", content: reply });
-        typingIndicator.remove();
-        addMessage("assistant", reply);
+        removeTypingIndicator(typingIndicator);
+        const { bubble } = addMessage("assistant", reply);
+        playSound(receiveSound);
+        speakResponse(reply);
+        return bubble;
       } catch (error) {
-        typingIndicator.remove();
+        removeTypingIndicator(typingIndicator);
         addMessage("assistant", "Je suis désolé, une erreur est survenue lors de la connexion au serveur. Veuillez réessayer.");
       } finally {
         isTyping = false;
@@ -549,43 +850,67 @@ Ton objectif est d’offrir une expérience immersive, comme si l’utilisateur 
     function showWelcome() {
       const welcomeDiv = document.createElement("div");
       welcomeDiv.className = "welcome-screen";
-      
+
       const icon = document.createElement("i");
       icon.className = "fas fa-wine-glass welcome-icon";
-      
+
       const title = document.createElement("h2");
       title.className = "welcome-title";
       title.textContent = "Bienvenue auprès de votre Sommelier Virtuel !";
-      
+
       const subtitle = document.createElement("p");
       subtitle.className = "welcome-subtitle";
       subtitle.textContent = "Découvrez les plus grands vins français pour chaque occasion";
-      
+
       welcomeDiv.appendChild(icon);
       welcomeDiv.appendChild(title);
       welcomeDiv.appendChild(subtitle);
-      
+
       messagesContainer.appendChild(welcomeDiv);
+    }
+
+    // --- Humeur selector
+    function showMoodSelector() {
+      const moodOptions = [
+        { text: "🍷 Détendu", value: "détendu" },
+        { text: "🎉 Festif", value: "festif" },
+        { text: "💕 Romantique", value: "romantique" },
+        { text: "✨ Inspiré", value: "inspiré" },
+      ];
+
+      const options = moodOptions.map((mood) => ({
+        text: mood.text,
+        action: () => {
+          userMood = mood.value;
+          addMessage("assistant", `Parfait, je m'imprègne de votre esprit ${mood.value}.`);
+          if (!hasShownInitialOptions) {
+            hasShownInitialOptions = true;
+            setTimeout(() => showInitialOptions(), 450);
+          }
+        },
+      }));
+
+      addMessage("assistant", "Avant de commencer, quelle est votre humeur du moment ?", options);
     }
 
     function showInitialOptions() {
       const options = [
         {
           text: "🍽️ Déjeuner",
-          action: () => showMealOptions("déjeuner")
+          action: () => showMealOptions("déjeuner"),
         },
         {
           text: "🍷 Dîner",
-          action: () => showMealOptions("dîner")
+          action: () => showMealOptions("dîner"),
         },
         {
           text: "🥂 Apéritif",
-          action: () => sendMessage("Suggère-moi un vin français pour un apéritif")
+          action: () => sendMessage("Suggère-moi un vin français pour un apéritif"),
         },
         {
           text: "🎉 Occasion spéciale",
-          action: () => showSpecialOccasionOptions()
-        }
+          action: () => showSpecialOccasionOptions(),
+        },
       ];
 
       addMessage("assistant", "Pour quelle occasion souhaitez-vous une recommandation ?", options);
@@ -595,20 +920,20 @@ Ton objectif est d’offrir une expérience immersive, comme si l’utilisateur 
       const options = [
         {
           text: "🥩 Viandes rouges",
-          action: () => sendMessage(`Suggère-moi un vin français pour accompagner des viandes rouges lors du ${mealType}`)
+          action: () => sendMessage(`Suggère-moi un vin français pour accompagner des viandes rouges lors du ${mealType}`),
         },
         {
           text: "🐟 Poissons",
-          action: () => sendMessage(`Suggère-moi un vin français pour accompagner des poissons lors du ${mealType}`)
+          action: () => sendMessage(`Suggère-moi un vin français pour accompagner des poissons lors du ${mealType}`),
         },
         {
           text: "🍝 Pâtes",
-          action: () => sendMessage(`Suggère-moi un vin français pour accompagner des pâtes lors du ${mealType}`)
+          action: () => sendMessage(`Suggère-moi un vin français pour accompagner des pâtes lors du ${mealType}`),
         },
         {
           text: "🥗 Salades",
-          action: () => sendMessage(`Suggère-moi un vin français pour accompagner des salades lors du ${mealType}`)
-        }
+          action: () => sendMessage(`Suggère-moi un vin français pour accompagner des salades lors du ${mealType}`),
+        },
       ];
 
       addMessage("assistant", `Parfait pour le ${mealType}, quel type de plat servirez-vous ?`, options);
@@ -618,33 +943,120 @@ Ton objectif est d’offrir une expérience immersive, comme si l’utilisateur 
       const options = [
         {
           text: "🎂 Anniversaire",
-          action: () => sendMessage("Suggère-moi un vin français d'exception pour un anniversaire")
+          action: () => sendMessage("Suggère-moi un vin français d'exception pour un anniversaire"),
         },
         {
           text: "💕 Dîner romantique",
-          action: () => sendMessage("Suggère-moi un vin français pour un dîner romantique")
+          action: () => sendMessage("Suggère-moi un vin français pour un dîner romantique"),
         },
         {
           text: "🎁 Cadeau",
-          action: () => sendMessage("Suggère-moi un vin français mémorable à offrir")
+          action: () => sendMessage("Suggère-moi un vin français mémorable à offrir"),
         },
         {
           text: "🏆 Grande célébration",
-          action: () => sendMessage("Suggère-moi un vin français prestigieux pour une grande célébration")
-        }
+          action: () => sendMessage("Suggère-moi un vin français prestigieux pour une grande célébration"),
+        },
       ];
 
       addMessage("assistant", "Magnifique ! Pour quel type d'occasion spéciale souhaitez-vous être conseillé ?", options);
     }
 
+    // --- Voz bidireccional
+    function loadVoices() {
+      if (!window.speechSynthesis) return;
+      const voices = window.speechSynthesis.getVoices();
+      if (!voices || !voices.length) return;
+      speechVoice =
+        voices.find((voice) => voice.lang === "fr-FR" && /homme|male|paul|guillaume|thomas/.test(voice.name.toLowerCase())) ||
+        voices.find((voice) => voice.lang === "fr-FR") ||
+        voices[0];
+    }
+
+    function speakResponse(text) {
+      if (!audioEnabled || !window.speechSynthesis) return;
+      loadVoices();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = "fr-FR";
+      utterance.pitch = 1;
+      utterance.rate = 0.95;
+      utterance.volume = 0.8;
+      if (speechVoice) utterance.voice = speechVoice;
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function initSpeechRecognition() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        micButton.disabled = true;
+        micButton.title = "Reconnaissance vocale indisponible";
+        return;
+      }
+
+      recognition = new SpeechRecognition();
+      recognition.lang = "fr-FR";
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        input.value = input.value ? `${input.value.trim()} ${transcript}` : transcript;
+      };
+
+      recognition.onend = () => {
+        isRecognitionActive = false;
+        micButton.classList.remove("listening");
+      };
+
+      recognition.onerror = () => {
+        isRecognitionActive = false;
+        micButton.classList.remove("listening");
+      };
+
+      micButton.addEventListener("click", () => {
+        if (isRecognitionActive) {
+          recognition.stop();
+        } else {
+          try {
+            recognition.start();
+            isRecognitionActive = true;
+            micButton.classList.add("listening");
+          } catch (error) {
+            isRecognitionActive = false;
+            micButton.classList.remove("listening");
+          }
+        }
+      });
+    }
+
+    if (window.speechSynthesis) {
+      window.speechSynthesis.onvoiceschanged = loadVoices;
+      loadVoices();
+    }
+
+    audioToggleButton.addEventListener("click", () => {
+      audioEnabled = !audioEnabled;
+      audioToggleButton.classList.toggle("active", audioEnabled);
+      const icon = audioEnabled ? "fa-volume-up" : "fa-volume-xmark";
+      audioToggleButton.innerHTML = `<i class="fas ${icon}"></i>`;
+      audioToggleButton.title = audioEnabled ? "Désactiver l'audio" : "Activer l'audio";
+      if (!audioEnabled && window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+      }
+    });
+
+    initSpeechRecognition();
+
     // Initialisation
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener("DOMContentLoaded", () => {
       showWelcome();
       setTimeout(() => {
-        document.querySelector('.welcome-screen').remove();
-        showInitialOptions();
+        const welcome = document.querySelector(".welcome-screen");
+        welcome?.remove();
+        showMoodSelector();
       }, 2000);
-      
+
       input.focus();
     });
 
