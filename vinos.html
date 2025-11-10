@@ -4,25 +4,24 @@
   <meta charset="UTF-8" />
   <title>Sommelier de Vins Français · Tomos.bot</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --primary: #722f37;
-      --primary-light: #8b3a44;
-      --secondary: #c5a34f;
-      --accent: #f4e4c1;
-      --dark: #1a1a1a;
-      --dark-secondary: #2d2d2d;
-      --light: #ffffff;
-      --light-secondary: #f8f9fa;
-      --text: #2c3e50;
-      --text-light: #6c757d;
-      --border: rgba(255, 255, 255, 0.1);
-      --shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-      --shadow-hover: 0 30px 60px rgba(0, 0, 0, 0.15);
-      --gradient: linear-gradient(135deg, #722f37 0%, #8b3a44 100%);
-      --gradient-secondary: linear-gradient(135deg, #c5a34f 0%, #d4b76a 100%);
+      --font-display: 'Playfair Display', serif;
+      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --bg-gradient: linear-gradient(140deg, #f8f3eb 0%, #f1e7da 100%);
+      --panel: rgba(255, 255, 255, 0.92);
+      --panel-solid: #ffffff;
+      --text: #1f1b16;
+      --muted: #7a6f64;
+      --primary: #7d3241;
+      --primary-soft: rgba(125, 50, 65, 0.1);
+      --accent: #c5a34f;
+      --accent-strong: #a88740;
+      --border: rgba(31, 27, 22, 0.08);
+      --shadow: 0 30px 60px rgba(31, 27, 22, 0.12);
+      --radius-lg: 24px;
+      --transition: all 0.4s ease;
     }
 
     * {
@@ -32,151 +31,197 @@
     }
 
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 20px;
-      overflow: hidden;
+      padding: 32px;
+      background: var(--bg-gradient);
+      font-family: var(--font-body);
+      color: var(--text);
       position: relative;
+      overflow: hidden;
+      transition: var(--transition);
     }
 
     body::before {
       content: '';
       position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="40" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="40" cy="80" r="1.5" fill="rgba(255,255,255,0.1)"/></svg>');
-      animation: float 20s ease-in-out infinite;
+      inset: 0;
+      background-image: radial-gradient(circle at 20% 20%, rgba(197, 163, 79, 0.15), transparent 45%),
+        radial-gradient(circle at 80% 0%, rgba(125, 50, 65, 0.12), transparent 55%);
+      pointer-events: none;
+      opacity: 0.9;
+      transition: var(--transition);
     }
 
-    @keyframes float {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-20px); }
+    body[data-theme="dark"] {
+      --bg-gradient: linear-gradient(160deg, #111 0%, #1a1a1a 100%);
+      --panel: rgba(26, 26, 26, 0.92);
+      --panel-solid: #1a1a1a;
+      --text: #eee;
+      --muted: #b6b6b6;
+      --primary: #c46a7b;
+      --primary-soft: rgba(196, 106, 123, 0.1);
+      --accent: #c5a34f;
+      --accent-strong: #d8bb6c;
+      --border: rgba(255, 255, 255, 0.08);
+      --shadow: 0 30px 60px rgba(0, 0, 0, 0.45);
+    }
+
+    body[data-theme="dark"]::before {
+      background-image: radial-gradient(circle at 15% 30%, rgba(197, 163, 79, 0.18), transparent 55%),
+        radial-gradient(circle at 80% 10%, rgba(84, 34, 44, 0.3), transparent 60%);
+      opacity: 0.6;
+    }
+
+    h1, h2, h3 {
+      font-family: var(--font-display);
+      font-weight: 600;
     }
 
     .chat-container {
       width: 100%;
-      max-width: 420px;
-      height: 85vh;
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(20px);
-      border-radius: 24px;
+      max-width: 460px;
+      height: 82vh;
+      background: var(--panel);
+      backdrop-filter: blur(22px);
+      border-radius: var(--radius-lg);
       box-shadow: var(--shadow);
       display: flex;
       flex-direction: column;
       overflow: hidden;
       position: relative;
-      animation: slideUp 0.6s ease-out;
+      transition: var(--transition);
+      border: 1px solid var(--border);
     }
 
-    @keyframes slideUp {
-      from {
-        opacity: 0;
-        transform: translateY(50px);
+    @media (max-width: 540px) {
+      body {
+        padding: 12px;
       }
-      to {
-        opacity: 1;
-        transform: translateY(0);
+
+      .chat-container {
+        height: calc(100vh - 24px);
+        border-radius: 20px;
       }
     }
 
     .header {
-      background: var(--gradient);
-      color: white;
       padding: 24px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       position: relative;
-      overflow: hidden;
+      gap: 16px;
     }
 
-    .header::before {
+    .header::after {
       content: '';
       position: absolute;
-      top: -50%;
-      right: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-      animation: shimmer 3s ease-in-out infinite;
-    }
-
-    @keyframes shimmer {
-      0%, 100% { transform: rotate(0deg); }
-      50% { transform: rotate(180deg); }
+      inset: 0;
+      background: linear-gradient(135deg, rgba(197, 163, 79, 0.18), rgba(125, 50, 65, 0.12));
+      opacity: 0.6;
+      pointer-events: none;
     }
 
     .header-content {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 16px;
+      position: relative;
       z-index: 1;
     }
 
-    .wine-icon {
-      font-size: 24px;
-      animation: bounce 2s infinite;
+    .header-icon {
+      width: 54px;
+      height: 54px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 18px;
+      background: linear-gradient(140deg, rgba(125, 50, 65, 0.18), rgba(197, 163, 79, 0.18));
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+      transition: var(--transition);
     }
 
-    @keyframes bounce {
-      0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-      40% { transform: translateY(-10px); }
-      60% { transform: translateY(-5px); }
+    .header-titles {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
     }
 
     .header-title {
-      font-size: 18px;
-      font-weight: 600;
-      letter-spacing: -0.5px;
+      font-size: 22px;
+      letter-spacing: 0.5px;
+      color: var(--text);
     }
 
-    .header-badge {
-      background: rgba(255, 255, 255, 0.2);
-      padding: 4px 12px;
-      border-radius: 20px;
-      font-size: 12px;
+    .header-subtitle {
+      font-size: 13px;
       font-weight: 500;
-      backdrop-filter: blur(10px);
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-family: var(--font-body);
+    }
+
+    .icon-button {
+      position: relative;
+      z-index: 1;
+      background: var(--panel-solid);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      width: 44px;
+      height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+    }
+
+    .icon-button:hover {
+      transform: translateY(-2px);
+      border-color: rgba(197, 163, 79, 0.5);
+      box-shadow: 0 10px 20px rgba(31, 27, 22, 0.12);
+    }
+
+    .icon-button:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
     }
 
     .messages-container {
       flex: 1;
       overflow-y: auto;
-      padding: 20px;
+      padding: 28px 26px;
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 18px;
       scroll-behavior: smooth;
+      position: relative;
     }
 
     .messages-container::-webkit-scrollbar {
       width: 6px;
     }
 
-    .messages-container::-webkit-scrollbar-track {
-      background: transparent;
-    }
-
     .messages-container::-webkit-scrollbar-thumb {
-      background: rgba(114, 47, 55, 0.3);
+      background: rgba(125, 50, 65, 0.35);
       border-radius: 3px;
     }
 
     .message {
       display: flex;
-      animation: messageSlide 0.4s ease-out;
+      animation: messageSlide 0.35s ease;
     }
 
     @keyframes messageSlide {
       from {
         opacity: 0;
-        transform: translateY(20px);
+        transform: translateY(16px);
       }
       to {
         opacity: 1;
@@ -193,91 +238,113 @@
     }
 
     .message-bubble {
-      max-width: 80%;
+      max-width: 82%;
       padding: 16px 20px;
       border-radius: 20px;
       font-size: 15px;
-      line-height: 1.5;
+      line-height: 1.6;
       position: relative;
-      transition: all 0.3s ease;
+      transition: var(--transition);
+      background: var(--panel-solid);
+      border: 1px solid var(--border);
+      color: var(--text);
     }
 
     .message.user .message-bubble {
-      background: var(--gradient);
-      color: white;
-      border-bottom-right-radius: 8px;
-      box-shadow: 0 4px 20px rgba(114, 47, 55, 0.3);
+      background: linear-gradient(135deg, rgba(125, 50, 65, 0.92), rgba(125, 50, 65, 0.82));
+      color: #fff7f5;
+      border-bottom-right-radius: 10px;
+      box-shadow: 0 18px 28px rgba(125, 50, 65, 0.25);
+    }
+
+    body[data-theme="dark"] .message.user .message-bubble {
+      background: linear-gradient(135deg, rgba(196, 106, 123, 0.95), rgba(125, 50, 65, 0.88));
     }
 
     .message.assistant .message-bubble {
-      background: var(--light-secondary);
-      color: var(--text);
-      border-bottom-left-radius: 8px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      border-bottom-left-radius: 10px;
+      box-shadow: 0 14px 24px rgba(0, 0, 0, 0.08);
+    }
+
+    body[data-theme="dark"] .message.assistant .message-bubble {
+      background: rgba(30, 30, 30, 0.9);
+      box-shadow: 0 14px 24px rgba(0, 0, 0, 0.35);
     }
 
     .typing-indicator {
       display: flex;
       align-items: center;
-      gap: 4px;
-      padding: 16px 20px;
-      background: var(--light-secondary);
-      border-radius: 20px;
-      border-bottom-left-radius: 8px;
-      width: fit-content;
+      gap: 6px;
+      padding: 14px 18px;
+      background: rgba(197, 163, 79, 0.12);
+      border-radius: 18px;
+      border-bottom-left-radius: 10px;
+    }
+
+    body[data-theme="dark"] .typing-indicator {
+      background: rgba(197, 163, 79, 0.16);
     }
 
     .typing-dot {
       width: 8px;
       height: 8px;
-      background: var(--text-light);
       border-radius: 50%;
-      animation: typing 1.4s infinite;
+      background: var(--accent);
+      animation: typing 1.3s infinite;
     }
 
-    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
-    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+    .typing-dot:nth-child(2) { animation-delay: 0.18s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.36s; }
 
     @keyframes typing {
-      0%, 60%, 100% { transform: translateY(0); }
-      30% { transform: translateY(-10px); }
+      0%, 60%, 100% { transform: translateY(0); opacity: 0.6; }
+      30% { transform: translateY(-6px); opacity: 1; }
     }
 
     .options-container {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 12px;
+      gap: 10px;
+      margin-top: 14px;
     }
 
     .option-button {
-      background: white;
-      border: 2px solid var(--border);
+      background: var(--panel-solid);
+      border: 1px solid var(--border);
       color: var(--text);
-      padding: 8px 16px;
-      border-radius: 20px;
+      padding: 10px 18px;
+      border-radius: 18px;
       font-size: 14px;
       font-weight: 500;
       cursor: pointer;
-      transition: all 0.3s ease;
-      backdrop-filter: blur(10px);
+      transition: var(--transition);
     }
 
     .option-button:hover {
-      background: var(--secondary);
-      color: white;
-      border-color: var(--secondary);
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(197, 163, 79, 0.3);
+      border-color: rgba(197, 163, 79, 0.6);
+      box-shadow: 0 12px 20px rgba(31, 27, 22, 0.12);
+      background: rgba(197, 163, 79, 0.15);
+    }
+
+    body[data-theme="dark"] .option-button {
+      background: rgba(32, 32, 32, 0.9);
+      color: var(--text);
+    }
+
+    body[data-theme="dark"] .option-button:hover {
+      background: rgba(197, 163, 79, 0.22);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.35);
     }
 
     .input-container {
-      padding: 20px;
-      background: white;
+      padding: 20px 24px 24px;
+      background: var(--panel-solid);
       border-top: 1px solid var(--border);
       display: flex;
-      gap: 12px;
+      gap: 14px;
       align-items: center;
+      transition: var(--transition);
     }
 
     .input-wrapper {
@@ -288,59 +355,75 @@
     .message-input {
       width: 100%;
       padding: 14px 20px;
-      border: 2px solid transparent;
-      border-radius: 24px;
-      background: var(--light-secondary);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.75);
       font-size: 15px;
       outline: none;
-      transition: all 0.3s ease;
+      transition: var(--transition);
+      color: var(--text);
+    }
+
+    body[data-theme="dark"] .message-input {
+      background: rgba(30, 30, 30, 0.9);
     }
 
     .message-input:focus {
-      border-color: var(--secondary);
-      background: white;
-      box-shadow: 0 0 0 4px rgba(197, 163, 79, 0.1);
+      border-color: rgba(197, 163, 79, 0.6);
+      box-shadow: 0 0 0 4px rgba(197, 163, 79, 0.15);
+      background: var(--panel);
     }
 
+    .mic-button,
     .send-button {
-      background: var(--gradient);
       border: none;
-      color: white;
       width: 48px;
       height: 48px;
-      border-radius: 50%;
-      display: flex;
+      border-radius: 18px;
+      display: inline-flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 20px rgba(114, 47, 55, 0.3);
+      transition: var(--transition);
     }
 
-    .send-button:hover {
-      transform: scale(1.05);
-      box-shadow: 0 6px 30px rgba(114, 47, 55, 0.4);
+    .mic-button {
+      background: var(--panel);
+      border: 1px solid var(--border);
     }
 
-    .send-button:active {
-      transform: scale(0.95);
+    .mic-button:hover {
+      transform: translateY(-2px);
+      border-color: rgba(197, 163, 79, 0.6);
+      box-shadow: 0 10px 18px rgba(31, 27, 22, 0.12);
     }
 
-    .send-button:disabled {
-      opacity: 0.6;
+    .mic-button.recording {
+      background: rgba(196, 106, 123, 0.12);
+      border-color: rgba(196, 106, 123, 0.6);
+      box-shadow: 0 10px 20px rgba(125, 50, 65, 0.22);
+    }
+
+    .mic-button:disabled {
+      opacity: 0.5;
       cursor: not-allowed;
     }
 
-    .wine-image {
-      max-width: 200px;
-      border-radius: 12px;
-      margin-top: 12px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-      transition: transform 0.3s ease;
+    .send-button {
+      background: linear-gradient(135deg, #7d3241, #9d4557);
+      box-shadow: 0 14px 28px rgba(125, 50, 65, 0.3);
+      color: #fff9f7;
+      border: 1px solid rgba(255, 255, 255, 0.12);
     }
 
-    .wine-image:hover {
-      transform: scale(1.05);
+    .send-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 18px 30px rgba(125, 50, 65, 0.35);
+    }
+
+    .send-button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
     }
 
     .welcome-screen {
@@ -349,88 +432,207 @@
       align-items: center;
       justify-content: center;
       text-align: center;
-      padding: 40px;
-      animation: fadeIn 0.8s ease-out;
+      padding: 48px 32px;
+      gap: 18px;
+      animation: fadeIn 0.8s ease;
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .welcome-icon {
-      font-size: 64px;
-      margin-bottom: 24px;
-      background: var(--gradient);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.1); }
+      display: inline-flex;
+      width: 68px;
+      height: 68px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: radial-gradient(circle at top, rgba(197, 163, 79, 0.28), transparent 65%);
     }
 
     .welcome-title {
-      font-size: 24px;
-      font-weight: 700;
+      font-size: 26px;
+      letter-spacing: 0.6px;
       color: var(--text);
-      margin-bottom: 12px;
     }
 
     .welcome-subtitle {
-      font-size: 16px;
-      color: var(--text-light);
-      margin-bottom: 32px;
+      font-size: 15px;
+      color: var(--muted);
+      max-width: 260px;
+      line-height: 1.6;
+      font-family: var(--font-body);
     }
 
-    @media (max-width: 480px) {
-      .chat-container {
-        max-width: 100%;
-        height: 100vh;
-        border-radius: 0;
-      }
-      
+    .mood-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(17, 17, 17, 0.55);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      z-index: 20;
+      transition: opacity 0.4s ease;
+    }
+
+    .mood-overlay.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .mood-panel {
+      max-width: 480px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 40px 36px;
+      border-radius: 28px;
+      text-align: center;
+      box-shadow: 0 40px 80px rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      backdrop-filter: blur(18px);
+    }
+
+    body[data-theme="dark"] .mood-panel {
+      background: rgba(26, 26, 26, 0.94);
+      border: 1px solid rgba(197, 163, 79, 0.25);
+      box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6);
+    }
+
+    .mood-title {
+      font-family: var(--font-display);
+      font-size: 28px;
+      margin-bottom: 12px;
+      color: var(--text);
+    }
+
+    .mood-subtitle {
+      font-size: 15px;
+      color: var(--muted);
+      margin-bottom: 28px;
+      line-height: 1.6;
+    }
+
+    .mood-options {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 14px;
+    }
+
+    .mood-button {
+      padding: 16px 18px;
+      border-radius: 16px;
+      border: 1px solid rgba(197, 163, 79, 0.4);
+      background: rgba(255, 255, 255, 0.85);
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: var(--font-display);
+      color: var(--text);
+    }
+
+    .mood-button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 18px 26px rgba(31, 27, 22, 0.18);
+      background: rgba(197, 163, 79, 0.22);
+      border-color: rgba(197, 163, 79, 0.6);
+    }
+
+    body[data-theme="dark"] .mood-button {
+      background: rgba(30, 30, 30, 0.9);
+      color: var(--text);
+    }
+
+    body[data-theme="dark"] .mood-button:hover {
+      background: rgba(197, 163, 79, 0.22);
+      box-shadow: 0 18px 30px rgba(0, 0, 0, 0.55);
+    }
+
+    .wine-image {
+      max-width: 220px;
+      border-radius: 16px;
+      margin-top: 12px;
+      box-shadow: 0 18px 32px rgba(0, 0, 0, 0.18);
+      transition: transform 0.3s ease;
+    }
+
+    .wine-image:hover {
+      transform: scale(1.05);
+    }
+
+    @media (max-width: 420px) {
       .header {
-        padding: 20px;
+        padding: 20px 18px;
+      }
+
+      .messages-container {
+        padding: 22px 18px;
+      }
+
+      .input-container {
+        padding: 18px;
       }
     }
   </style>
 <base target="_blank">
+  <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
+  <div class="mood-overlay" id="moodOverlay">
+    <div class="mood-panel">
+      <h2 class="mood-title">Choisissez votre humeur 🍷</h2>
+      <p class="mood-subtitle">Pour une recommandation plus inspirée, sélectionnez l'ambiance de votre dégustation.</p>
+      <div class="mood-options">
+        <button class="mood-button" data-mood="Détendu">🍷 Détendu</button>
+        <button class="mood-button" data-mood="Festif">🎉 Festif</button>
+        <button class="mood-button" data-mood="Romantique">💕 Romantique</button>
+        <button class="mood-button" data-mood="Inspiré">✨ Inspiré</button>
+      </div>
+    </div>
+  </div>
+
   <div class="chat-container">
     <header class="header">
       <div class="header-content">
-        <i class="fas fa-wine-glass wine-icon"></i>
-        <h1 class="header-title">Sommelier Français</h1>
+        <span class="header-icon" id="headerIcon"></span>
+        <div class="header-titles">
+          <h1 class="header-title">Sommelier Français</h1>
+          <span class="header-subtitle">par Tomos.bot</span>
+        </div>
       </div>
-      <span class="header-badge">par Tomos.bot</span>
+      <button type="button" class="icon-button" id="themeToggle" aria-label="Activer le mode nuit">
+        <span class="icon" id="themeIcon"></span>
+      </button>
     </header>
 
     <main class="messages-container" id="messages"></main>
 
     <form class="input-container" id="form">
       <div class="input-wrapper">
-        <input 
-          type="text" 
-          id="input" 
-          class="message-input" 
+        <input
+          type="text"
+          id="input"
+          class="message-input"
           placeholder="Demandez-moi un vin français..."
           autocomplete="off"
         />
       </div>
+      <button type="button" class="mic-button" id="micButton" aria-label="Activer la dictée vocale">
+        <span class="icon" id="micIcon"></span>
+      </button>
       <button type="submit" class="send-button" id="sendButton">
-        <i class="fas fa-paper-plane"></i>
+        <span class="icon" id="sendIcon"></span>
       </button>
     </form>
   </div>
 
   <script>
     const CHAT_API = "https://hotel-chat-proxy.vercel.app/api/chat";
-    
-const SYSTEM_PROMPT = `
+
+    const SYSTEM_PROMPT = `
 Tu es "Sommelier Tomos.bot", un sommelier parisien contemporain reconnu pour ton goût sûr et ton élégance naturelle.
 Tu parles uniquement en français, dans un style moderne, fluide et chaleureux — précis mais jamais académique.
 Tes réponses sont courtes (deux ou trois phrases maximum), avec une touche poétique, comme si tu conseillais un client à table dans un restaurant étoilé à Paris.
@@ -447,40 +649,190 @@ Si le vin est prestigieux, évoque subtilement sa renommée ou son style sans ex
 
 N’invente jamais de vins imaginaires : cite uniquement des appellations ou domaines français réels.
 Ton ton doit évoquer la confiance, la passion et la simplicité d’un grand sommelier parisien moderne.
-`.trim();
+    `.trim();
 
+    const THEME_STORAGE_KEY = "theme-preference";
 
-
+    let userMood = "";
     let messages = [{ role: "system", content: SYSTEM_PROMPT }];
     let isTyping = false;
+    let recognition;
+    let isRecording = false;
 
     const messagesContainer = document.getElementById("messages");
     const form = document.getElementById("form");
     const input = document.getElementById("input");
     const sendButton = document.getElementById("sendButton");
+    const micButton = document.getElementById("micButton");
+    const micIcon = document.getElementById("micIcon");
+    const sendIcon = document.getElementById("sendIcon");
+    const headerIcon = document.getElementById("headerIcon");
+    const themeToggleButton = document.getElementById("themeToggle");
+    const themeIcon = document.getElementById("themeIcon");
+    const moodOverlay = document.getElementById("moodOverlay");
+    const moodButtons = document.querySelectorAll(".mood-button");
+
+    function renderIcon(element, name, options = {}) {
+      if (!element || !window.lucide || !window.lucide.icons || !window.lucide.icons[name]) return;
+      const defaults = { width: 24, height: 24, strokeWidth: 1.6 };
+      element.innerHTML = window.lucide.icons[name].toSvg({ ...defaults, ...options });
+    }
+
+    renderIcon(headerIcon, "wine", { width: 32, height: 32, strokeWidth: 1.4 });
+    renderIcon(micIcon, "mic", { width: 20, height: 20, strokeWidth: 1.6 });
+    renderIcon(sendIcon, "send", { width: 20, height: 20, strokeWidth: 1.6 });
+
+    function applyTheme(theme, { persist = true } = {}) {
+      const normalized = theme === "dark" ? "dark" : "light";
+      document.body.setAttribute("data-theme", normalized);
+      if (persist) {
+        localStorage.setItem(THEME_STORAGE_KEY, normalized);
+      }
+      const iconName = normalized === "dark" ? "sun" : "moon";
+      renderIcon(themeIcon, iconName, { width: 22, height: 22, strokeWidth: 1.6 });
+      if (themeToggleButton) {
+        themeToggleButton.setAttribute(
+          "aria-label",
+          normalized === "dark" ? "Revenir au mode clair" : "Activer le mode nuit"
+        );
+      }
+    }
+
+    function initializeTheme() {
+      const stored = localStorage.getItem(THEME_STORAGE_KEY);
+      if (stored === "dark" || stored === "light") {
+        applyTheme(stored, { persist: false });
+      } else {
+        const hour = new Date().getHours();
+        const prefersDark = hour >= 19;
+        applyTheme(prefersDark ? "dark" : "light", { persist: false });
+      }
+    }
+
+    initializeTheme();
+
+    if (themeToggleButton) {
+      themeToggleButton.addEventListener("click", () => {
+        const currentTheme = document.body.getAttribute("data-theme") === "dark" ? "dark" : "light";
+        const nextTheme = currentTheme === "dark" ? "light" : "dark";
+        applyTheme(nextTheme);
+      });
+    }
+
+    function resetConversation() {
+      const basePrompt = `${SYSTEM_PROMPT}\n\nPrends en compte l'humeur suivante de l'utilisateur : ${userMood}.`;
+      messages = [{ role: "system", content: basePrompt }];
+    }
+
+    function startChatExperience() {
+      messagesContainer.innerHTML = "";
+      showWelcome();
+      setTimeout(() => {
+        const welcome = document.querySelector(".welcome-screen");
+        if (welcome) {
+          welcome.remove();
+        }
+        showInitialOptions();
+      }, 1600);
+      input.focus();
+    }
+
+    moodButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const selectedMood = button.getAttribute("data-mood");
+        if (!selectedMood) return;
+        userMood = selectedMood;
+        resetConversation();
+        if (moodOverlay) {
+          moodOverlay.classList.add("hidden");
+          moodOverlay.setAttribute("aria-hidden", "true");
+        }
+        setTimeout(() => {
+          startChatExperience();
+        }, 200);
+      });
+    });
+
+    function setupSpeechRecognition() {
+      if (!micButton) return;
+
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+      if (!SpeechRecognition) {
+        micButton.disabled = true;
+        micButton.setAttribute("title", "Reconnaissance vocale non disponible sur ce navigateur.");
+        return;
+      }
+
+      recognition = new SpeechRecognition();
+      recognition.lang = "fr-FR";
+      recognition.interimResults = false;
+      recognition.continuous = false;
+
+      recognition.addEventListener("start", () => {
+        isRecording = true;
+        micButton.classList.add("recording");
+        renderIcon(micIcon, "mic-off", { width: 20, height: 20, strokeWidth: 1.8 });
+      });
+
+      recognition.addEventListener("end", () => {
+        isRecording = false;
+        micButton.classList.remove("recording");
+        renderIcon(micIcon, "mic", { width: 20, height: 20, strokeWidth: 1.6 });
+      });
+
+      recognition.addEventListener("error", () => {
+        isRecording = false;
+        micButton.classList.remove("recording");
+        renderIcon(micIcon, "mic", { width: 20, height: 20, strokeWidth: 1.6 });
+      });
+
+      recognition.addEventListener("result", (event) => {
+        const transcript = Array.from(event.results)
+          .map((result) => result[0].transcript)
+          .join(" ")
+          .trim();
+
+        if (transcript) {
+          input.value = transcript;
+          input.focus();
+        }
+      });
+
+      micButton.addEventListener("click", () => {
+        if (isRecording) {
+          recognition.stop();
+          return;
+        }
+
+        try {
+          recognition.start();
+        } catch {
+          recognition.stop();
+        }
+      });
+    }
+
+    setupSpeechRecognition();
 
     function addMessage(role, content, options = []) {
       const messageDiv = document.createElement("div");
       messageDiv.className = `message ${role}`;
-      
+
       const bubble = document.createElement("div");
       bubble.className = "message-bubble";
-      
-      if (typeof content === 'string') {
-        bubble.textContent = content;
-      } else {
-        bubble.appendChild(content);
-      }
-      
+      bubble.textContent = content;
+
       messageDiv.appendChild(bubble);
       messagesContainer.appendChild(messageDiv);
-      
+
       if (options.length > 0) {
         const optionsContainer = document.createElement("div");
         optionsContainer.className = "options-container";
-        
-        options.forEach(option => {
+
+        options.forEach((option) => {
           const button = document.createElement("button");
+          button.type = "button";
           button.className = "option-button";
           button.textContent = option.text;
           button.onclick = () => {
@@ -489,10 +841,10 @@ Ton ton doit évoquer la confiance, la passion et la simplicité d’un grand so
           };
           optionsContainer.appendChild(button);
         });
-        
+
         messageDiv.appendChild(optionsContainer);
       }
-      
+
       messagesContainer.scrollTop = messagesContainer.scrollHeight;
       return messageDiv;
     }
@@ -500,43 +852,56 @@ Ton ton doit évoquer la confiance, la passion et la simplicité d’un grand so
     function showTypingIndicator() {
       const typingDiv = document.createElement("div");
       typingDiv.className = "message assistant";
-      
+
       const typingIndicator = document.createElement("div");
       typingIndicator.className = "typing-indicator";
-      
+
       for (let i = 0; i < 3; i++) {
         const dot = document.createElement("div");
         dot.className = "typing-dot";
         typingIndicator.appendChild(dot);
       }
-      
+
       typingDiv.appendChild(typingIndicator);
       messagesContainer.appendChild(typingDiv);
       messagesContainer.scrollTop = messagesContainer.scrollHeight;
-      
+
       return typingDiv;
     }
 
     async function sendMessage(text) {
       if (isTyping) return;
-      
+
+      const sanitizedText = text.trim();
+      if (!sanitizedText) return;
+
+      if (!userMood) {
+        return;
+      }
+
       isTyping = true;
-      messages.push({ role: "user", content: text });
-      addMessage("user", text);
-      
+      const contentForModel = userMood ? `Humeur: ${userMood}\n${sanitizedText}` : sanitizedText;
+
+      messages.push({ role: "user", content: contentForModel });
+      addMessage("user", sanitizedText);
+
       const typingIndicator = showTypingIndicator();
       sendButton.disabled = true;
-      
+
       try {
-        const res = await fetch(CHAT_API, {
+        const response = await fetch(CHAT_API, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ messages, system: SYSTEM_PROMPT }),
+          body: JSON.stringify({ messages, system: messages[0]?.content || SYSTEM_PROMPT }),
         });
-        
-        const data = await res.json();
+
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+
+        const data = await response.json();
         const reply = data?.choices?.[0]?.message?.content || "Erreur lors de la récupération de la réponse.";
-        
+
         messages.push({ role: "assistant", content: reply });
         typingIndicator.remove();
         addMessage("assistant", reply);
@@ -553,22 +918,25 @@ Ton ton doit évoquer la confiance, la passion et la simplicité d’un grand so
     function showWelcome() {
       const welcomeDiv = document.createElement("div");
       welcomeDiv.className = "welcome-screen";
-      
-      const icon = document.createElement("i");
-      icon.className = "fas fa-wine-glass welcome-icon";
-      
+
+      const icon = document.createElement("span");
+      icon.className = "welcome-icon";
+      if (window.lucide?.icons?.sparkles) {
+        icon.innerHTML = window.lucide.icons.sparkles.toSvg({ width: 48, height: 48, strokeWidth: 1.4 });
+      }
+
       const title = document.createElement("h2");
       title.className = "welcome-title";
       title.textContent = "Bienvenue auprès de votre Sommelier Virtuel !";
-      
+
       const subtitle = document.createElement("p");
       subtitle.className = "welcome-subtitle";
-      subtitle.textContent = "Découvrez les plus grands vins français pour chaque occasion";
-      
+      subtitle.textContent = "Découvrez les plus grands vins français pour chaque occasion.";
+
       welcomeDiv.appendChild(icon);
       welcomeDiv.appendChild(title);
       welcomeDiv.appendChild(subtitle);
-      
+
       messagesContainer.appendChild(welcomeDiv);
     }
 
@@ -576,20 +944,20 @@ Ton ton doit évoquer la confiance, la passion et la simplicité d’un grand so
       const options = [
         {
           text: "🍽️ Déjeuner",
-          action: () => showMealOptions("déjeuner")
+          action: () => showMealOptions("déjeuner"),
         },
         {
           text: "🍷 Dîner",
-          action: () => showMealOptions("dîner")
+          action: () => showMealOptions("dîner"),
         },
         {
           text: "🥂 Apéritif",
-          action: () => sendMessage("Suggère-moi un vin français pour un apéritif")
+          action: () => sendMessage("Suggère-moi un vin français pour un apéritif"),
         },
         {
           text: "🎉 Occasion spéciale",
-          action: () => showSpecialOccasionOptions()
-        }
+          action: () => showSpecialOccasionOptions(),
+        },
       ];
 
       addMessage("assistant", "Pour quelle occasion souhaitez-vous une recommandation ?", options);
@@ -599,20 +967,20 @@ Ton ton doit évoquer la confiance, la passion et la simplicité d’un grand so
       const options = [
         {
           text: "🥩 Viandes rouges",
-          action: () => sendMessage(`Suggère-moi un vin français pour accompagner des viandes rouges lors du ${mealType}`)
+          action: () => sendMessage(`Suggère-moi un vin français pour accompagner des viandes rouges lors du ${mealType}`),
         },
         {
           text: "🐟 Poissons",
-          action: () => sendMessage(`Suggère-moi un vin français pour accompagner des poissons lors du ${mealType}`)
+          action: () => sendMessage(`Suggère-moi un vin français pour accompagner des poissons lors du ${mealType}`),
         },
         {
           text: "🍝 Pâtes",
-          action: () => sendMessage(`Suggère-moi un vin français pour accompagner des pâtes lors du ${mealType}`)
+          action: () => sendMessage(`Suggère-moi un vin français pour accompagner des pâtes lors du ${mealType}`),
         },
         {
           text: "🥗 Salades",
-          action: () => sendMessage(`Suggère-moi un vin français pour accompagner des salades lors du ${mealType}`)
-        }
+          action: () => sendMessage(`Suggère-moi un vin français pour accompagner des salades lors du ${mealType}`),
+        },
       ];
 
       addMessage("assistant", `Parfait pour le ${mealType}, quel type de plat servirez-vous ?`, options);
@@ -622,35 +990,24 @@ Ton ton doit évoquer la confiance, la passion et la simplicité d’un grand so
       const options = [
         {
           text: "🎂 Anniversaire",
-          action: () => sendMessage("Suggère-moi un vin français d'exception pour un anniversaire")
+          action: () => sendMessage("Suggère-moi un vin français d'exception pour un anniversaire"),
         },
         {
           text: "💕 Dîner romantique",
-          action: () => sendMessage("Suggère-moi un vin français pour un dîner romantique")
+          action: () => sendMessage("Suggère-moi un vin français pour un dîner romantique"),
         },
         {
           text: "🎁 Cadeau",
-          action: () => sendMessage("Suggère-moi un vin français mémorable à offrir")
+          action: () => sendMessage("Suggère-moi un vin français mémorable à offrir"),
         },
         {
           text: "🏆 Grande célébration",
-          action: () => sendMessage("Suggère-moi un vin français prestigieux pour une grande célébration")
-        }
+          action: () => sendMessage("Suggère-moi un vin français prestigieux pour une grande célébration"),
+        },
       ];
 
       addMessage("assistant", "Magnifique ! Pour quel type d'occasion spéciale souhaitez-vous être conseillé ?", options);
     }
-
-    // Initialisation
-    document.addEventListener('DOMContentLoaded', () => {
-      showWelcome();
-      setTimeout(() => {
-        document.querySelector('.welcome-screen').remove();
-        showInitialOptions();
-      }, 2000);
-      
-      input.focus();
-    });
 
     form.addEventListener("submit", (e) => {
       e.preventDefault();
@@ -660,7 +1017,6 @@ Ton ton doit évoquer la confiance, la passion et la simplicité d’un grand so
       sendMessage(text);
     });
 
-    // Amélioration de l'expérience de saisie
     input.addEventListener("keypress", (e) => {
       if (e.key === "Enter" && !e.shiftKey) {
         e.preventDefault();
@@ -668,5 +1024,7 @@ Ton ton doit évoquer la confiance, la passion et la simplicité d’un grand so
       }
     });
   </script>
+
+
 </body>
 </html>
