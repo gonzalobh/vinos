@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <title>Sommelier de Vinos Chilenos · Tomos.bot</title>
+  <title>Sommelier de Vins Français · Tomos.bot</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -404,9 +404,9 @@
     <header class="header">
       <div class="header-content">
         <i class="fas fa-wine-glass wine-icon"></i>
-        <h1 class="header-title">Sommelier Chileno</h1>
+        <h1 class="header-title">Sommelier Français</h1>
       </div>
-      <span class="header-badge">by Tomos.bot</span>
+      <span class="header-badge">par Tomos.bot</span>
     </header>
 
     <main class="messages-container" id="messages"></main>
@@ -417,7 +417,7 @@
           type="text" 
           id="input" 
           class="message-input" 
-          placeholder="Pregúntame por un vino chileno..." 
+          placeholder="Demandez-moi un vin français..."
           autocomplete="off"
         />
       </div>
@@ -531,14 +531,14 @@ Ton objectif est d’offrir une expérience immersive, comme si l’utilisateur 
         });
         
         const data = await res.json();
-        const reply = data?.choices?.[0]?.message?.content || "Error al obtener respuesta.";
+        const reply = data?.choices?.[0]?.message?.content || "Erreur lors de la récupération de la réponse.";
         
         messages.push({ role: "assistant", content: reply });
         typingIndicator.remove();
         addMessage("assistant", reply);
       } catch (error) {
         typingIndicator.remove();
-        addMessage("assistant", "Lo siento, hubo un error al conectar con el servidor. Por favor, intenta nuevamente.");
+        addMessage("assistant", "Je suis désolé, une erreur est survenue lors de la connexion au serveur. Veuillez réessayer.");
       } finally {
         isTyping = false;
         sendButton.disabled = false;
@@ -555,11 +555,11 @@ Ton objectif est d’offrir une expérience immersive, comme si l’utilisateur 
       
       const title = document.createElement("h2");
       title.className = "welcome-title";
-      title.textContent = "¡Bienvenido a tu Sommelier Virtual!";
+      title.textContent = "Bienvenue auprès de votre Sommelier Virtuel !";
       
       const subtitle = document.createElement("p");
       subtitle.className = "welcome-subtitle";
-      subtitle.textContent = "Descubre los mejores vinos chilenos para cada ocasión";
+      subtitle.textContent = "Découvrez les plus grands vins français pour chaque occasion";
       
       welcomeDiv.appendChild(icon);
       welcomeDiv.appendChild(title);
@@ -571,73 +571,73 @@ Ton objectif est d’offrir une expérience immersive, comme si l’utilisateur 
     function showInitialOptions() {
       const options = [
         {
-          text: "🍽️ Almuerzo",
-          action: () => showMealOptions("almuerzo")
+          text: "🍽️ Déjeuner",
+          action: () => showMealOptions("déjeuner")
         },
         {
-          text: "🍷 Cena",
-          action: () => showMealOptions("cena")
+          text: "🍷 Dîner",
+          action: () => showMealOptions("dîner")
         },
         {
-          text: "🥂 Aperitivo",
-          action: () => sendMessage("Recomiéndame un vino chileno para un aperitivo")
+          text: "🥂 Apéritif",
+          action: () => sendMessage("Suggère-moi un vin français pour un apéritif")
         },
         {
-          text: "🎉 Ocasión especial",
+          text: "🎉 Occasion spéciale",
           action: () => showSpecialOccasionOptions()
         }
       ];
-      
-      addMessage("assistant", "¿Para qué ocasión necesitas una recomendación?", options);
+
+      addMessage("assistant", "Pour quelle occasion souhaitez-vous une recommandation ?", options);
     }
 
     function showMealOptions(mealType) {
       const options = [
         {
-          text: "🥩 Carnes rojas",
-          action: () => sendMessage(`Recomiéndame un vino chileno para acompañar carnes rojas en ${mealType}`)
+          text: "🥩 Viandes rouges",
+          action: () => sendMessage(`Suggère-moi un vin français pour accompagner des viandes rouges lors du ${mealType}`)
         },
         {
-          text: "🐟 Pescados",
-          action: () => sendMessage(`Recomiéndame un vino chileno para acompañar pescados en ${mealType}`)
+          text: "🐟 Poissons",
+          action: () => sendMessage(`Suggère-moi un vin français pour accompagner des poissons lors du ${mealType}`)
         },
         {
-          text: "🍝 Pastas",
-          action: () => sendMessage(`Recomiéndame un vino chileno para acompañar pastas en ${mealType}`)
+          text: "🍝 Pâtes",
+          action: () => sendMessage(`Suggère-moi un vin français pour accompagner des pâtes lors du ${mealType}`)
         },
         {
-          text: "🥗 Ensaladas",
-          action: () => sendMessage(`Recomiéndame un vino chileno para acompañar ensaladas en ${mealType}`)
+          text: "🥗 Salades",
+          action: () => sendMessage(`Suggère-moi un vin français pour accompagner des salades lors du ${mealType}`)
         }
       ];
-      
-      addMessage("assistant", `Perfecto para ${mealType}, ¿qué tipo de plato vas a servir?`, options);
+
+      addMessage("assistant", `Parfait pour le ${mealType}, quel type de plat servirez-vous ?`, options);
     }
 
     function showSpecialOccasionOptions() {
       const options = [
         {
-          text: "🎂 Cumpleaños",
-          action: () => sendMessage("Recomiéndame un vino chileno especial para un cumpleaños")
+          text: "🎂 Anniversaire",
+          action: () => sendMessage("Suggère-moi un vin français d'exception pour un anniversaire")
         },
         {
-          text: "💕 Cena romántica",
-          action: () => sendMessage("Recomiéndame un vino chileno para una cena romántica")
+          text: "💕 Dîner romantique",
+          action: () => sendMessage("Suggère-moi un vin français pour un dîner romantique")
         },
         {
-          text: "🎁 Regalo",
-          action: () => sendMessage("Recomiéndame un vino chileno especial para regalar")
+          text: "🎁 Cadeau",
+          action: () => sendMessage("Suggère-moi un vin français mémorable à offrir")
         },
         {
-          text: "🏆 Celebración importante",
-          action: () => sendMessage("Recomiéndame un vino chileno premium para una celebración importante")
+          text: "🏆 Grande célébration",
+          action: () => sendMessage("Suggère-moi un vin français prestigieux pour une grande célébration")
         }
       ];
-      
-      addMessage("assistant", "¡Qué bien! ¿Qué tipo de ocasión especial es?", options);
+
+      addMessage("assistant", "Magnifique ! Pour quel type d'occasion spéciale souhaitez-vous être conseillé ?", options);
     }
 
-    // Inicialización
+    // Initialisation
     document.addEventListener('DOMContentLoaded', () => {
       showWelcome();
       setTimeout(() => {
@@ -656,7 +656,7 @@ Ton objectif est d’offrir une expérience immersive, comme si l’utilisateur 
       sendMessage(text);
     });
 
-    // Mejorar la experiencia de entrada
+    // Amélioration de l'expérience de saisie
     input.addEventListener("keypress", (e) => {
       if (e.key === "Enter" && !e.shiftKey) {
         e.preventDefault();
