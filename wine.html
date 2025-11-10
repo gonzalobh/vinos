@@ -53,6 +53,46 @@
       transition: var(--transition);
     }
 
+    .ambient-toggle {
+      position: fixed;
+      top: 15px;
+      right: 15px;
+      z-index: 999;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      color: #7d3241;
+      background: rgba(255, 255, 255, 0.78);
+      border: 1px solid rgba(125, 50, 65, 0.18);
+      border-radius: 12px;
+      box-shadow: 0 12px 28px rgba(31, 27, 22, 0.12);
+      cursor: pointer;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      opacity: 0.88;
+      backdrop-filter: blur(12px);
+      text-decoration: none;
+    }
+
+    .ambient-toggle:hover,
+    .ambient-toggle:focus-visible {
+      opacity: 1;
+      transform: translateY(-1px);
+      outline: none;
+    }
+
+    .ambient-toggle:focus-visible {
+      box-shadow: 0 0 0 3px rgba(125, 50, 65, 0.2);
+    }
+
+    .ambient-toggle__icon {
+      font-size: 16px;
+      line-height: 1;
+    }
+
     body::before {
       content: '';
       position: absolute;
@@ -584,6 +624,11 @@
   <base target="_blank">
 </head>
 <body>
+  <button type="button" class="ambient-toggle" id="ambianceToggle" aria-pressed="false">
+    <span class="ambient-toggle__icon" aria-hidden="true">🎧</span>
+    <span class="ambient-toggle__label">Ambiance du restaurant</span>
+  </button>
+  <audio id="ambianceAudio" src="restaurant.mp3" preload="auto" loop></audio>
   <div class="chat-container">
     <header class="header">
       <div class="header-content">
@@ -666,11 +711,15 @@ Ne répète pas toujours le même type de question : varie ton ton et ton intent
 
 
       const THEME_STORAGE_KEY = "theme-preference";
+      const AMBIANCE_STORAGE_KEY = "ambiance-preference";
+      const AMBIANCE_MAX_VOLUME = 0.15;
 
       let messages = [{ role: "system", content: SYSTEM_PROMPT }];
       let isTyping = false;
       let recognition;
       let isRecording = false;
+      let isAmbianceEnabled = false;
+      let ambianceFadeFrame;
 
       const messagesContainer = document.getElementById("messages");
       const form = document.getElementById("form");
@@ -682,6 +731,159 @@ Ne répète pas toujours le même type de question : varie ton ton et ton intent
       const headerIcon = document.getElementById("headerIcon");
       const themeToggleButton = document.getElementById("themeToggle");
       const themeIcon = document.getElementById("themeIcon");
+      const ambianceToggle = document.getElementById("ambianceToggle");
+      const ambianceIcon = ambianceToggle?.querySelector(".ambient-toggle__icon");
+      const ambianceLabel = ambianceToggle?.querySelector(".ambient-toggle__label");
+      const ambianceAudio = document.getElementById("ambianceAudio");
+
+      function updateAmbianceUI(isActive) {
+        isAmbianceEnabled = Boolean(isActive);
+        if (!ambianceToggle) return;
+        ambianceToggle.setAttribute("aria-pressed", isActive ? "true" : "false");
+        if (ambianceIcon) {
+          ambianceIcon.textContent = isActive ? "🔇" : "🎧";
+        }
+        if (ambianceLabel) {
+          ambianceLabel.textContent = isActive ? "Son désactivé" : "Ambiance du restaurant";
+        }
+      }
+
+      function persistAmbiancePreference(isActive) {
+        try {
+          localStorage.setItem(AMBIANCE_STORAGE_KEY, isActive ? "on" : "off");
+        } catch (error) {
+          console.warn("Impossible d'enregistrer la préférence audio.", error);
+        }
+      }
+
+      function cancelAmbianceFade() {
+        if (ambianceFadeFrame) {
+          cancelAnimationFrame(ambianceFadeFrame);
+          ambianceFadeFrame = undefined;
+        }
+      }
+
+      function fadeAudio(audio, targetVolume, durationSeconds) {
+        return new Promise((resolve) => {
+          if (!audio) {
+            resolve();
+            return;
+          }
+          cancelAmbianceFade();
+          const clampedTarget = Math.max(0, Math.min(targetVolume, 1));
+          const startVolume = audio.volume;
+          const delta = clampedTarget - startVolume;
+          const durationMs = Math.max(durationSeconds * 1000, 0);
+
+          if (durationMs === 0 || Math.abs(delta) < 0.0001) {
+            audio.volume = clampedTarget;
+            resolve();
+            return;
+          }
+
+          const startTime = performance.now();
+
+          const step = (now) => {
+            const elapsed = now - startTime;
+            const progress = Math.min(elapsed / durationMs, 1);
+            audio.volume = startVolume + delta * progress;
+            if (progress < 1) {
+              ambianceFadeFrame = requestAnimationFrame(step);
+            } else {
+              ambianceFadeFrame = undefined;
+              resolve();
+            }
+          };
+
+          ambianceFadeFrame = requestAnimationFrame(step);
+        });
+      }
+
+      async function playAmbiance({ fade = true } = {}) {
+        if (!ambianceAudio) return;
+        cancelAmbianceFade();
+        const safeVolume = Math.max(0, Math.min(AMBIANCE_MAX_VOLUME, 1));
+        ambianceAudio.volume = fade ? 0 : safeVolume;
+        ambianceAudio.loop = true;
+        try {
+          if (ambianceAudio.paused) {
+            await ambianceAudio.play();
+          }
+          if (fade) {
+            await fadeAudio(ambianceAudio, safeVolume, 2);
+          } else {
+            ambianceAudio.volume = safeVolume;
+          }
+          isAmbianceEnabled = true;
+          updateAmbianceUI(true);
+        } catch (error) {
+          console.warn("Impossible de lancer l'ambiance sonore.", error);
+          isAmbianceEnabled = false;
+          updateAmbianceUI(false);
+        }
+      }
+
+      async function pauseAmbiance({ fade = true } = {}) {
+        if (!ambianceAudio) return;
+        cancelAmbianceFade();
+        if (fade) {
+          await fadeAudio(ambianceAudio, 0, 1);
+        } else {
+          ambianceAudio.volume = 0;
+        }
+        ambianceAudio.pause();
+        isAmbianceEnabled = false;
+        updateAmbianceUI(false);
+      }
+
+      async function setAmbianceState(shouldEnable, { persist = true, fade = true } = {}) {
+        if (!ambianceAudio) return;
+        if (shouldEnable) {
+          await playAmbiance({ fade });
+        } else {
+          await pauseAmbiance({ fade });
+        }
+        if (persist) {
+          persistAmbiancePreference(isAmbianceEnabled);
+        }
+      }
+
+      updateAmbianceUI(false);
+
+      if (ambianceAudio) {
+        ambianceAudio.volume = 0;
+      }
+
+      if (ambianceToggle && ambianceAudio) {
+        ambianceToggle.addEventListener("click", () => {
+          const targetState = !isAmbianceEnabled;
+          setAmbianceState(targetState).catch((error) => {
+            console.warn("Erreur lors du changement d'ambiance sonore.", error);
+          });
+        });
+
+        let storedAmbiance;
+        try {
+          storedAmbiance = localStorage.getItem(AMBIANCE_STORAGE_KEY);
+        } catch (error) {
+          console.warn("Impossible de lire la préférence audio.", error);
+        }
+
+        if (storedAmbiance === "on") {
+          updateAmbianceUI(true);
+          setTimeout(() => {
+            setAmbianceState(true, { persist: false, fade: true }).catch((error) => {
+              console.warn("Impossible d'activer l'ambiance automatiquement.", error);
+            });
+          }, 0);
+        } else {
+          updateAmbianceUI(false);
+          isAmbianceEnabled = false;
+          if (storedAmbiance === "off") {
+            persistAmbiancePreference(false);
+          }
+        }
+      }
 
       // Función para renderizar iconos usando Lucide
       function renderIcon(element, name, options = {}) {
