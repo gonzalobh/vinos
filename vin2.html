@@ -39,7 +39,9 @@
 
     html, body {
       height: 100%;
-      overflow: hidden;
+      min-height: 100%;
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
     }
 
     body {
@@ -105,13 +107,13 @@
       position: relative;
       width: 100%;
       max-width: 520px;
-      height: 100vh;
-      height: -webkit-fill-available;
+      height: 100dvh; /* altura dinámica que se adapta a las barras del navegador */
+      min-height: -webkit-fill-available;
       background: rgba(19, 19, 22, 0.9);
-      border-radius: 0;
-      box-shadow: none;
       display: flex;
       flex-direction: column;
+      border-radius: 0;
+      box-shadow: none;
       overflow: hidden;
       border: 1px solid rgba(255, 255, 255, 0.04);
       backdrop-filter: blur(26px);
