@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Sommelier de Vinos Chilenos · Tomos.bot</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #722f37;
+      --primary-light: #8b3a44;
+      --secondary: #c5a34f;
+      --accent: #f4e4c1;
+      --dark: #1a1a1a;
+      --dark-secondary: #2d2d2d;
+      --light: #ffffff;
+      --light-secondary: #f8f9fa;
+      --text: #2c3e50;
+      --text-light: #6c757d;
+      --border: rgba(255, 255, 255, 0.1);
+      --shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      --shadow-hover: 0 30px 60px rgba(0, 0, 0, 0.15);
+      --gradient: linear-gradient(135deg, #722f37 0%, #8b3a44 100%);
+      --gradient-secondary: linear-gradient(135deg, #c5a34f 0%, #d4b76a 100%);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="40" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="40" cy="80" r="1.5" fill="rgba(255,255,255,0.1)"/></svg>');
+      animation: float 20s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
+    }
+
+    .chat-container {
+      width: 100%;
+      max-width: 420px;
+      height: 85vh;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+      animation: slideUp 0.6s ease-out;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .header {
+      background: var(--gradient);
+      color: white;
+      padding: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+      animation: shimmer 3s ease-in-out infinite;
+    }
+
+    @keyframes shimmer {
+      0%, 100% { transform: rotate(0deg); }
+      50% { transform: rotate(180deg); }
+    }
+
+    .header-content {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      z-index: 1;
+    }
+
+    .wine-icon {
+      font-size: 24px;
+      animation: bounce 2s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+      40% { transform: translateY(-10px); }
+      60% { transform: translateY(-5px); }
+    }
+
+    .header-title {
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+    }
+
+    .header-badge {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+      backdrop-filter: blur(10px);
+    }
+
+    .messages-container {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      scroll-behavior: smooth;
+    }
+
+    .messages-container::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .messages-container::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .messages-container::-webkit-scrollbar-thumb {
+      background: rgba(114, 47, 55, 0.3);
+      border-radius: 3px;
+    }
+
+    .message {
+      display: flex;
+      animation: messageSlide 0.4s ease-out;
+    }
+
+    @keyframes messageSlide {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .message.user {
+      justify-content: flex-end;
+    }
+
+    .message.assistant {
+      justify-content: flex-start;
+    }
+
+    .message-bubble {
+      max-width: 80%;
+      padding: 16px 20px;
+      border-radius: 20px;
+      font-size: 15px;
+      line-height: 1.5;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .message.user .message-bubble {
+      background: var(--gradient);
+      color: white;
+      border-bottom-right-radius: 8px;
+      box-shadow: 0 4px 20px rgba(114, 47, 55, 0.3);
+    }
+
+    .message.assistant .message-bubble {
+      background: var(--light-secondary);
+      color: var(--text);
+      border-bottom-left-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .typing-indicator {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 16px 20px;
+      background: var(--light-secondary);
+      border-radius: 20px;
+      border-bottom-left-radius: 8px;
+      width: fit-content;
+    }
+
+    .typing-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--text-light);
+      border-radius: 50%;
+      animation: typing 1.4s infinite;
+    }
+
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes typing {
+      0%, 60%, 100% { transform: translateY(0); }
+      30% { transform: translateY(-10px); }
+    }
+
+    .options-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .option-button {
+      background: white;
+      border: 2px solid var(--border);
+      color: var(--text);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    .option-button:hover {
+      background: var(--secondary);
+      color: white;
+      border-color: var(--secondary);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(197, 163, 79, 0.3);
+    }
+
+    .input-container {
+      padding: 20px;
+      background: white;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .input-wrapper {
+      flex: 1;
+      position: relative;
+    }
+
+    .message-input {
+      width: 100%;
+      padding: 14px 20px;
+      border: 2px solid transparent;
+      border-radius: 24px;
+      background: var(--light-secondary);
+      font-size: 15px;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+
+    .message-input:focus {
+      border-color: var(--secondary);
+      background: white;
+      box-shadow: 0 0 0 4px rgba(197, 163, 79, 0.1);
+    }
+
+    .send-button {
+      background: var(--gradient);
+      border: none;
+      color: white;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 20px rgba(114, 47, 55, 0.3);
+    }
+
+    .send-button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 30px rgba(114, 47, 55, 0.4);
+    }
+
+    .send-button:active {
+      transform: scale(0.95);
+    }
+
+    .send-button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .wine-image {
+      max-width: 200px;
+      border-radius: 12px;
+      margin-top: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      transition: transform 0.3s ease;
+    }
+
+    .wine-image:hover {
+      transform: scale(1.05);
+    }
+
+    .welcome-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px;
+      animation: fadeIn 0.8s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .welcome-icon {
+      font-size: 64px;
+      margin-bottom: 24px;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    .welcome-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+
+    .welcome-subtitle {
+      font-size: 16px;
+      color: var(--text-light);
+      margin-bottom: 32px;
+    }
+
+    @media (max-width: 480px) {
+      .chat-container {
+        max-width: 100%;
+        height: 100vh;
+        border-radius: 0;
+      }
+      
+      .header {
+        padding: 20px;
+      }
+    }
+  </style>
+<base target="_blank">
+</head>
+<body>
+  <div class="chat-container">
+    <header class="header">
+      <div class="header-content">
+        <i class="fas fa-wine-glass wine-icon"></i>
+        <h1 class="header-title">Sommelier Chileno</h1>
+      </div>
+      <span class="header-badge">by Tomos.bot</span>
+    </header>
+
+    <main class="messages-container" id="messages"></main>
+
+    <form class="input-container" id="form">
+      <div class="input-wrapper">
+        <input 
+          type="text" 
+          id="input" 
+          class="message-input" 
+          placeholder="Pregúntame por un vino chileno..." 
+          autocomplete="off"
+        />
+      </div>
+      <button type="submit" class="send-button" id="sendButton">
+        <i class="fas fa-paper-plane"></i>
+      </button>
+    </form>
+  </div>
+
+  <script>
+    const CHAT_API = "https://hotel-chat-proxy.vercel.app/api/chat";
+    
+const SYSTEM_PROMPT = `
+Tu es "Sommelier Tomos.bot", un sommelier français de renommée mondiale, formé dans les plus grands restaurants étoilés de France.
+Tu parles exclusivement en français, avec un ton raffiné, élégant et précis, empreint de passion pour le vin.
+Tu es un maître du terroir français : tu connais parfaitement les régions viticoles (Bordeaux, Bourgogne, Vallée du Rhône, Alsace, Champagne, Provence, Loire, Languedoc, Jura, Savoie, Corse...) et leurs appellations.
+Tu recommandes uniquement des vins français authentiques, en mentionnant toujours :
+- le nom du vin ou de l’appellation,
+- la région ou le terroir,
+- le ou les cépages (Cabernet Sauvignon, Pinot Noir, Syrah, Chardonnay, Sauvignon Blanc, etc.),
+- et une brève description sensorielle (arômes, structure, longueur, texture, équilibre).
+Tes réponses sont courtes mais poétiques, avec des notes sensorielles subtiles : parle de "tanins soyeux", "bouquet floral", "finale minérale" ou "équilibre harmonieux".
+Adapte tes conseils au type de plat, à l’occasion ou à la saison : repas gastronomique, dîner romantique, apéritif, anniversaire ou célébration.
+Si l’utilisateur te demande des suggestions, propose 2 ou 3 vins emblématiques avec une justification succincte et élégante pour chacun.
+N’invente jamais de vins imaginaires : ne cite que des appellations ou domaines français réels et réputés.
+Ton objectif est d’offrir une expérience immersive, comme si l’utilisateur consultait le meilleur sommelier de Paris.
+`.trim();
+
+
+    let messages = [{ role: "system", content: SYSTEM_PROMPT }];
+    let isTyping = false;
+
+    const messagesContainer = document.getElementById("messages");
+    const form = document.getElementById("form");
+    const input = document.getElementById("input");
+    const sendButton = document.getElementById("sendButton");
+
+    function addMessage(role, content, options = []) {
+      const messageDiv = document.createElement("div");
+      messageDiv.className = `message ${role}`;
+      
+      const bubble = document.createElement("div");
+      bubble.className = "message-bubble";
+      
+      if (typeof content === 'string') {
+        bubble.textContent = content;
+      } else {
+        bubble.appendChild(content);
+      }
+      
+      messageDiv.appendChild(bubble);
+      messagesContainer.appendChild(messageDiv);
+      
+      if (options.length > 0) {
+        const optionsContainer = document.createElement("div");
+        optionsContainer.className = "options-container";
+        
+        options.forEach(option => {
+          const button = document.createElement("button");
+          button.className = "option-button";
+          button.textContent = option.text;
+          button.onclick = () => {
+            optionsContainer.remove();
+            option.action();
+          };
+          optionsContainer.appendChild(button);
+        });
+        
+        messageDiv.appendChild(optionsContainer);
+      }
+      
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      return messageDiv;
+    }
+
+    function showTypingIndicator() {
+      const typingDiv = document.createElement("div");
+      typingDiv.className = "message assistant";
+      
+      const typingIndicator = document.createElement("div");
+      typingIndicator.className = "typing-indicator";
+      
+      for (let i = 0; i < 3; i++) {
+        const dot = document.createElement("div");
+        dot.className = "typing-dot";
+        typingIndicator.appendChild(dot);
+      }
+      
+      typingDiv.appendChild(typingIndicator);
+      messagesContainer.appendChild(typingDiv);
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      
+      return typingDiv;
+    }
+
+    async function sendMessage(text) {
+      if (isTyping) return;
+      
+      isTyping = true;
+      messages.push({ role: "user", content: text });
+      addMessage("user", text);
+      
+      const typingIndicator = showTypingIndicator();
+      sendButton.disabled = true;
+      
+      try {
+        const res = await fetch(CHAT_API, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ messages, system: SYSTEM_PROMPT }),
+        });
+        
+        const data = await res.json();
+        const reply = data?.choices?.[0]?.message?.content || "Error al obtener respuesta.";
+        
+        messages.push({ role: "assistant", content: reply });
+        typingIndicator.remove();
+        addMessage("assistant", reply);
+      } catch (error) {
+        typingIndicator.remove();
+        addMessage("assistant", "Lo siento, hubo un error al conectar con el servidor. Por favor, intenta nuevamente.");
+      } finally {
+        isTyping = false;
+        sendButton.disabled = false;
+        input.focus();
+      }
+    }
+
+    function showWelcome() {
+      const welcomeDiv = document.createElement("div");
+      welcomeDiv.className = "welcome-screen";
+      
+      const icon = document.createElement("i");
+      icon.className = "fas fa-wine-glass welcome-icon";
+      
+      const title = document.createElement("h2");
+      title.className = "welcome-title";
+      title.textContent = "¡Bienvenido a tu Sommelier Virtual!";
+      
+      const subtitle = document.createElement("p");
+      subtitle.className = "welcome-subtitle";
+      subtitle.textContent = "Descubre los mejores vinos chilenos para cada ocasión";
+      
+      welcomeDiv.appendChild(icon);
+      welcomeDiv.appendChild(title);
+      welcomeDiv.appendChild(subtitle);
+      
+      messagesContainer.appendChild(welcomeDiv);
+    }
+
+    function showInitialOptions() {
+      const options = [
+        {
+          text: "🍽️ Almuerzo",
+          action: () => showMealOptions("almuerzo")
+        },
+        {
+          text: "🍷 Cena",
+          action: () => showMealOptions("cena")
+        },
+        {
+          text: "🥂 Aperitivo",
+          action: () => sendMessage("Recomiéndame un vino chileno para un aperitivo")
+        },
+        {
+          text: "🎉 Ocasión especial",
+          action: () => showSpecialOccasionOptions()
+        }
+      ];
+      
+      addMessage("assistant", "¿Para qué ocasión necesitas una recomendación?", options);
+    }
+
+    function showMealOptions(mealType) {
+      const options = [
+        {
+          text: "🥩 Carnes rojas",
+          action: () => sendMessage(`Recomiéndame un vino chileno para acompañar carnes rojas en ${mealType}`)
+        },
+        {
+          text: "🐟 Pescados",
+          action: () => sendMessage(`Recomiéndame un vino chileno para acompañar pescados en ${mealType}`)
+        },
+        {
+          text: "🍝 Pastas",
+          action: () => sendMessage(`Recomiéndame un vino chileno para acompañar pastas en ${mealType}`)
+        },
+        {
+          text: "🥗 Ensaladas",
+          action: () => sendMessage(`Recomiéndame un vino chileno para acompañar ensaladas en ${mealType}`)
+        }
+      ];
+      
+      addMessage("assistant", `Perfecto para ${mealType}, ¿qué tipo de plato vas a servir?`, options);
+    }
+
+    function showSpecialOccasionOptions() {
+      const options = [
+        {
+          text: "🎂 Cumpleaños",
+          action: () => sendMessage("Recomiéndame un vino chileno especial para un cumpleaños")
+        },
+        {
+          text: "💕 Cena romántica",
+          action: () => sendMessage("Recomiéndame un vino chileno para una cena romántica")
+        },
+        {
+          text: "🎁 Regalo",
+          action: () => sendMessage("Recomiéndame un vino chileno especial para regalar")
+        },
+        {
+          text: "🏆 Celebración importante",
+          action: () => sendMessage("Recomiéndame un vino chileno premium para una celebración importante")
+        }
+      ];
+      
+      addMessage("assistant", "¡Qué bien! ¿Qué tipo de ocasión especial es?", options);
+    }
+
+    // Inicialización
+    document.addEventListener('DOMContentLoaded', () => {
+      showWelcome();
+      setTimeout(() => {
+        document.querySelector('.welcome-screen').remove();
+        showInitialOptions();
+      }, 2000);
+      
+      input.focus();
+    });
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const text = input.value.trim();
+      if (!text || isTyping) return;
+      input.value = "";
+      sendMessage(text);
+    });
+
+    // Mejorar la experiencia de entrada
+    input.addEventListener("keypress", (e) => {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        form.dispatchEvent(new Event("submit"));
+      }
+    });
+  </script>
+</body>
+</html>
