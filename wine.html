@@ -307,6 +307,24 @@
       box-shadow: 0 14px 24px rgba(0, 0, 0, 0.35);
     }
 
+    .wine-side-image {
+      width: 60px;
+      border-radius: 10px;
+      margin-left: 10px;
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
+      transition: transform 0.25s ease;
+    }
+
+    .wine-side-image:hover {
+      transform: scale(1.05);
+    }
+
+    .wine-with-image {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
     .typing-indicator {
       display: flex;
       align-items: center;
@@ -1215,16 +1233,52 @@ if (name === "send") {
         }
       });
 
-function addMessage(role, content, options = []) {
+async function fetchWineImage(wineName) {
+  try {
+    const query = encodeURIComponent(wineName + " site:vivino.com bottle");
+    const response = await fetch(
+      `https://api.duckduckgo.com/?q=${query}&format=json&no_redirect=1`
+    );
+    const data = await response.json();
+    const results = data?.RelatedTopics || [];
+    const img = results.find((r) => r.Icon?.URL)?.Icon?.URL;
+    return img || null;
+  } catch {
+    return null;
+  }
+}
+
+async function addMessage(role, content, options = []) {
   const messageDiv = document.createElement("div");
   messageDiv.className = `message ${role}`;
 
+  const wineMatches = Array.from(
+    content.matchAll(/<span class="wine-name">(.*?)<\/span>/g)
+  ).map((m) => m[1]);
+
   const bubble = document.createElement("div");
   bubble.className = "message-bubble";
-  bubble.innerHTML = content; // ✅ cambia textContent por innerHTML
+  bubble.innerHTML = content;
 
-  messageDiv.appendChild(bubble);
-  messagesContainer.appendChild(messageDiv);
+  if (role === "assistant" && wineMatches.length > 0) {
+    const wrapper = document.createElement("div");
+    wrapper.className = "wine-with-image";
+    wrapper.appendChild(bubble);
+
+    fetchWineImage(wineMatches[0]).then((imgUrl) => {
+      if (imgUrl) {
+        const img = document.createElement("img");
+        img.src = imgUrl;
+        img.alt = wineMatches[0];
+        img.className = "wine-side-image";
+        wrapper.appendChild(img);
+      }
+    });
+
+    messageDiv.appendChild(wrapper);
+  } else {
+    messageDiv.appendChild(bubble);
+  }
 
   if (options.length > 0) {
     const optionsContainer = document.createElement("div");
@@ -1245,6 +1299,7 @@ function addMessage(role, content, options = []) {
     messageDiv.appendChild(optionsContainer);
   }
 
+  messagesContainer.appendChild(messageDiv);
   messagesContainer.scrollTop = messagesContainer.scrollHeight;
   return messageDiv;
 }
