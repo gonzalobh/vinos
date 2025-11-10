@@ -583,14 +583,102 @@
     
     
     
-    .wine-name {
-  color: #7d3241;
-  font-weight: 600;
-}
+    .wine-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(12px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+      color: #1f1b16;
+    }
 
-body[data-theme="dark"] .wine-name {
-  color: #e6748a;
-}
+    body[data-theme="dark"] .wine-modal {
+      background: rgba(26, 26, 26, 0.85);
+      color: #eee;
+    }
+
+    .wine-modal.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .wine-card {
+      background: var(--panel-solid);
+      color: inherit;
+      border-radius: 24px;
+      padding: 28px 32px;
+      max-width: 420px;
+      width: 90%;
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.25);
+      text-align: left;
+      position: relative;
+      animation: fadeIn 0.4s ease;
+    }
+
+    .wine-card p {
+      margin: 10px 0;
+      line-height: 1.5;
+    }
+
+    .wine-card a {
+      color: var(--accent);
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .wine-card a:hover {
+      text-decoration: underline;
+    }
+
+    .wine-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      margin-bottom: 12px;
+      color: #7d3241;
+    }
+
+    body[data-theme="dark"] .wine-title {
+      color: #e6748a;
+    }
+
+    .wine-close {
+      position: absolute;
+      top: 14px;
+      right: 18px;
+      background: none;
+      border: none;
+      font-size: 22px;
+      color: var(--muted);
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .wine-close:hover {
+      transform: scale(1.2);
+      color: var(--accent);
+    }
+
+    .wine-name {
+      color: #7d3241;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    body[data-theme="dark"] .wine-name {
+      color: #e6748a;
+    }
+
+    .wine-name:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
 
   </style>
   <base target="_blank">
@@ -890,6 +978,242 @@ if (name === "send") {
 
       setupSpeechRecognition();
       startChatExperience();
+
+      const WINE_LIBRARY = {
+        "Château Margaux": {
+          region: "Bordeaux",
+          cepage: "Cabernet Sauvignon, Merlot",
+          aromes: "cassis, violette, bois noble",
+          bouche: "tanins soyeux, texture élégante",
+          temperature: "16-18 °C",
+          prix: "~250 €",
+        },
+        "Chablis Premier Cru": {
+          region: "Bourgogne",
+          cepage: "Chardonnay",
+          aromes: "agrumes, fleur blanche, pierre à fusil",
+          bouche: "vif, minéral, finale saline",
+          temperature: "10-12 °C",
+          prix: "~35 €",
+        },
+        "Côtes du Rhône": {
+          region: "Vallée du Rhône",
+          cepage: "Grenache, Syrah, Mourvèdre",
+          aromes: "fruits noirs, épices douces, garrigue",
+          bouche: "gourmand, ample, tanins souples",
+          temperature: "15-17 °C",
+          prix: "~18 €",
+        },
+        "Champagne Brut": {
+          region: "Champagne",
+          cepage: "Pinot Noir, Chardonnay, Meunier",
+          aromes: "pomme verte, brioche, agrumes",
+          bouche: "bulles fines, fraîcheur tonique",
+          temperature: "8-10 °C",
+          prix: "~40 €",
+        },
+        "Rosé de Provence": {
+          region: "Provence",
+          cepage: "Grenache, Cinsault, Syrah",
+          aromes: "fruits rouges frais, pêche blanche, herbes",
+          bouche: "léger, désaltérant, finale délicate",
+          temperature: "8-10 °C",
+          prix: "~15 €",
+        },
+      };
+
+      const GENERIC_WINE_PROFILE = {
+        region: "France",
+        cepage: "Assemblage traditionnel",
+        aromes: "fruits mûrs, notes florales et touche d'épices",
+        bouche: "équilibrée, finale harmonieuse",
+        temperature: "Servir entre 10 et 18 °C selon le style",
+        prix: "Consultez Vivino pour les prix",
+      };
+
+      let activeWineModal = null;
+      let activeKeydownHandler = null;
+
+      function createVivinoLink(wineName) {
+        const link = document.createElement("a");
+        link.href = `https://www.vivino.com/search?q=${encodeURIComponent(wineName)}`;
+        link.target = "_blank";
+        link.rel = "noopener";
+        link.textContent = "Voir sur Vivino →";
+        return link;
+      }
+
+      function closeWineModal() {
+        if (!activeWineModal) return;
+        activeWineModal.classList.remove("active");
+        const modalToRemove = activeWineModal;
+        const removeModal = () => {
+          modalToRemove.remove();
+        };
+        modalToRemove.addEventListener("transitionend", removeModal, { once: true });
+        setTimeout(removeModal, 420);
+        if (activeKeydownHandler) {
+          document.removeEventListener("keydown", activeKeydownHandler);
+          activeKeydownHandler = null;
+        }
+        activeWineModal = null;
+      }
+
+      function openWineModal(wineName) {
+        closeWineModal();
+
+        const details = WINE_LIBRARY[wineName] || GENERIC_WINE_PROFILE;
+        const overlay = document.createElement("div");
+        overlay.className = "wine-modal";
+        overlay.setAttribute("role", "dialog");
+        overlay.setAttribute("aria-modal", "true");
+        overlay.setAttribute("aria-label", `Détails de dégustation pour ${wineName}`);
+
+        const card = document.createElement("div");
+        card.className = "wine-card";
+        card.setAttribute("tabindex", "-1");
+
+        const closeButton = document.createElement("button");
+        closeButton.className = "wine-close";
+        closeButton.setAttribute("type", "button");
+        closeButton.setAttribute("aria-label", "Fermer la fiche du vin");
+        closeButton.textContent = "×";
+
+        const title = document.createElement("h2");
+        title.className = "wine-title";
+        title.textContent = wineName;
+
+        const infoLines = [
+          { label: "Région", value: details.region },
+          { label: "Cépage", value: details.cepage },
+          { label: "Arômes", value: details.aromes },
+          { label: "Bouche", value: details.bouche },
+          { label: "Température", value: details.temperature },
+          { label: "Prix moyen", value: details.prix },
+        ];
+
+        card.appendChild(closeButton);
+        card.appendChild(title);
+
+        infoLines.forEach(({ label, value }) => {
+          const paragraph = document.createElement("p");
+          paragraph.innerHTML = `<b>${label} :</b> ${value}`;
+          card.appendChild(paragraph);
+        });
+
+        const linkParagraph = document.createElement("p");
+        const vivinoLink = createVivinoLink(wineName);
+        linkParagraph.appendChild(vivinoLink);
+        card.appendChild(linkParagraph);
+
+        overlay.appendChild(card);
+        document.body.appendChild(overlay);
+
+        requestAnimationFrame(() => {
+          overlay.classList.add("active");
+          card.focus();
+        });
+
+        overlay.addEventListener("click", (event) => {
+          if (event.target === overlay) {
+            closeWineModal();
+          }
+        });
+
+        closeButton.addEventListener("click", closeWineModal);
+
+        activeKeydownHandler = (event) => {
+          if (event.key === "Escape" || event.key === "Esc") {
+            closeWineModal();
+          }
+        };
+
+        document.addEventListener("keydown", activeKeydownHandler);
+        activeWineModal = overlay;
+      }
+
+      function enhanceWineTrigger(element) {
+        if (!element) return null;
+        let trigger = element;
+        if (!(trigger instanceof HTMLAnchorElement)) {
+          const anchor = document.createElement("a");
+          anchor.className = element.className;
+          Array.from(element.attributes).forEach((attr) => {
+            if (attr.name !== "class") {
+              anchor.setAttribute(attr.name, attr.value);
+            }
+          });
+          anchor.innerHTML = element.innerHTML;
+          element.replaceWith(anchor);
+          trigger = anchor;
+        }
+
+        const wineName = (trigger.dataset.wine || trigger.textContent || "").trim();
+        if (wineName) {
+          trigger.dataset.wine = wineName;
+        }
+        trigger.setAttribute("href", "#");
+        trigger.setAttribute("target", "_self");
+        trigger.setAttribute("role", "button");
+        trigger.setAttribute("tabindex", "0");
+        return trigger;
+      }
+
+      function enhanceWineNames(root = document) {
+        const elements = root.querySelectorAll?.(".wine-name");
+        elements?.forEach((node) => {
+          enhanceWineTrigger(node);
+        });
+      }
+
+      enhanceWineNames();
+
+      const wineNameObserver =
+        typeof MutationObserver !== "undefined"
+          ? new MutationObserver((mutations) => {
+              mutations.forEach((mutation) => {
+                mutation.addedNodes.forEach((node) => {
+                  if (!(node instanceof HTMLElement)) return;
+                  if (node.classList.contains("wine-name")) {
+                    enhanceWineTrigger(node);
+                  } else {
+                    enhanceWineNames(node);
+                  }
+                });
+              });
+            })
+          : null;
+
+      if (wineNameObserver && messagesContainer) {
+        wineNameObserver.observe(messagesContainer, { childList: true, subtree: true });
+      }
+
+      function handleWineTriggerEvent(event) {
+        const trigger = event.target.closest?.(".wine-name");
+        if (!trigger) return;
+        const wineName = (trigger.dataset.wine || trigger.textContent || "").trim();
+        if (!wineName) return;
+        event.preventDefault();
+        openWineModal(wineName);
+      }
+
+      document.addEventListener("click", handleWineTriggerEvent);
+
+      document.addEventListener("keydown", (event) => {
+        const isActivationKey =
+          event.key === "Enter" ||
+          event.key === " " ||
+          event.key === "Spacebar" ||
+          event.code === "Space";
+        if (!isActivationKey) return;
+        const trigger = event.target.closest?.(".wine-name");
+        if (!trigger) return;
+        event.preventDefault();
+        const wineName = (trigger.dataset.wine || trigger.textContent || "").trim();
+        if (wineName) {
+          openWineModal(wineName);
+        }
+      });
 
 function addMessage(role, content, options = []) {
   const messageDiv = document.createElement("div");
