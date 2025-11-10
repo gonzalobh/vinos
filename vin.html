@@ -314,7 +314,9 @@
       cursor: pointer;
       transition: transform 0.35s var(--transition-soft), border-color 0.4s ease, background 0.6s ease, color 0.6s ease;
       box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
-      min-width: 172px;
+      width: auto;
+      min-width: 0;
+      white-space: nowrap;
     }
 
     .language-select select:hover {
@@ -1469,6 +1471,175 @@ Après chaque réponse, ajoute toujours une question de relance naturelle et él
 Utilise des balises HTML : par exemple, <br><b>🍷 Souhaitez-vous un vin plus corsé ou plus léger ?</b>
 Ne répète pas toujours le même type de question : varie ton ton et ton intention selon le contexte, comme le ferait un vrai sommelier attentif.`.trim(),
         speechRecognitionLocale: "fr-FR",
+      },
+      de: {
+        htmlLang: "de",
+        title: "Französischer Weinsommelier · Tomos.bot",
+        headerTitle: "Französischer Sommelier",
+        headerSubtitle: "von Tomos.bot",
+        placeholder: "Frag mich nach einem französischen Wein...",
+        micAria: "Spracherkennung aktivieren",
+        micUnavailable: "Die Spracherkennung ist in diesem Browser nicht verfügbar.",
+        themeToggle: {
+          toLight: "Zurück zum hellen Modus wechseln",
+          toDark: "Dunkelmodus aktivieren",
+        },
+        languageSelectorLabel: "Sprache auswählen",
+        welcome: {
+          title: "Willkommen bei deinem virtuellen Sommelier!",
+          subtitle: "Entdecke bemerkenswerte französische Weine für jeden Anlass.",
+        },
+        initialQuestion: "Für welchen Anlass hättest du gern eine Empfehlung?",
+        initialOptions: {
+          lunch: "🍽️ Mittagessen",
+          dinner: "🍷 Abendessen",
+          aperitif: "🥂 Aperitif",
+          special: "🎉 Besonderer Anlass",
+        },
+        prompts: {
+          aperitif: "Empfiehl mir einen französischen Wein für einen Aperitif.",
+        },
+        mealQuestion: (mealLabel) =>
+          `Perfekt für ${mealLabel}, welches Gericht wirst du servieren?`,
+        mealTypes: {
+          lunch: "Mittagessen",
+          dinner: "Abendessen",
+        },
+        mealOptions: {
+          redMeat: {
+            label: "🥩 Rotes Fleisch",
+            prompt: (mealLabel) =>
+              `Empfiehl einen französischen Wein, der zu rotem Fleisch beim ${mealLabel} passt.`,
+          },
+          fish: {
+            label: "🐟 Fisch",
+            prompt: (mealLabel) =>
+              `Empfiehl einen französischen Wein, der zu Fisch beim ${mealLabel} passt.`,
+          },
+          pasta: {
+            label: "🍝 Pasta",
+            prompt: (mealLabel) =>
+              `Empfiehl einen französischen Wein, der zu Pasta beim ${mealLabel} passt.`,
+          },
+          salad: {
+            label: "🥗 Salate",
+            prompt: (mealLabel) =>
+              `Empfiehl einen französischen Wein, der zu Salaten beim ${mealLabel} passt.`,
+          },
+        },
+        specialQuestion:
+          "Großartig! Für welche Art von besonderem Anlass hättest du gern einen Rat?",
+        specialOptions: {
+          birthday: {
+            label: "🎂 Geburtstag",
+            prompt: "Empfiehl einen außergewöhnlichen französischen Wein für einen Geburtstag.",
+          },
+          romantic: {
+            label: "💕 Romantisches Dinner",
+            prompt: "Empfiehl einen französischen Wein für ein romantisches Dinner.",
+          },
+          gift: {
+            label: "🎁 Geschenk",
+            prompt: "Empfiehl einen unvergesslichen französischen Wein zum Verschenken.",
+          },
+          celebration: {
+            label: "🏆 Große Feier",
+            prompt: "Empfiehl einen prestigeträchtigen französischen Wein für eine große Feier.",
+          },
+        },
+        errorMessages: {
+          network:
+            "Es tut mir leid, beim Verbinden mit dem Server ist ein Fehler aufgetreten. Bitte versuche es erneut.",
+          fetch: "Fehler beim Abrufen der Antwort.",
+        },
+        vivino: "Auf Vivino ansehen →",
+        modalAriaLabel: (wineName) => `Verkostungsnotizen für ${wineName}`,
+        modalCloseAria: "Weinkarte schließen",
+        modalLabels: {
+          region: "Region",
+          cepage: "Rebsorte",
+          aromes: "Aromen",
+          bouche: "Gaumen",
+          temperature: "Serviertemperatur",
+          prix: "Durchschnittspreis",
+        },
+        modalSeparator: ":",
+        modalSeparatorTrailingSpace: " ",
+        genericWineProfile: {
+          region: "Frankreich",
+          cepage: "Traditionelle Cuvée",
+          aromes: "reife Frucht, florale Noten, Hauch von Gewürz",
+          bouche: "ausgewogen, harmonischer Abgang",
+          temperature: "Je nach Stil zwischen 10 und 18 °C servieren",
+          prix: "Preise auf Vivino prüfen",
+        },
+        wineDetails: {
+          "Château Margaux": {
+            region: "Bordeaux",
+            cepage: "Cabernet Sauvignon, Merlot",
+            aromes: "schwarze Johannisbeere, Veilchen, edles Eichenholz",
+            bouche: "seidige Tannine, elegante Textur",
+            temperature: "16-18 °C",
+            prix: "~€250",
+          },
+          "Chablis Premier Cru": {
+            region: "Burgund",
+            cepage: "Chardonnay",
+            aromes: "Zitrus, weiße Blüte, Feuerstein",
+            bouche: "lebhaft, mineralisch, salziger Abgang",
+            temperature: "10-12 °C",
+            prix: "~€35",
+          },
+          "Côtes du Rhône": {
+            region: "Rhône-Tal",
+            cepage: "Grenache, Syrah, Mourvèdre",
+            aromes: "dunkle Früchte, süße Gewürze, Kräuter der Garrigue",
+            bouche: "generös, vollmundig, geschmeidige Tannine",
+            temperature: "15-17 °C",
+            prix: "~€18",
+          },
+          "Champagne Brut": {
+            region: "Champagne",
+            cepage: "Pinot Noir, Chardonnay, Meunier",
+            aromes: "grüner Apfel, Brioche, Zitrus",
+            bouche: "feine Perlage, lebendige Frische",
+            temperature: "8-10 °C",
+            prix: "~€40",
+          },
+          "Rosé de Provence": {
+            region: "Provence",
+            cepage: "Grenache, Cinsault, Syrah",
+            aromes: "frische rote Beeren, weißer Pfirsich, Kräuter",
+            bouche: "leicht, erfrischend, zarter Abgang",
+            temperature: "8-10 °C",
+            prix: "~€15",
+          },
+        },
+        systemPrompt: `Du bist "Sommelier Tomos.bot", ein zeitgenössischer Pariser Sommelier, der für seinen sicheren Geschmack und seine natürliche Eleganz bekannt ist.
+ Du sprichst ausschließlich auf Deutsch, in einem modernen, fließenden und warmen Stil – präzise, aber niemals akademisch.
+ Deine Antworten sind kurz (höchstens zwei oder drei Sätze), mit einem poetischen Touch, als würdest du einen Gast an einem Michelin-Stern-Tisch in Paris beraten.
+
+ Du empfiehlst ausschließlich authentische und renommierte französische Weine.
+ Erwähne immer:
+ – die Region (Bordeaux, Burgund, Loire, Rhône, Elsass, Champagne, Provence usw.),
+ – die Hauptrebsorte,
+ – und eine kurze sensorische Beschreibung: Aromen, Textur oder Eindruck ("frisch und mineralisch", "samtige Tannine", "rund und elegant am Gaumen").
+
+ Passe deine Ratschläge stets dem Kontext an: Art des Gerichts, Tageszeit, Saison oder Anlass (Mittagessen, Abendessen, Aperitif, romantischer Moment, Feier ...).
+ Schlage nur selten mehr als zwei oder drei Optionen vor, jede in einem Satz erklärt.
+ Wenn der Wein prestigeträchtig ist, deute subtil auf seinen Ruf oder Stil hin, ohne zu übertreiben.
+
+ Erfinde niemals imaginäre Weine: Nenne nur echte französische Appellationen oder Weingüter.
+ Wenn du einen Wein, eine Appellation oder ein Weingut erwähnst, setze den Namen immer in das HTML-Tag <span class="wine-name"></span>, damit er visuell hervorsticht.
+ Beispiele: <span class="wine-name">Château Margaux</span>, <span class="wine-name">Chablis Premier Cru</span>, <span class="wine-name">Côtes du Rhône</span>.
+
+ Dein Ton muss das Vertrauen, die Leidenschaft und die Schlichtheit eines großen modernen Pariser Sommeliers ausstrahlen.
+
+ Füge nach jeder Antwort stets eine natürliche und elegante Rückfrage hinzu, um das Gespräch fortzuführen.
+ 👉 Diese Frage muss immer in einer **neuen Zeile** (mit einem Zeilenumbruch davor) und in **fett markiertem HTML** (umgeben von <b>...</b>) erscheinen, mit einem dezenten Emoji (🍷, 🍇, 🥂, 🌿 oder 💫).
+ Verwende HTML-Tags: zum Beispiel <br><b>🍷 Möchtest du etwas Kräftigeres oder Leichteres?</b>
+ Wiederhole nicht immer dieselbe Frage: Variiere Ton und Intention je nach Kontext, wie es ein aufmerksamer Sommelier tun würde.`.trim(),
+        speechRecognitionLocale: "de-DE",
       },
       pt: {
         htmlLang: "pt",
