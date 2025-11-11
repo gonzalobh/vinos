@@ -298,6 +298,7 @@
       box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25), 0 12px 26px rgba(0, 0, 0, 0.45);
       position: relative;
       overflow: hidden;
+      z-index: 0;
     }
 
     .header-icon::after {
@@ -308,6 +309,7 @@
       background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.25), transparent 55%);
       opacity: 0.45;
       pointer-events: none;
+      z-index: -1;
     }
 
     body[data-theme="light"] .header-icon {
@@ -489,9 +491,12 @@
       z-index: 1000;
     }
 
-    .floating-reset svg {
-      width: 24px;
-      height: 24px;
+    .floating-reset .emoji-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      line-height: 1;
       transition: transform 0.6s ease, filter 0.45s ease;
     }
 
@@ -508,7 +513,7 @@
       outline-offset: 4px;
     }
 
-    .floating-reset.spinning svg {
+    .floating-reset.spinning .emoji-icon {
       transform: rotate(-360deg);
     }
 
@@ -801,9 +806,16 @@
       color: var(--color-ink);
     }
 
-    .icon svg,
-    .header-icon svg {
-      display: block;
+    .icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      line-height: 1;
+    }
+
+    .header-icon {
+      font-size: 28px;
     }
 
     .welcome-screen {
@@ -827,6 +839,7 @@
       justify-content: center;
       background: radial-gradient(circle at 40% 30%, rgba(197, 163, 79, 0.45), transparent 70%);
       color: var(--color-accent-soft);
+      font-size: 36px;
     }
 
     .welcome-title {
@@ -1077,7 +1090,7 @@
       .mic-button,
       .send-button,
       .floating-reset,
-      .floating-reset svg {
+      .floating-reset .emoji-icon {
         transition: none !important;
         animation: none !important;
       }
@@ -1089,7 +1102,7 @@
   <div class="chat-container">
     <header class="header">
       <div class="header-content">
-        <span class="header-icon" id="headerIcon"></span>
+        <span class="header-icon" id="headerIcon" aria-hidden="true">🍷</span>
         <div class="header-titles">
           <h1 class="header-title">
             <span class="header-flag" aria-hidden="true">🇨🇱</span>
@@ -1099,7 +1112,7 @@
       </div>
       <div class="header-actions">
         <button type="button" class="icon-button" id="themeToggle" aria-label="Activar modo nocturno">
-          <span class="icon" id="themeIcon"></span>
+          <span class="icon" id="themeIcon" aria-hidden="true">🌙</span>
         </button>
       </div>
     </header>
@@ -1107,23 +1120,7 @@
     <main class="messages-container" id="messages"></main>
 
     <button type="button" id="resetChatBtn" class="floating-reset" aria-label="Reiniciar la conversación">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        class="lucide lucide-refresh-ccw-icon lucide-refresh-ccw"
-      >
-        <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
-        <path d="M3 3v5h5" />
-        <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
-        <path d="M16 16h5v5" />
-      </svg>
+      <span class="emoji-icon" aria-hidden="true">🔄</span>
     </button>
 
     <form class="input-container" id="form">
@@ -1137,17 +1134,15 @@
         />
       </div>
       <button type="button" class="mic-button" id="micButton" aria-label="Activar dictado por voz">
-        <span class="icon" id="micIcon"></span>
+        <span class="icon" id="micIcon" aria-hidden="true">🎤</span>
       </button>
       <button type="submit" class="send-button" id="sendButton">
-        <span class="icon" id="sendIcon"></span>
+        <span class="icon" id="sendIcon" aria-hidden="true">📨</span>
       </button>
     </form>
   </div>
 
-  <!-- Carga de Lucide Icons -->
-    <script type="module">
-    import { createIcons, icons } from "https://cdn.jsdelivr.net/npm/lucide@latest/+esm";
+  <script type="module">
 
     const initialOptions = {
       ES: {
@@ -1490,10 +1485,7 @@ Examples:
     let initialOptionsContainer = null;
     let initialOptionsExpanded = false;
 
-    document.addEventListener("DOMContentLoaded", () => {
-      createIcons({ icons });
-      initializeApp();
-    });
+    document.addEventListener("DOMContentLoaded", initializeApp);
 
     function getTranslations() {
       return TRANSLATIONS[currentLanguage] || TRANSLATIONS.es;
@@ -1520,9 +1512,10 @@ Examples:
       headerIcon = document.getElementById("headerIcon");
       resetChatButton = document.getElementById("resetChatBtn");
 
-      renderIcon(headerIcon, "wine", { width: 32, height: 32, strokeWidth: 1.4 });
-      renderIcon(micIcon, "mic", { width: 20, height: 20, strokeWidth: 1.6 });
-      renderIcon(sendIcon, "send", { width: 20, height: 20, strokeWidth: 1.6 });
+      setEmoji(headerIcon, "🍷");
+      setEmoji(micIcon, "🎤");
+      setEmoji(sendIcon, "📨");
+      setEmoji(themeIcon, "🌙");
 
       initializeLanguage();
       initializeTheme();
@@ -1638,8 +1631,8 @@ Examples:
           localStorage.setItem(THEME_STORAGE_KEY, normalized);
         } catch (error) {}
       }
-      const iconName = normalized === "dark" ? "sun" : "moon";
-      renderIcon(themeIcon, iconName, { width: 22, height: 22, strokeWidth: 1.6 });
+      const emoji = normalized === "dark" ? "🌙" : "☀️";
+      setEmoji(themeIcon, emoji);
       if (themeToggleButton) {
         const t = getTranslations();
         const label = normalized === "dark" ? t.themeToggle.toLight : t.themeToggle.toDark;
@@ -1693,11 +1686,13 @@ Examples:
       if (!SpeechRecognition) {
         micButton.disabled = true;
         micButton.setAttribute("title", getTranslations().micUnavailable);
+        setEmoji(micIcon, "🔇");
         return;
       }
 
       micButton.disabled = false;
       micButton.removeAttribute("title");
+      setEmoji(micIcon, "🎤");
 
       if (!recognition) {
         recognition = new SpeechRecognition();
@@ -1707,19 +1702,19 @@ Examples:
         recognition.addEventListener("start", () => {
           isRecording = true;
           micButton.classList.add("recording");
-          renderIcon(micIcon, "mic-off", { width: 20, height: 20, strokeWidth: 1.8 });
+          setEmoji(micIcon, "🔴");
         });
 
         recognition.addEventListener("end", () => {
           isRecording = false;
           micButton.classList.remove("recording");
-          renderIcon(micIcon, "mic", { width: 20, height: 20, strokeWidth: 1.6 });
+          setEmoji(micIcon, "🎤");
         });
 
         recognition.addEventListener("error", () => {
           isRecording = false;
           micButton.classList.remove("recording");
-          renderIcon(micIcon, "mic", { width: 20, height: 20, strokeWidth: 1.6 });
+          setEmoji(micIcon, "🎤");
         });
 
         recognition.addEventListener("result", (event) => {
@@ -1747,69 +1742,9 @@ Examples:
       recognition.lang = getTranslations().speechRecognitionLocale;
     }
 
-    function renderIcon(element, name, options = {}) {
+    function setEmoji(element, emoji) {
       if (!element) return;
-
-      element.innerHTML = "";
-
-      const iconSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-      iconSvg.setAttribute("width", options.width || 24);
-      iconSvg.setAttribute("height", options.height || 24);
-      iconSvg.setAttribute("viewBox", "0 0 24 24");
-      iconSvg.setAttribute("fill", "none");
-      iconSvg.setAttribute("stroke", "currentColor");
-      iconSvg.setAttribute("stroke-width", options.strokeWidth || 2);
-      iconSvg.setAttribute("stroke-linecap", "round");
-      iconSvg.setAttribute("stroke-linejoin", "round");
-
-      const iconPaths = {
-        wine: [
-          "M8 22h8",
-          "M7 10h10",
-          "M12 15v7",
-          "M12 15a5 5 0 0 0 5-5c0-2-.5-4-2-8H9c-1.5 4-2 6-2 8a5 5 0 0 0 5 5Z",
-        ],
-        mic: [
-          "M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z",
-          "M19 10v2a7 7 0 0 1-14 0v-2",
-          "M12 19v3",
-        ],
-        "mic-off": [
-          "M2 2l20 20",
-          "M18.89 13.23A7.12 7.12 0 0 0 19 12v-2",
-          "M5 10v2a7 7 0 0 0 12 5",
-          "M15 9.34V5a3 3 0 0 0-5.68-1.33",
-          "M9 9v3a3 3 0 0 0 5.12 2.12",
-          "M12 19v3",
-        ],
-        send: [
-          "M22 2L11 13",
-          "M22 2l-7 20-4-9-9-4 20-7z",
-        ],
-        moon: [
-          "M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z",
-        ],
-        sun: [
-          "M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0",
-          "M3 12h1m8 -9v1m8 8h1m-9 8v1M5.6 5.6l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7",
-        ],
-        sparkles: [
-          "M9.937 15.5A2 2 0 0 0 8.5 14.063l-6 -3.25 3.25 -6A2 2 0 0 0 9.937 3.5l6 3.25 -3.25 6a2 2 0 0 0 -1.437 2.75",
-          "M20 3v4",
-          "M22 5h-4",
-          "M14.062 14.5a2 2 0 0 0 -1.437 -1.437l-6 -3.25 3.25 -6a2 2 0 0 0 1.437 -1.437l6 3.25 -3.25 6a2 2 0 0 0 1.437 1.437l6 3.25 -3.25 6a2 2 0 0 0 -1.437 1.437",
-        ],
-      };
-
-      if (iconPaths[name]) {
-        iconPaths[name].forEach((pathData) => {
-          const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-          path.setAttribute("d", pathData);
-          iconSvg.appendChild(path);
-        });
-      }
-
-      element.appendChild(iconSvg);
+      element.textContent = emoji;
     }
 
     function startChatExperience() {
@@ -1909,7 +1844,8 @@ Examples:
 
       const icon = document.createElement("span");
       icon.className = "welcome-icon";
-      renderIcon(icon, "wine", { width: 48, height: 48, strokeWidth: 1 });
+      setEmoji(icon, "🍷");
+      icon.setAttribute("aria-hidden", "true");
 
       const title = document.createElement("h2");
       title.className = "welcome-title";
