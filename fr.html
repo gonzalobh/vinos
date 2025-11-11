@@ -1110,6 +1110,15 @@ Ejemplo:
           dinner: "🍷 Dinner",
           aperitif: "🥂 Aperitif",
           special: "🎉 Special occasion",
+          brunch: "🌅 Elegant brunch",
+          picnic: "🌄 Countryside picnic",
+          friends: "🔥 Evening with friends",
+          terrace: "🌙 Dinner on the terrace",
+          music: "🎶 Musical tasting",
+          autumn: "🍁 Autumn meal",
+          seaside: "⛱️ Seaside holiday",
+          cozy: "🏠 Cozy evening",
+          surprise: "🎁 Surprise me",
         },
         prompts: {
           aperitif: "Suggest a French wine for an aperitif.",
@@ -1261,6 +1270,15 @@ Ejemplo:
           dinner: "🍷 Cena",
           aperitif: "🥂 Aperitivo",
           special: "🎉 Ocasión especial",
+          brunch: "🌅 Brunch elegante",
+          picnic: "🌄 Picnic campestre",
+          friends: "🔥 Noche entre amigos",
+          terrace: "🌙 Cena en terraza",
+          music: "🎶 Degustación con música",
+          autumn: "🍁 Comida de otoño",
+          seaside: "⛱️ Vacaciones junto al mar",
+          cozy: "🏠 Noche acogedora",
+          surprise: "🎁 Sorpréndeme",
         },
         prompts: {
           aperitif: "Sugiéreme un vino francés para un aperitivo.",
@@ -1412,6 +1430,15 @@ Ejemplo:
           dinner: "🍷 Dîner",
           aperitif: "🥂 Apéritif",
           special: "🎉 Occasion spéciale",
+          brunch: "🌅 Brunch élégant",
+          picnic: "🌄 Pique-nique champêtre",
+          friends: "🔥 Soirée entre amis",
+          terrace: "🌙 Dîner en terrasse",
+          music: "🎶 Dégustation musicale",
+          autumn: "🍁 Repas d’automne",
+          seaside: "⛱️ Vacances au bord de mer",
+          cozy: "🏠 Soir cocooning",
+          surprise: "🎁 Surprends-moi",
         },
         prompts: {
           aperitif: "Suggère-moi un vin français pour un apéritif.",
@@ -1563,6 +1590,15 @@ Ejemplo:
           dinner: "🍷 Abendessen",
           aperitif: "🥂 Aperitif",
           special: "🎉 Besonderer Anlass",
+          brunch: "🌅 Eleganter Brunch",
+          picnic: "🌄 Landpicknick",
+          friends: "🔥 Abend mit Freunden",
+          terrace: "🌙 Abendessen auf der Terrasse",
+          music: "🎶 Degustation mit Musik",
+          autumn: "🍁 Herbstliches Menü",
+          seaside: "⛱️ Urlaub am Meer",
+          cozy: "🏠 Gemütlicher Abend",
+          surprise: "🎁 Überrasch mich",
         },
         prompts: {
           aperitif: "Empfiehl mir einen französischen Wein für einen Aperitif.",
@@ -1707,6 +1743,15 @@ Ejemplo:
           dinner: "🍷 Jantar",
           aperitif: "🥂 Aperitivo",
           special: "🎉 Ocasião especial",
+          brunch: "🌅 Brunch elegante",
+          picnic: "🌄 Piquenique no campo",
+          friends: "🔥 Noite entre amigos",
+          terrace: "🌙 Jantar na varanda",
+          music: "🎶 Degustação com música",
+          autumn: "🍁 Refeição de outono",
+          seaside: "⛱️ Férias à beira-mar",
+          cozy: "🏠 Noite aconchegante",
+          surprise: "🎁 Surpreenda-me",
         },
         prompts: {
           aperitif: "Indique um vinho francês para um aperitivo.",
@@ -1851,6 +1896,15 @@ Ejemplo:
           dinner: "🍷 Kolacja",
           aperitif: "🥂 Aperitif",
           special: "🎉 Specjalna okazja",
+          brunch: "🌅 Elegancki brunch",
+          picnic: "🌄 Piknik za miastem",
+          friends: "🔥 Wieczór ze znajomymi",
+          terrace: "🌙 Kolacja na tarasie",
+          music: "🎶 Degustacja z muzyką",
+          autumn: "🍁 Jesienny posiłek",
+          seaside: "⛱️ Wakacje nad morzem",
+          cozy: "🏠 Przytulny wieczór",
+          surprise: "🎁 Zaskocz mnie",
         },
         prompts: {
           aperitif: "Poleć mi francuskie wino na aperitif.",
@@ -1995,6 +2049,15 @@ Ejemplo:
           dinner: "🍷 晚餐",
           aperitif: "🥂 开胃酒",
           special: "🎉 特别场合",
+          brunch: "🌅 早午餐",
+          picnic: "🌄 野餐",
+          friends: "🔥 与朋友聚会",
+          terrace: "🌙 露台晚餐",
+          music: "🎶 音乐品酒会",
+          autumn: "🍁 秋日餐会",
+          seaside: "⛱️ 海边假期",
+          cozy: "🏠 温馨夜晚",
+          surprise: "🎁 给我惊喜",
         },
         prompts: {
           aperitif: "请为开胃酒推荐一款法国葡萄酒。",
@@ -2502,26 +2565,62 @@ Ejemplo:
 
     function showInitialOptions() {
       const t = getTranslations();
-      const options = [
-        {
-          text: t.initialOptions.lunch,
-          action: () => showMealOptions("lunch"),
-        },
-        {
-          text: t.initialOptions.dinner,
-          action: () => showMealOptions("dinner"),
-        },
-        {
-          text: t.initialOptions.aperitif,
-          action: () => sendMessage(t.prompts.aperitif),
-        },
-        {
-          text: t.initialOptions.special,
-          action: () => showSpecialOccasionOptions(),
-        },
-      ];
+      const options = Object.entries(t.initialOptions).map(([key, text]) => ({
+        text,
+        action: () => handleOptionClick(key),
+      }));
 
       addMessage("assistant", t.initialQuestion, options);
+    }
+
+    function stripOptionLabel(optionLabel) {
+      if (!optionLabel) return "";
+      return optionLabel.replace(/^[^\p{L}\p{N}]+\s*/u, "").trim();
+    }
+
+    function createOccasionPrompt(optionKey, translations, languageCode) {
+      const label = stripOptionLabel(translations.initialOptions?.[optionKey]) || optionKey;
+      const templates = {
+        fr: (value) => `Suggère-moi un vin français pour ${value}.`,
+        es: (value) => `Sugiéreme un vino francés para ${value}.`,
+        en: (value) => `Suggest a French wine for ${value}.`,
+        de: (value) => `Empfiehl mir einen französischen Wein für ${value}.`,
+        pt: (value) => `Sugere-me um vinho francês para ${value}.`,
+        pl: (value) => `Poleć mi francuskie wino na ${value}.`,
+        zh: (value) => `请为${value}推荐一款法国葡萄酒。`,
+      };
+      const generator = templates[languageCode] || templates.en;
+      return generator(label);
+    }
+
+    function handleOptionClick(optionKey) {
+      if (optionKey === "surprise") {
+        const currentLangCode = currentLanguage || "fr";
+        const currentLang = TRANSLATIONS[currentLangCode];
+        const allKeys = Object.keys(currentLang.initialOptions).filter((k) => k !== "surprise");
+        const randomKey = allKeys[Math.floor(Math.random() * allKeys.length)];
+        handleOptionClick(randomKey);
+        return;
+      }
+
+      const t = getTranslations();
+
+      if (optionKey === "lunch" || optionKey === "dinner") {
+        showMealOptions(optionKey);
+        return;
+      }
+
+      if (optionKey === "aperitif") {
+        sendMessage(t.prompts.aperitif);
+        return;
+      }
+
+      if (optionKey === "special") {
+        showSpecialOccasionOptions();
+        return;
+      }
+
+      sendMessage(createOccasionPrompt(optionKey, t, currentLanguage || "fr"));
     }
 
     function showMealOptions(mealKey) {
