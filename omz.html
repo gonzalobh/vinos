@@ -1,6 +1,6 @@
 
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="es">
 <head>
   <meta charset="UTF-8" />
   <title>Sommelier de Vins Français · Tomos.bot</title>
@@ -1101,18 +1101,7 @@
         <button type="button" class="icon-button" id="themeToggle" aria-label="Activer le mode nuit">
           <span class="icon" id="themeIcon"></span>
         </button>
-        <div class="language-select">
-          <label for="languageSelect" class="sr-only">Sélectionner la langue</label>
-          <select id="languageSelect">
-            <option value="en">EN</option>
-            <option value="es">ES</option>
-            <option value="fr">FR</option>
-            <option value="de">DE</option>
-            <option value="pt">PT</option>
-            <option value="pl">PL</option>
-            <option value="zh">ZH</option>
-          </select>
-        </div>
+        
       </div>
     </header>
 
@@ -1163,426 +1152,47 @@
 
     const initialOptions = {
       ES: {
-        lunch: "🍽️ Almuerzo",
-        dinner: "🍷 Cena",
-        aperitif: "🥂 Aperitivo",
-        special: "🎉 Ocasión especial",
-        more: "➕ Ver más",
-      },
-      EN: {
-        lunch: "🍽️ Lunch",
-        dinner: "🍷 Dinner",
-        aperitif: "🥂 Aperitif",
-        special: "🎉 Special occasion",
-        more: "➕ See more",
-      },
-      FR: {
-        lunch: "🍽️ Déjeuner",
-        dinner: "🍷 Dîner",
-        aperitif: "🥂 Apéritif",
-        special: "🎉 Occasion spéciale",
-        more: "➕ Voir plus",
-      },
-      ZH: {
-        lunch: "🍽️ 午餐",
-        dinner: "🍷 晚餐",
-        aperitif: "🥂 开胃酒",
-        special: "🎉 特别场合",
-        more: "➕ 更多",
-      },
-      DE: {
-        lunch: "🍽️ Mittagessen",
-        dinner: "🍷 Abendessen",
-        aperitif: "🥂 Aperitif",
-        special: "🎉 Besonderer Anlass",
-        more: "➕ Mehr anzeigen",
-      },
-      PL: {
-        lunch: "🍽️ Obiad",
-        dinner: "🍷 Kolacja",
-        aperitif: "🥂 Aperitif",
-        special: "🎉 Wyjątkowa okazja",
-        more: "➕ Pokaż więcej",
-      },
-      PT: {
-        lunch: "🍽️ Almoço",
-        dinner: "🍷 Jantar",
-        aperitif: "🥂 Aperitivo",
-        special: "🎉 Ocasião especial",
-        more: "➕ Ver mais",
+        menu: "📖 Ver carta completa",
+        pairing: "🍷 Recomendación de vino",
+        dish: "🥘 Sugerencia del chef",
+        cocktail: "🍸 Cócteles y aperitivos",
+        dessert: "🍰 Postres y maridajes dulces",
       },
     };
 
     const extendedOptions = {
       ES: {
-        brunch: "🌅 Brunch elegante",
-        picnic: "🌄 Picnic campestre",
-        friends: "🔥 Noche entre amigos",
-        terrace: "🌙 Cena en terraza",
-        music: "🎶 Degustación con música",
-        autumn: "🍁 Comida de otoño",
-        seaside: "⛱️ Vacaciones junto al mar",
-        cozy: "🏠 Noche acogedora",
-        surprise: "🎁 Sorpréndeme",
-      },
-      EN: {
-        brunch: "🌅 Elegant brunch",
-        picnic: "🌄 Country picnic",
-        friends: "🔥 Night with friends",
-        terrace: "🌙 Dinner on terrace",
-        music: "🎶 Musical tasting",
-        autumn: "🍁 Autumn meal",
-        seaside: "⛱️ Seaside holidays",
-        cozy: "🏠 Cozy night",
-        surprise: "🎁 Surprise me",
-      },
-      FR: {
-        brunch: "🌅 Brunch élégant",
-        picnic: "🌄 Pique-nique champêtre",
-        friends: "🔥 Soirée entre amis",
-        terrace: "🌙 Dîner en terrasse",
-        music: "🎶 Dégustation musicale",
-        autumn: "🍁 Repas d’automne",
-        seaside: "⛱️ Vacances au bord de mer",
-        cozy: "🏠 Soir cocooning",
-        surprise: "🎁 Surprends-moi",
-      },
-      ZH: {
-        brunch: "🌅 优雅早午餐",
-        picnic: "🌄 田园野餐",
-        friends: "🔥 朋友聚会",
-        terrace: "🌙 露台晚餐",
-        music: "🎶 音乐品酒",
-        autumn: "🍁 秋季餐点",
-        seaside: "⛱️ 海边度假",
-        cozy: "🏠 温馨夜晚",
-        surprise: "🎁 给我惊喜",
-      },
-      DE: {
-        brunch: "🌅 Eleganter Brunch",
-        picnic: "🌄 Picknick im Grünen",
-        friends: "🔥 Abend mit Freunden",
-        terrace: "🌙 Abendessen auf der Terrasse",
-        music: "🎶 Degustation mit Musik",
-        autumn: "🍁 Herbstliches Essen",
-        seaside: "⛱️ Urlaub am Meer",
-        cozy: "🏠 Gemütlicher Abend",
-        surprise: "🎁 Überrasch mich",
-      },
-      PL: {
-        brunch: "🌅 Elegancki brunch",
-        picnic: "🌄 Piknik na świeżym powietrzu",
-        friends: "🔥 Wieczór ze znajomymi",
-        terrace: "🌙 Kolacja na tarasie",
-        music: "🎶 Degustacja z muzyką",
-        autumn: "🍁 Jesienny posiłek",
-        seaside: "⛱️ Wakacje nad morzem",
-        cozy: "🏠 Przytulny wieczór",
-        surprise: "🎁 Zaskocz mnie",
-      },
-      PT: {
-        brunch: "🌅 Brunch elegante",
-        picnic: "🌄 Piquenique no campo",
-        friends: "🔥 Noite com amigos",
-        terrace: "🌙 Jantar no terraço",
-        music: "🎶 Degustação com música",
-        autumn: "🍁 Refeição de outono",
-        seaside: "⛱️ Férias à beira-mar",
-        cozy: "🏠 Noite aconchegante",
-        surprise: "🎁 Surpreenda-me",
+        vegan: "🌿 Opciones vegetarianas o veganas",
+        seafood: "🦞 Platos del mar",
+        kids: "👧 Menú infantil",
+        reservation: "🕯️ Reservar mesa o consultar disponibilidad",
+        surprise: "🎁 Sorpréndeme con una recomendación",
       },
     };
 
     const extendedOccasionPrompts = {
       ES: {
-        brunch: "Recomiéndame un vino francés para un brunch elegante.",
-        picnic: "Sugiere un vino francés ideal para un picnic campestre.",
-        friends: "Quiero un vino francés para una noche entre amigos.",
-        terrace: "Recomiéndame un vino francés para una cena en terraza.",
-        music: "Sugiere un vino francés para una degustación con música.",
-        autumn: "Recomiéndame un vino francés para una comida de otoño.",
-        seaside: "Sugiere un vino francés para vacaciones junto al mar.",
-        cozy: "Quiero un vino francés para una noche acogedora.",
-      },
-      EN: {
-        brunch: "Recommend a French wine for an elegant brunch.",
-        picnic: "Suggest a French wine for a country picnic.",
-        friends: "Recommend a French wine for a night with friends.",
-        terrace: "Suggest a French wine for dinner on the terrace.",
-        music: "Recommend a French wine for a tasting with music.",
-        autumn: "Suggest a French wine for an autumn meal.",
-        seaside: "Recommend a French wine for seaside holidays.",
-        cozy: "Suggest a French wine for a cozy night.",
-      },
-      FR: {
-        brunch: "Recommande-moi un vin français pour un brunch élégant.",
-        picnic: "Suggère un vin français pour un pique-nique champêtre.",
-        friends: "Je veux un vin français pour une soirée entre amis.",
-        terrace: "Propose un vin français pour un dîner en terrasse.",
-        music: "Suggère un vin français pour une dégustation musicale.",
-        autumn: "Recommande un vin français pour un repas d’automne.",
-        seaside: "Suggère un vin français pour des vacances au bord de mer.",
-        cozy: "Je cherche un vin français pour une soirée cocooning.",
-      },
-      ZH: {
-        brunch: "请为优雅的早午餐推荐一款法国葡萄酒。",
-        picnic: "请推荐一款适合田园野餐的法国葡萄酒。",
-        friends: "请推荐一款适合朋友聚会的法国葡萄酒。",
-        terrace: "请推荐一款适合露台晚餐的法国葡萄酒。",
-        music: "请推荐一款适合音乐品酒的法国葡萄酒。",
-        autumn: "请推荐一款适合秋季餐点的法国葡萄酒。",
-        seaside: "请推荐一款适合海边度假的法国葡萄酒。",
-        cozy: "请推荐一款适合温馨夜晚的法国葡萄酒。",
-      },
-      DE: {
-        brunch: "Empfiehl mir einen französischen Wein für einen eleganten Brunch.",
-        picnic: "Schlage einen französischen Wein für ein Picknick im Grünen vor.",
-        friends: "Ich suche einen französischen Wein für einen Abend mit Freunden.",
-        terrace: "Empfiehl mir einen französischen Wein für ein Abendessen auf der Terrasse.",
-        music: "Schlage einen französischen Wein für eine Degustation mit Musik vor.",
-        autumn: "Empfiehl mir einen französischen Wein für ein herbstliches Essen.",
-        seaside: "Schlage einen französischen Wein für Urlaub am Meer vor.",
-        cozy: "Ich möchte einen französischen Wein für einen gemütlichen Abend.",
-      },
-      PL: {
-        brunch: "Poleć mi francuskie wino na elegancki brunch.",
-        picnic: "Zaproponuj francuskie wino na piknik na świeżym powietrzu.",
-        friends: "Potrzebuję francuskiego wina na wieczór ze znajomymi.",
-        terrace: "Poleć francuskie wino na kolację na tarasie.",
-        music: "Zaproponuj francuskie wino na degustację z muzyką.",
-        autumn: "Poleć francuskie wino na jesienny posiłek.",
-        seaside: "Zaproponuj francuskie wino na wakacje nad morzem.",
-        cozy: "Szukam francuskiego wina na przytulny wieczór.",
-      },
-      PT: {
-        brunch: "Recomende um vinho francês para um brunch elegante.",
-        picnic: "Sugira um vinho francês para um piquenique no campo.",
-        friends: "Quero um vinho francês para uma noite com amigos.",
-        terrace: "Indique um vinho francês para um jantar no terraço.",
-        music: "Sugira um vinho francês para uma degustação com música.",
-        autumn: "Recomende um vinho francês para uma refeição de outono.",
-        seaside: "Sugira um vinho francês para férias à beira-mar.",
-        cozy: "Quero um vinho francês para uma noite aconchegante.",
+        vegan: "Muéstrame opciones vegetarianas o veganas en Marvento.",
+        seafood: "Recomiéndame platos del mar disponibles hoy.",
+        kids: "¿Qué incluye el menú infantil de Marvento?",
+        reservation: "Necesito ayuda para reservar una mesa o consultar disponibilidad.",
+        surprise: "Sorpréndeme con una recomendación especial del restaurante.",
       },
     };
 
     const seeLessLabels = {
       ES: "Ver menos",
-      EN: "See less",
-      FR: "Voir moins",
-      ZH: "收起",
-      DE: "Weniger anzeigen",
-      PL: "Pokaż mniej",
-      PT: "Ver menos",
     };
 
     const LANGUAGE_TO_OPTION_LANG = {
-      en: "EN",
       es: "ES",
-      fr: "FR",
-      de: "DE",
-      pt: "PT",
-      pl: "PL",
-      zh: "ZH",
     };
 
-    const BASE_OCCASION_KEYS = ["lunch", "dinner", "aperitif", "special"];
+    const BASE_OCCASION_KEYS = ["menu", "pairing", "dish", "cocktail", "dessert"];
 
     // Cada idioma define su propio systemPrompt dentro de TRANSLATIONS.
 
     const TRANSLATIONS = {
-      en: {
-        htmlLang: "en",
-        title: "French Wine Sommelier · Tomos.bot",
-        headerTitle: "🇫🇷 Sommelier",
-        placeholder: "Ask me for a French wine...",
-        micAria: "Enable voice dictation",
-        micUnavailable: "Voice recognition is not available in this browser.",
-        themeToggle: {
-          toLight: "Switch back to light mode",
-          toDark: "Enable dark mode",
-        },
-        languageSelectorLabel: "Select language",
-        welcome: {
-          title: "Welcome to your Virtual Sommelier!",
-          subtitle: "Discover remarkable French wines for every occasion.",
-        },
-        initialQuestion: "For which occasion would you like a recommendation?",
-        initialOptions: {
-          lunch: "🍽️ Lunch",
-          dinner: "🍷 Dinner",
-          aperitif: "🥂 Aperitif",
-          special: "🎉 Special occasion",
-        },
-        prompts: {
-          aperitif: "Suggest a French wine for an aperitif.",
-        },
-        mealQuestion: (mealLabel) =>
-          `Perfect for ${mealLabel}, what kind of dish will you serve?`,
-        mealTypes: {
-          lunch: "lunch",
-          dinner: "dinner",
-        },
-        mealOptions: {
-          redMeat: {
-            label: "🥩 Red meats",
-            prompt: (mealLabel) =>
-              `Suggest a French wine to pair with red meats for ${mealLabel}.`,
-          },
-          fish: {
-            label: "🐟 Fish",
-            prompt: (mealLabel) =>
-              `Suggest a French wine to pair with fish during ${mealLabel}.`,
-          },
-          pasta: {
-            label: "🍝 Pasta",
-            prompt: (mealLabel) =>
-              `Suggest a French wine to pair with pasta for ${mealLabel}.`,
-          },
-          salad: {
-            label: "🥗 Salads",
-            prompt: (mealLabel) =>
-              `Suggest a French wine to pair with salads at ${mealLabel}.`,
-          },
-        },
-        specialQuestion:
-          "Wonderful! What kind of special occasion would you like advice for?",
-        specialOptions: {
-          birthday: {
-            label: "🎂 Birthday",
-            prompt: "Suggest an exceptional French wine for a birthday.",
-          },
-          romantic: {
-            label: "💕 Romantic dinner",
-            prompt: "Suggest a French wine for a romantic dinner.",
-          },
-          gift: {
-            label: "🎁 Gift",
-            prompt: "Suggest a memorable French wine to give as a gift.",
-          },
-          celebration: {
-            label: "🏆 Grand celebration",
-            prompt: "Suggest a prestigious French wine for a grand celebration.",
-          },
-        },
-        followUps: {
-          general: [],
-          occasion: [],
-          pairing: [],
-          profile: [],
-          region: [],
-        },
-        errorMessages: {
-          network:
-            "I'm sorry, an error occurred while connecting to the server. Please try again.",
-          fetch: "Error while retrieving the response.",
-        },
-        vivino: "View on Vivino →",
-        modalAriaLabel: (wineName) => `Tasting details for ${wineName}`,
-        modalCloseAria: "Close the wine sheet",
-        modalLabels: {
-          region: "Region",
-          cepage: "Grape",
-          aromes: "Aromas",
-          bouche: "Palate",
-          temperature: "Serving temperature",
-          prix: "Average price",
-        },
-        modalSeparator: ":",
-        modalSeparatorTrailingSpace: " ",
-        genericWineProfile: {
-          region: "France",
-          cepage: "Traditional blend",
-          aromes: "ripe fruit, floral notes, hint of spice",
-          bouche: "balanced, harmonious finish",
-          temperature: "Serve between 10 and 18 °C depending on the style",
-          prix: "Check Vivino for pricing",
-        },
-        wineDetails: {
-          "Château Margaux": {
-            region: "Bordeaux",
-            cepage: "Cabernet Sauvignon, Merlot",
-            aromes: "blackcurrant, violet, noble oak",
-            bouche: "silky tannins, elegant texture",
-            temperature: "16-18 °C",
-            prix: "~€250",
-          },
-          "Chablis Premier Cru": {
-            region: "Burgundy",
-            cepage: "Chardonnay",
-            aromes: "citrus, white blossom, flint",
-            bouche: "lively, mineral, saline finish",
-            temperature: "10-12 °C",
-            prix: "~€35",
-          },
-          "Côtes du Rhône": {
-            region: "Rhône Valley",
-            cepage: "Grenache, Syrah, Mourvèdre",
-            aromes: "dark fruits, sweet spices, garrigue herbs",
-            bouche: "generous, ample, supple tannins",
-            temperature: "15-17 °C",
-            prix: "~€18",
-          },
-          "Champagne Brut": {
-            region: "Champagne",
-            cepage: "Pinot Noir, Chardonnay, Meunier",
-            aromes: "green apple, brioche, citrus",
-            bouche: "fine bubbles, vibrant freshness",
-            temperature: "8-10 °C",
-            prix: "~€40",
-          },
-          "Rosé de Provence": {
-            region: "Provence",
-            cepage: "Grenache, Cinsault, Syrah",
-            aromes: "fresh red berries, white peach, herbs",
-            bouche: "light, refreshing, delicate finish",
-            temperature: "8-10 °C",
-            prix: "~€15",
-          },
-        },
-        speechRecognitionLocale: "en-US",
-        systemPrompt: `You are "Sommelier Tomos.bot", a contemporary Parisian sommelier celebrated for your sure taste and natural elegance.
-You speak only in English, in a modern, fluid, and warm style—precise but never academic.
-Your answers are short (two or three sentences max), with a poetic touch, as if you were advising a guest at a Michelin-starred table in Paris.
-
-You recommend exclusively authentic and renowned French wines.
-Always mention:
-– the region (Bordeaux, Burgundy, Loire, Rhône, Alsace, Champagne, Provence, etc.),
-– the main grape variety,
-– and a brief sensory description: aromas, texture, or sensation ("fresh and mineral", "velvety tannins", "round and elegant on the palate").
-
-Always adapt your advice to the context: type of dish, time of day, season, or occasion (lunch, dinner, aperitif, romantic moment, celebration...).
-Rarely suggest more than two or three options, each explained in one sentence.
-If the wine is prestigious, hint at its reputation or style without exaggeration.
-
-Never invent imaginary wines: cite only real French appellations or estates.
-When you mention a wine, an appellation, or an estate, always wrap its name with the HTML tag <span class="wine-name"></span> so it stands out visually.
-Examples: <span class="wine-name">Château Margaux</span>, <span class="wine-name">Chablis Premier Cru</span>, <span class="wine-name">Côtes du Rhône</span>.
-
-Your tone must convey the confidence, passion, and simplicity of a great modern Parisian sommelier.
-
-After every reply, always add a natural and elegant follow-up question to keep the conversation going.
-👉 This question must always appear on a **new line** (with a line break before it) and in **HTML bold** (wrapped in <b>...</b>), with a subtle emoji (🍷, 🍇, 🥂, 🌿 or 💫).
-Use HTML tags: for example, <br><b>🍷 Would you like something more full-bodied or lighter?</b>
-Do not repeat the same type of question each time: vary your tone and intention with the context, like an attentive sommelier.
-
----
-After each reply, automatically generate between 2 and 4 button suggestions representing possible user answers (as if they were interactive options).
-You must return them in JSON format within <options> and </options> tags so the system can extract them.
-
-Exact format:
-<options>[{"label":"🍷 Bolder","prompt":"Show me a more full-bodied wine"},{"label":"🌿 Fresher","prompt":"Suggest a fresher wine"}]</options>
-
-Buttons must be:
-– relevant to the context and the last question asked by the sommelier,
-– varied (no repetition between replies),
-– natural and elegant in French tone,
-– never generic or empty.
-
-Example:
-<options>[{"label":"🍇 Burgundy","prompt":"Recommend something from Burgundy"},{"label":"💎 More exclusive","prompt":"Show me a more prestigious wine"}]</options>
----`.trim(),
-      },
       es: {
         htmlLang: "es",
         title: "Sumiller de Vinos Franceses · Tomos.bot",
@@ -1599,16 +1209,25 @@ Example:
           title: "¡Bienvenido a tu Sumiller Virtual!",
           subtitle: "Descubre grandes vinos franceses para cada ocasión.",
         },
-        initialQuestion: "¿Para qué ocasión te gustaría una recomendación?",
+        initialQuestion: "¿En qué puedo asistirle hoy en Marvento?",
+        
         initialOptions: {
-          lunch: "🍽️ Almuerzo",
-          dinner: "🍷 Cena",
-          aperitif: "🥂 Aperitivo",
-          special: "🎉 Ocasión especial",
+          menu: "📖 Ver carta completa",
+          pairing: "🍷 Recomendación de vino",
+          dish: "🥘 Sugerencia del chef",
+          cocktail: "🍸 Cócteles y aperitivos",
+          dessert: "🍰 Postres y maridajes dulces",
         },
+
+        
         prompts: {
-          aperitif: "Sugiéreme un vino francés para un aperitivo.",
+          menu: "Muéstrame la carta completa del restaurante Marvento.",
+          pairing: "Necesito una recomendación de vino para acompañar mi elección.",
+          dish: "Sugiere un plato destacado del chef en Marvento.",
+          cocktail: "Quiero conocer los cócteles y aperitivos disponibles.",
+          dessert: "Recomiéndame postres y posibles maridajes dulces.",
         },
+
         mealQuestion: (mealLabel) =>
           `Perfecto para el ${mealLabel}, ¿qué tipo de plato vas a servir?`,
         mealTypes: {
@@ -1733,984 +1352,163 @@ Example:
           },
         },
         speechRecognitionLocale: "es-ES",
-        systemPrompt: `Eres "Sommelier Tomos.bot", un sumiller parisino contemporáneo reconocido por tu gusto impecable y tu elegancia natural.
-Hablas únicamente en español, con un estilo moderno, fluido y cálido — preciso pero nunca académico.
-Tus respuestas son breves (máximo dos o tres frases), con un toque poético, como si aconsejaras a un comensal en una mesa con estrella Michelin en París.
+        
+        systemPrompt: `You are a virtual assistant specialized in gastronomy and wines at the Marvento restaurant, designed to enhance the dining experience of guests in a high-end establishment. 
+Your role combines the knowledge of a sommelier, the warmth of a maître d’, and the insight of a well-informed chef.
 
-Recomiendas exclusivamente vinos franceses auténticos y de prestigio.
-Menciona siempre:
-– la región (Burdeos, Borgoña, Loira, Ródano, Alsacia, Champagne, Provenza, etc.),
-– la variedad de uva principal,
-– y una breve descripción sensorial: aromas, textura o sensación ("fresco y mineral", "taninos sedosos", "boca redonda y elegante").
+TONE AND LANGUAGE:
+- Speak in Chilean Spanish using a neutral and cultured register.
+- Avoid slang or overly informal expressions.
+- Use an elegant, warm, and professional tone, like that of a fine-dining restaurant.
+- Be polite and courteous, never using informal “tú”.
+- Be descriptive and kind, naturally sharing your gastronomic knowledge.
 
-Adapta siempre tus consejos al contexto: tipo de plato, momento del día, estación u ocasión (almuerzo, cena, aperitivo, cita romántica, celebración...).
-Sugiere como máximo dos o tres opciones, cada una explicada en una frase.
-Si el vino es prestigioso, alude sutilmente a su fama o estilo sin exagerar.
+Restaurant menu:
+🥗 STARTERS
+Pinzas de jaiba — $22.000
+Machas a la parmesana (10 units) — $14.000
+Ceviche de reineta — Reineta, avocado purée, leche de tigre — $19.000
+Ceviche mixto with yellow leche de tigre — Octopus, reineta, razor clam, scallop, cilantro pesto, sweet potato purée — $14.000
+Pulpo al olivo — Octopus in olive and botija olive cream — $17.000
+Crab croquettes — $17.000
+Seafood empanadas (6 units) — $18.000
+Grilled skirt steak with chimichurri and toast — $8.000
+Caprese empanadas (6 units) — Tomato, pesto, mozzarella, olive — $8.000
+Soup of the day — $7.000
 
-Nunca inventes vinos imaginarios: cita solo denominaciones o bodegas francesas reales.
-Cuando menciones un vino, una denominación o una bodega, rodea siempre su nombre con la etiqueta HTML <span class="wine-name"></span> para destacarlo visualmente.
-Ejemplos: <span class="wine-name">Château Margaux</span>, <span class="wine-name">Chablis Premier Cru</span>, <span class="wine-name">Côtes du Rhône</span>.
+🥪 SANDWICHES
+Build your own OMZ burger — $12.000
+200g homemade beef burger (huachalomo and sobrecostilla).
+Choose 3 ingredients: cheese, lettuce, pickle, tomato, bacon, mushroom, raw or caramelized onion.
+Served with fries.
+Vegetarian burger — $10.000
+Chickpeas, arugula, tomato, avocado, mayonnaise (wholegrain bun).
 
-Tu tono debe transmitir la confianza, la pasión y la sencillez de un gran sumiller parisino moderno.
+🥬 SALADS
+Romaine salad — $15.000
+Del Huerto — Green mix, avocado, palm hearts, tomato, native potato, almonds — $17.000
+Gamberetto — Green mix, shrimp, mushrooms, parmesan — $17.000
 
-Tras cada respuesta, añade siempre una pregunta de seguimiento natural y elegante para invitar a continuar la conversación.
-👉 Esta pregunta debe aparecer siempre en una **nueva línea** (con un salto de línea previo) y en **negrita HTML** (entre <b>...</b>), con un emoji discreto (🍷, 🍇, 🥂, 🌿 o 💫).
-Usa etiquetas HTML: por ejemplo, <br><b>🍷 ¿Prefieres algo más estructurado o más ligero?</b>
-No repitas siempre el mismo tipo de pregunta: varía el tono y la intención según el contexto, como lo haría un sumiller atento.
+🍛 MAIN COURSES
+Lomo saltado — Beef tenderloin with fries and rice — $27.000
+Seared tuna with olive tapenade — $16.000
+Pepper steak with fries — $17.000
+Caldillo de congrio — $15.000
+Paella for two — $17.000
+Hake curry — $11.000
+Fish of the day — served with salad, quinoa, rustic purée, rice, or fries — $11.000
+Bacon-wrapped beef filet with blue cheese sauce and fried polenta — $11.000
+Braised beef with rustic potato and spicy sauce — $11.000
 
----
-Después de cada respuesta, genera automáticamente entre 2 y 4 sugerencias de botones que representen posibles respuestas del usuario (como si fueran opciones interactivas).
-Debes devolverlas en formato JSON dentro de etiquetas <options> y </options> para que el sistema pueda extraerlas.
+🍕 PIZZAS
+Olas — Chicken, mozzarella, corn, onion — $11.000
+Margarita — Mozzarella, tomato, pesto, parmesan — $10.500
+Arenas — Mozzarella, bacon, caramelized onion — $11.000
+OMZ — Mozzarella, shrimp, sautéed mushrooms — $12.500
+Arriera — Mozzarella, garlic beef, merkén — $11.500
+Vegetarian — Zucchini, pepper, carrot, green onion (optional mozzarella) — $10.000
+Italiana — Mozzarella, prosciutto, arugula, green olives — $11.000
 
-Formato exacto:
-<options>[{"label":"🍷 Más estructurado","prompt":"Muéstrame un vino más estructurado"},{"label":"🌿 Más fresco","prompt":"Sugiéreme un vino más fresco"}]</options>
+🍝 PASTA
+Tricornio de mar — Black pasta stuffed with ricotta, shrimp, and crab in butter and chives sauce — $14.000
+Lasagna bolognese with blue cheese sauce — $15.000
+Eggplant lasagna with creamy mushrooms and spinach — $14.000
+Ravioli OMZ — $15.000
 
-Los botones deben ser:
-– relevantes al contexto y a la última pregunta formulada por el sumiller,
-– variados (no repetir entre respuestas),
-– naturales y elegantes en tono francés,
-– nunca genéricos o vacíos.
+🍟 SIDES
+Rice — $4.000
+Quinoa — $4.000
+Mashed potatoes — $4.000
+Green mix — $7.000
+French fries — $6.000
 
-Ejemplo:
-<options>[{"label":"🍇 Borgoña","prompt":"Recomiéndame algo de Borgoña"},{"label":"💎 Más exclusivo","prompt":"Muéstrame un vino más prestigioso"}]</options>
----`.trim(),
-      },
-      fr: {
-        htmlLang: "fr",
-        title: "Sommelier de Vins Français · Tomos.bot",
-        headerTitle: "🇫🇷 Sommelier",
-        placeholder: "Demandez-moi un vin français...",
-        micAria: "Activer la dictée vocale",
-        micUnavailable: "La reconnaissance vocale n'est pas disponible sur ce navigateur.",
-        themeToggle: {
-          toLight: "Revenir au mode clair",
-          toDark: "Activer le mode nuit",
-        },
-        languageSelectorLabel: "Sélectionner la langue",
-        welcome: {
-          title: "Bienvenue auprès de votre Sommelier Virtuel !",
-          subtitle: "Découvrez les plus grands vins français pour chaque occasion.",
-        },
-        initialQuestion: "Pour quelle occasion souhaitez-vous une recommandation ?",
-        initialOptions: {
-          lunch: "🍽️ Déjeuner",
-          dinner: "🍷 Dîner",
-          aperitif: "🥂 Apéritif",
-          special: "🎉 Occasion spéciale",
-        },
-        prompts: {
-          aperitif: "Suggère-moi un vin français pour un apéritif.",
-        },
-        mealQuestion: (mealLabel) =>
-          `Parfait pour le ${mealLabel}, quel type de plat servirez-vous ?`,
-        mealTypes: {
-          lunch: "déjeuner",
-          dinner: "dîner",
-        },
-        mealOptions: {
-          redMeat: {
-            label: "🥩 Viandes rouges",
-            prompt: (mealLabel) =>
-              `Suggère-moi un vin français pour accompagner des viandes rouges lors du ${mealLabel}.`,
-          },
-          fish: {
-            label: "🐟 Poissons",
-            prompt: (mealLabel) =>
-              `Suggère-moi un vin français pour accompagner des poissons lors du ${mealLabel}.`,
-          },
-          pasta: {
-            label: "🍝 Pâtes",
-            prompt: (mealLabel) =>
-              `Suggère-moi un vin français pour accompagner des pâtes lors du ${mealLabel}.`,
-          },
-          salad: {
-            label: "🥗 Salades",
-            prompt: (mealLabel) =>
-              `Suggère-moi un vin français pour accompagner des salades lors du ${mealLabel}.`,
-          },
-        },
-        specialQuestion:
-          "Magnifique ! Pour quel type d'occasion spéciale souhaitez-vous être conseillé ?",
-        specialOptions: {
-          birthday: {
-            label: "🎂 Anniversaire",
-            prompt: "Suggère-moi un vin français d'exception pour un anniversaire.",
-          },
-          romantic: {
-            label: "💕 Dîner romantique",
-            prompt: "Suggère-moi un vin français pour un dîner romantique.",
-          },
-          gift: {
-            label: "🎁 Cadeau",
-            prompt: "Suggère-moi un vin français mémorable à offrir.",
-          },
-          celebration: {
-            label: "🏆 Grande célébration",
-            prompt: "Suggère-moi un vin français prestigieux pour une grande célébration.",
-          },
-        },
-        followUps: {
-          general: [],
-          occasion: [],
-          pairing: [],
-          profile: [],
-          region: [],
-        },
-        errorMessages: {
-          network:
-            "Je suis désolé, une erreur est survenue lors de la connexion au serveur. Veuillez réessayer.",
-          fetch: "Erreur lors de la récupération de la réponse.",
-        },
-        vivino: "Voir sur Vivino →",
-        modalAriaLabel: (wineName) => `Détails de dégustation pour ${wineName}`,
-        modalCloseAria: "Fermer la fiche du vin",
-        modalLabels: {
-          region: "Région",
-          cepage: "Cépage",
-          aromes: "Arômes",
-          bouche: "Bouche",
-          temperature: "Température",
-          prix: "Prix moyen",
-        },
-        modalSeparator: " :",
-        modalSeparatorTrailingSpace: " ",
-        genericWineProfile: {
-          region: "France",
-          cepage: "Assemblage traditionnel",
-          aromes: "fruits mûrs, notes florales et touche d'épices",
-          bouche: "équilibrée, finale harmonieuse",
-          temperature: "Servir entre 10 et 18 °C selon le style",
-          prix: "Consultez Vivino pour les prix",
-        },
-        wineDetails: {
-          "Château Margaux": {
-            region: "Bordeaux",
-            cepage: "Cabernet Sauvignon, Merlot",
-            aromes: "cassis, violette, bois noble",
-            bouche: "tanins soyeux, texture élégante",
-            temperature: "16-18 °C",
-            prix: "~250 €",
-          },
-          "Chablis Premier Cru": {
-            region: "Bourgogne",
-            cepage: "Chardonnay",
-            aromes: "agrumes, fleur blanche, pierre à fusil",
-            bouche: "vif, minéral, finale saline",
-            temperature: "10-12 °C",
-            prix: "~35 €",
-          },
-          "Côtes du Rhône": {
-            region: "Vallée du Rhône",
-            cepage: "Grenache, Syrah, Mourvèdre",
-            aromes: "fruits noirs, épices douces, garrigue",
-            bouche: "gourmand, ample, tanins souples",
-            temperature: "15-17 °C",
-            prix: "~18 €",
-          },
-          "Champagne Brut": {
-            region: "Champagne",
-            cepage: "Pinot Noir, Chardonnay, Meunier",
-            aromes: "pomme verte, brioche, agrumes",
-            bouche: "bulles fines, fraîcheur tonique",
-            temperature: "8-10 °C",
-            prix: "~40 €",
-          },
-          "Rosé de Provence": {
-            region: "Provence",
-            cepage: "Grenache, Cinsault, Syrah",
-            aromes: "fruits rouges frais, pêche blanche, herbes",
-            bouche: "léger, désaltérant, finale délicate",
-            temperature: "8-10 °C",
-            prix: "~15 €",
-          },
-        },
-        speechRecognitionLocale: "fr-FR",
-        systemPrompt: `Tu es "Sommelier Tomos.bot", un sommelier parisien contemporain reconnu pour ton goût sûr et ton élégance naturelle.
-Tu t'exprimes uniquement en français, dans un style moderne, fluide et chaleureux — précis sans être académique.
-Tes réponses sont courtes (deux à trois phrases maximum), avec une touche poétique, comme si tu conseillais un convive dans un restaurant étoilé à Paris.
+👧 KIDS MENU
+Chicken nuggets — $8.000
+Reineta sticks — $8.000
+Breaded chicken sticks — $8.000
+Mini burger — $8.000
+Tagliatelle Alfredo — $8.000
+Cheese empanadas (3 units) — $8.000
 
-Tu recommandes exclusivement des vins français authentiques et renommés.
-Mentionne toujours :
-– la région (Bordeaux, Bourgogne, Loire, Rhône, Alsace, Champagne, Provence, etc.),
-– le cépage principal,
-– et une brève description sensorielle : arômes, texture ou sensation (« frais et minéral », « tanins soyeux », « bouche ample et élégante »).
+🍰 DESSERTS
+Chocolate lava cake with ice cream — $7.000
+Celestino pancake — $4.500
+Nutella flan — $4.500
+Tres leches cake — $5.000
+Homemade ice cream — $4.000
+Chocolate tart — $5.000
+Crème caramel — $4.000
+Homemade flan — $5.000
 
-Adapte toujours tes conseils au contexte : type de plat, moment de la journée, saison ou occasion (déjeuner, dîner, apéritif, rendez-vous romantique, célébration...).
-Propose au maximum deux ou trois options, chacune expliquée en une phrase.
-Si le vin est prestigieux, suggère discrètement sa réputation ou son style sans exagération.
+☕ COFFEES AND TEAS
+Espresso — $2.600
+Double espresso — $3.500
+Cappuccino — $3.500
+Macchiato — $3.500
+Americano — $2.600
+Hot chocolate — $3.000
+Herbal infusion — $3.000
+Hot milk — $2.000
+Twinings tea — $2.500
 
-N'invente jamais de vins imaginaires : ne cite que des appellations ou des domaines français réels.
-Lorsque tu cites un vin, une appellation ou un domaine, encadre toujours son nom avec la balise HTML <span class="wine-name"></span> pour le mettre en valeur visuellement.
-Exemples : <span class="wine-name">Château Margaux</span>, <span class="wine-name">Chablis Premier Cru</span>, <span class="wine-name">Côtes du Rhône</span>.
+🥤 BEVERAGES AND JUICES
+Coca-Cola Zero / Light — $2.500
+Sprite / Zero — $2.500
+Fanta / Zero — $2.500
+Canada Dry / Light — $2.500
+Sparkling water — $2.000
+Tonic water — $2.500
+Natural juices — $3.000
+Lemonades — $3.800
+Revitalizing smoothie — $3.800
+Antiox juice — $3.800
 
-Ton ton doit refléter la confiance, la passion et la simplicité d'un grand sommelier parisien moderne.
+🍸 COCKTAILS AND SOURS
+Sours: Pisco Sour, Blueberry, Mango, Catedral, Premium, etc.
+Classic cocktails: Caipirinha, Mojito, Margarita, Moscow Mule, Spritz, Kir Royal, and others.
+Sparkling wines, beers, and Chilean wines available.
 
-Après chaque réponse, ajoute toujours une question de relance naturelle et élégante pour inviter à poursuivre la conversation.
-👉 Cette question doit toujours apparaître sur une **nouvelle ligne** (avec un saut de ligne au préalable) et en **gras HTML** (entre <b>...</b>), avec un emoji subtil (🍷, 🍇, 🥂, 🌿 ou 💫).
-Utilise les balises HTML : par exemple, <br><b>🍷 Souhaitez-vous quelque chose de plus charpenté ou de plus léger ?</b>
-Ne répète pas toujours le même type de question : varie le ton et l'intention selon le contexte, comme le ferait un sommelier attentionné.
+🍷 WINES
+Viu Manent, Casillero del Diablo, Marques de Casa Concha, Cono Sur, Odfjell, among others.
+By the glass starting at $5.500.
+
+Your role is to assist guests in choosing dishes, wines, and pairings, answer questions about ingredients or chef recommendations, and offer harmonious suggestions with elegance and precision.
 
 ---
-Après chaque réponse, génère automatiquement entre 2 et 4 suggestions de boutons représentant d'éventuelles réponses de l'utilisateur (comme des options interactives).
-Tu dois les renvoyer en format JSON à l'intérieur des balises <options> et </options> afin que le système puisse les extraire.
+After every reply:
 
-Format exact :
-<options>[{"label":"🍷 Plus de structure","prompt":"Propose-moi un vin plus charpenté"},{"label":"🌿 Plus de fraîcheur","prompt":"Suggère-moi un vin plus frais"}]</options>
+1. Ask a **natural follow-up question** (for example:  
+   “Would you like me to suggest a wine to accompany your dish?”  
+   or “Do you prefer something lighter or more flavorful?”).
 
-Les boutons doivent être :
-– pertinents par rapport au contexte et à la dernière question posée par le sommelier,
-– variés (pas de répétition d'une réponse à l'autre),
-– naturels et élégants dans un ton français,
-– jamais génériques ou vides.
+   – The question must appear on a **new line** (`<br>`)  
+   – and be in **HTML bold** (`<b>...</b>`),  
+   – with a subtle emoji (🍷, 🍽️, 🌿, 🍰, 💫 or 🥂).  
+   Example: `<br><b>🍽️ Would you prefer something from the sea or the land?</b>`
 
-Exemple :
-<options>[{"label":"🍇 Bourgogne","prompt":"Recommande-moi quelque chose de Bourgogne"},{"label":"💎 Plus prestigieux","prompt":"Montre-moi un vin plus prestigieux"}]</options>
+2. Generate **interactive button suggestions** (2–4) for possible user responses.  
+   Return them in JSON format between `<options>` and `</options>` tags.  
+
+   Exact format:
+   <options>[{"label":"🍷 Wine pairing","prompt":"Recommend a wine that matches my dish"},{"label":"🥩 Main courses","prompt":"Show me the meat options"}]</options>
+
+   Buttons must be:
+   – Relevant to the conversation.  
+   – Elegant, specific, and natural (never generic like “yes/no”).  
+   – Written in formal, neutral Chilean Spanish.  
+   – Varied between messages (avoid repetition).  
+
+Examples:
+- **🍽️ Would you like to see our chef’s recommendations?**  
+  <options>[{"label":"👨‍🍳 Yes, show me the suggestions"},{"label":"📖 I prefer to see the full menu"}]</options>
+
+- **🍷 Would you like a wine recommendation for your dish?**  
+  <options>[{"label":"🍇 Yes, please"},{"label":"🥤 I’d prefer a cocktail or lemonade"}]</options>
+
+- **🍰 Would you like to see desserts or a digestif?**  
+  <options>[{"label":"🍰 Desserts","prompt":"Show me the dessert options"},{"label":"🥃 Digestifs","prompt":"Show me liqueurs and after-dinner drinks"}]</options>
 ---`.trim(),
-      },
-      de: {
-        htmlLang: "de",
-        title: "Französischer Weinsommelier · Tomos.bot",
-        headerTitle: "🇫🇷 Sommelier",
-        placeholder: "Frag mich nach einem französischen Wein...",
-        micAria: "Spracherkennung aktivieren",
-        micUnavailable: "Die Spracherkennung ist in diesem Browser nicht verfügbar.",
-        themeToggle: {
-          toLight: "Zurück zum hellen Modus wechseln",
-          toDark: "Dunkelmodus aktivieren",
-        },
-        languageSelectorLabel: "Sprache auswählen",
-        welcome: {
-          title: "Willkommen bei deinem virtuellen Sommelier!",
-          subtitle: "Entdecke bemerkenswerte französische Weine für jeden Anlass.",
-        },
-        initialQuestion: "Für welchen Anlass hättest du gern eine Empfehlung?",
-        initialOptions: {
-          lunch: "🍽️ Mittagessen",
-          dinner: "🍷 Abendessen",
-          aperitif: "🥂 Aperitif",
-          special: "🎉 Besonderer Anlass",
-        },
-        prompts: {
-          aperitif: "Empfiehl mir einen französischen Wein für einen Aperitif.",
-        },
-        mealQuestion: (mealLabel) =>
-          `Perfekt für ${mealLabel}, welches Gericht wirst du servieren?`,
-        mealTypes: {
-          lunch: "Mittagessen",
-          dinner: "Abendessen",
-        },
-        mealOptions: {
-          redMeat: {
-            label: "🥩 Rotes Fleisch",
-            prompt: (mealLabel) =>
-              `Empfiehl einen französischen Wein, der zu rotem Fleisch beim ${mealLabel} passt.`,
-          },
-          fish: {
-            label: "🐟 Fisch",
-            prompt: (mealLabel) =>
-              `Empfiehl einen französischen Wein, der zu Fisch beim ${mealLabel} passt.`,
-          },
-          pasta: {
-            label: "🍝 Pasta",
-            prompt: (mealLabel) =>
-              `Empfiehl einen französischen Wein, der zu Pasta beim ${mealLabel} passt.`,
-          },
-          salad: {
-            label: "🥗 Salate",
-            prompt: (mealLabel) =>
-              `Empfiehl einen französischen Wein, der zu Salaten beim ${mealLabel} passt.`,
-          },
-        },
-        specialQuestion:
-          "Großartig! Für welche Art von besonderem Anlass hättest du gern einen Rat?",
-        specialOptions: {
-          birthday: {
-            label: "🎂 Geburtstag",
-            prompt: "Empfiehl einen außergewöhnlichen französischen Wein für einen Geburtstag.",
-          },
-          romantic: {
-            label: "💕 Romantisches Dinner",
-            prompt: "Empfiehl einen französischen Wein für ein romantisches Dinner.",
-          },
-          gift: {
-            label: "🎁 Geschenk",
-            prompt: "Empfiehl einen unvergesslichen französischen Wein zum Verschenken.",
-          },
-          celebration: {
-            label: "🏆 Große Feier",
-            prompt: "Empfiehl einen prestigeträchtigen französischen Wein für eine große Feier.",
-          },
-        },
-        errorMessages: {
-          network:
-            "Es tut mir leid, beim Verbinden mit dem Server ist ein Fehler aufgetreten. Bitte versuche es erneut.",
-          fetch: "Fehler beim Abrufen der Antwort.",
-        },
-        vivino: "Auf Vivino ansehen →",
-        modalAriaLabel: (wineName) => `Verkostungsnotizen für ${wineName}`,
-        modalCloseAria: "Weinkarte schließen",
-        modalLabels: {
-          region: "Region",
-          cepage: "Rebsorte",
-          aromes: "Aromen",
-          bouche: "Gaumen",
-          temperature: "Serviertemperatur",
-          prix: "Durchschnittspreis",
-        },
-        modalSeparator: ":",
-        modalSeparatorTrailingSpace: " ",
-        genericWineProfile: {
-          region: "Frankreich",
-          cepage: "Traditionelle Cuvée",
-          aromes: "reife Frucht, florale Noten, Hauch von Gewürz",
-          bouche: "ausgewogen, harmonischer Abgang",
-          temperature: "Je nach Stil zwischen 10 und 18 °C servieren",
-          prix: "Preise auf Vivino prüfen",
-        },
-        wineDetails: {
-          "Château Margaux": {
-            region: "Bordeaux",
-            cepage: "Cabernet Sauvignon, Merlot",
-            aromes: "schwarze Johannisbeere, Veilchen, edles Eichenholz",
-            bouche: "seidige Tannine, elegante Textur",
-            temperature: "16-18 °C",
-            prix: "~€250",
-          },
-          "Chablis Premier Cru": {
-            region: "Burgund",
-            cepage: "Chardonnay",
-            aromes: "Zitrus, weiße Blüte, Feuerstein",
-            bouche: "lebhaft, mineralisch, salziger Abgang",
-            temperature: "10-12 °C",
-            prix: "~€35",
-          },
-          "Côtes du Rhône": {
-            region: "Rhône-Tal",
-            cepage: "Grenache, Syrah, Mourvèdre",
-            aromes: "dunkle Früchte, süße Gewürze, Kräuter der Garrigue",
-            bouche: "generös, vollmundig, geschmeidige Tannine",
-            temperature: "15-17 °C",
-            prix: "~€18",
-          },
-          "Champagne Brut": {
-            region: "Champagne",
-            cepage: "Pinot Noir, Chardonnay, Meunier",
-            aromes: "grüner Apfel, Brioche, Zitrus",
-            bouche: "feine Perlage, lebendige Frische",
-            temperature: "8-10 °C",
-            prix: "~€40",
-          },
-          "Rosé de Provence": {
-            region: "Provence",
-            cepage: "Grenache, Cinsault, Syrah",
-            aromes: "frische rote Beeren, weißer Pfirsich, Kräuter",
-            bouche: "leicht, erfrischend, zarter Abgang",
-            temperature: "8-10 °C",
-            prix: "~€15",
-          },
-        },
-        speechRecognitionLocale: "de-DE",
-        systemPrompt: `Du bist "Sommelier Tomos.bot", ein zeitgenössischer Pariser Sommelier, der für seinen sicheren Geschmack und seine natürliche Eleganz bekannt ist.
-Du sprichst ausschließlich auf Deutsch, in einem modernen, fließenden und warmen Stil – präzise, aber nie akademisch.
-Deine Antworten sind kurz (maximal zwei bis drei Sätze) und poetisch, so als würdest du einen Gast an einem Michelin-Stern-Tisch in Paris beraten.
 
-Du empfiehlst ausschließlich authentische und renommierte französische Weine.
-Erwähne immer:
-– die Region (Bordeaux, Burgund, Loire, Rhône, Elsass, Champagne, Provence usw.),
-– die Hauptrebsorte,
-– sowie eine kurze sensorische Beschreibung: Aromen, Textur oder Eindruck ("frisch und mineralisch", "seidige Tannine", "runder, eleganter Gaumen").
-
-Passe deine Empfehlungen stets dem Kontext an: Art des Gerichts, Tageszeit, Jahreszeit oder Anlass (Mittagessen, Abendessen, Aperitif, romantischer Moment, Feier ...).
-Schlage höchstens zwei bis drei Optionen vor, jede in einem Satz erklärt.
-Wenn der Wein prestigeträchtig ist, deute seinen Ruf oder Stil dezent an, ohne zu übertreiben.
-
-Erfinde niemals imaginäre Weine: Nenne nur reale französische Appellationen oder Weingüter.
-Wann immer du einen Wein, eine Appellation oder ein Weingut erwähnst, versieh den Namen mit dem HTML-Tag <span class="wine-name"></span>, damit er optisch hervorsticht.
-Beispiele: <span class="wine-name">Château Margaux</span>, <span class="wine-name">Chablis Premier Cru</span>, <span class="wine-name">Côtes du Rhône</span>.
-
-Dein Ton muss die Selbstsicherheit, Leidenschaft und schlichte Eleganz eines großen modernen Pariser Sommeliers vermitteln.
-
-Füge nach jeder Antwort stets eine natürliche, elegante Rückfrage hinzu, um das Gespräch lebendig zu halten.
-👉 Diese Frage muss immer in einer **neuen Zeile** erscheinen (mit einem vorherigen Zeilenumbruch) und in **HTML-Fettschrift** (zwischen <b>...</b>) stehen, begleitet von einem dezenten Emoji (🍷, 🍇, 🥂, 🌿 oder 💫).
-Nutze HTML-Tags: zum Beispiel, <br><b>🍷 Darf es etwas kräftigeres oder lieber leichteres sein?</b>
-Wiederhole nicht immer denselben Fragentyp: Variiere Tonfall und Intention je nach Kontext, wie es ein aufmerksamer Sommelier tun würde.
-
----
-Generiere nach jeder Antwort automatisch 2 bis 4 Button-Vorschläge, die mögliche Antworten des Nutzers repräsentieren (wie interaktive Optionen).
-Gib sie im JSON-Format zwischen den Tags <options> und </options> aus, damit das System sie extrahieren kann.
-
-Genaues Format:
-<options>[{"label":"🍷 Kräftiger","prompt":"Zeig mir einen kräftigeren Wein"},{"label":"🌿 Frischer","prompt":"Schlage mir einen frischeren Wein vor"}]</options>
-
-Die Buttons müssen:
-– zum Kontext und zur letzten Frage des Sommeliers passen,
-– abwechslungsreich sein (keine Wiederholungen von Antwort zu Antwort),
-– natürlich und elegant im französischen Tonfall wirken,
-– niemals generisch oder inhaltsleer sein.
-
-Beispiel:
-<options>[{"label":"🍇 Burgund","prompt":"Empfiehl mir etwas aus dem Burgund"},{"label":"💎 Exklusiver","prompt":"Zeig mir einen prestigeträchtigeren Wein"}]</options>
----`.trim(),
-      },
-      pt: {
-        htmlLang: "pt",
-        title: "Sommelier de Vinhos Franceses · Tomos.bot",
-        headerTitle: "🇫🇷 Sommelier",
-        placeholder: "Peça-me um vinho francês...",
-        micAria: "Ativar ditado por voz",
-        micUnavailable: "O reconhecimento de voz não está disponível neste navegador.",
-        themeToggle: {
-          toLight: "Voltar ao modo claro",
-          toDark: "Ativar o modo escuro",
-        },
-        languageSelectorLabel: "Selecionar idioma",
-        welcome: {
-          title: "Bem-vindo ao seu Sommelier Virtual!",
-          subtitle: "Descubra grandes vinhos franceses para cada ocasião.",
-        },
-        initialQuestion: "Para qual ocasião você deseja uma recomendação?",
-        initialOptions: {
-          lunch: "🍽️ Almoço",
-          dinner: "🍷 Jantar",
-          aperitif: "🥂 Aperitivo",
-          special: "🎉 Ocasião especial",
-        },
-        prompts: {
-          aperitif: "Indique um vinho francês para um aperitivo.",
-        },
-        mealQuestion: (mealLabel) =>
-          `Perfeito para o ${mealLabel}, que tipo de prato será servido?`,
-        mealTypes: {
-          lunch: "almoço",
-          dinner: "jantar",
-        },
-        mealOptions: {
-          redMeat: {
-            label: "🥩 Carnes vermelhas",
-            prompt: (mealLabel) =>
-              `Indique um vinho francês para harmonizar com carnes vermelhas durante o ${mealLabel}.`,
-          },
-          fish: {
-            label: "🐟 Peixes",
-            prompt: (mealLabel) =>
-              `Indique um vinho francês para acompanhar peixes no ${mealLabel}.`,
-          },
-          pasta: {
-            label: "🍝 Massas",
-            prompt: (mealLabel) =>
-              `Indique um vinho francês para harmonizar com massas no ${mealLabel}.`,
-          },
-          salad: {
-            label: "🥗 Saladas",
-            prompt: (mealLabel) =>
-              `Indique um vinho francês para acompanhar saladas no ${mealLabel}.`,
-          },
-        },
-        specialQuestion:
-          "Magnífico! Para qual tipo de ocasião especial você deseja um conselho?",
-        specialOptions: {
-          birthday: {
-            label: "🎂 Aniversário",
-            prompt: "Indique um vinho francês excepcional para um aniversário.",
-          },
-          romantic: {
-            label: "💕 Jantar romântico",
-            prompt: "Indique um vinho francês para um jantar romântico.",
-          },
-          gift: {
-            label: "🎁 Presente",
-            prompt: "Indique um vinho francês memorável para presentear.",
-          },
-          celebration: {
-            label: "🏆 Grande celebração",
-            prompt: "Indique um vinho francês prestigioso para uma grande celebração.",
-          },
-        },
-        errorMessages: {
-          network:
-            "Desculpe, ocorreu um erro ao conectar ao servidor. Tente novamente.",
-          fetch: "Erro ao obter a resposta.",
-        },
-        vivino: "Ver no Vivino →",
-        modalAriaLabel: (wineName) => `Detalhes de degustação de ${wineName}`,
-        modalCloseAria: "Fechar a ficha do vinho",
-        modalLabels: {
-          region: "Região",
-          cepage: "Uva",
-          aromes: "Aromas",
-          bouche: "Paladar",
-          temperature: "Temperatura de serviço",
-          prix: "Preço médio",
-        },
-        modalSeparator: ":",
-        modalSeparatorTrailingSpace: " ",
-        genericWineProfile: {
-          region: "França",
-          cepage: "Corte tradicional",
-          aromes: "frutas maduras, notas florais e toque de especiarias",
-          bouche: "equilibrado, final harmonioso",
-          temperature: "Servir entre 10 e 18 °C conforme o estilo",
-          prix: "Consulte o Vivino para preços",
-        },
-        wineDetails: {
-          "Château Margaux": {
-            region: "Bordéus",
-            cepage: "Cabernet Sauvignon, Merlot",
-            aromes: "groselha preta, violeta, carvalho nobre",
-            bouche: "taninos sedosos, textura elegante",
-            temperature: "16-18 °C",
-            prix: "~€250",
-          },
-          "Chablis Premier Cru": {
-            region: "Borgonha",
-            cepage: "Chardonnay",
-            aromes: "cítricos, flor branca, pedra de isqueiro",
-            bouche: "vivo, mineral, final salino",
-            temperature: "10-12 °C",
-            prix: "~€35",
-          },
-          "Côtes du Rhône": {
-            region: "Vale do Ródano",
-            cepage: "Grenache, Syrah, Mourvèdre",
-            aromes: "frutas escuras, especiarias doces, ervas de garrigue",
-            bouche: "generoso, amplo, taninos macios",
-            temperature: "15-17 °C",
-            prix: "~€18",
-          },
-          "Champagne Brut": {
-            region: "Champagne",
-            cepage: "Pinot Noir, Chardonnay, Meunier",
-            aromes: "maçã verde, brioche, cítricos",
-            bouche: "borbulhas finas, frescor vibrante",
-            temperature: "8-10 °C",
-            prix: "~€40",
-          },
-          "Rosé de Provence": {
-            region: "Provença",
-            cepage: "Grenache, Cinsault, Syrah",
-            aromes: "frutas vermelhas frescas, pêssego branco, ervas",
-            bouche: "leve, refrescante, final delicado",
-            temperature: "8-10 °C",
-            prix: "~€15",
-          },
-        },
-        speechRecognitionLocale: "pt-PT",
-        systemPrompt: `Você é "Sommelier Tomos.bot", um sommelier parisiense contemporâneo reconhecido pelo gosto apurado e pela elegância natural.
-Você fala apenas em português, com um estilo moderno, fluido e acolhedor — preciso sem ser acadêmico.
-Suas respostas são breves (duas ou três frases no máximo), com um toque poético, como se orientasse um convidado numa mesa estrelada em Paris.
-
-Você recomenda exclusivamente vinhos franceses autênticos e de prestígio.
-Mencione sempre:
-– a região (Bordeaux, Borgonha, Loire, Rhône, Alsácia, Champagne, Provença etc.),
-– a uva principal,
-– e uma breve descrição sensorial: aromas, textura ou sensação ("fresco e mineral", "taninos aveludados", "paladar redondo e elegante").
-
-Adapte sempre seus conselhos ao contexto: tipo de prato, momento do dia, estação ou ocasião (almoço, jantar, aperitivo, encontro romântico, celebração...).
-Sugira no máximo duas ou três opções, cada uma explicada em uma frase.
-Se o vinho for prestigioso, faça alusão discreta à sua fama ou estilo, sem exagero.
-
-Nunca invente vinhos imaginários: cite apenas denominações ou vinícolas francesas reais.
-Ao mencionar um vinho, uma denominação ou uma vinícola, envolva sempre o nome com a tag HTML <span class="wine-name"></span> para destacá-lo visualmente.
-Exemplos: <span class="wine-name">Château Margaux</span>, <span class="wine-name">Chablis Premier Cru</span>, <span class="wine-name">Côtes du Rhône</span>.
-
-Seu tom deve transmitir a confiança, a paixão e a simplicidade de um grande sommelier parisiense moderno.
-
-Após cada resposta, acrescente sempre uma pergunta de acompanhamento natural e elegante para manter a conversa.
-👉 Essa pergunta deve aparecer sempre em uma **nova linha** (com uma quebra de linha antes) e em **negrito HTML** (entre <b>...</b>), acompanhada de um emoji discreto (🍷, 🍇, 🥂, 🌿 ou 💫).
-Use tags HTML: por exemplo, <br><b>🍷 Prefere algo mais estruturado ou mais leve?</b>
-Não repita sempre o mesmo tipo de pergunta: varie o tom e a intenção conforme o contexto, como faria um sommelier atento.
-
----
-Após cada resposta, gere automaticamente entre 2 e 4 sugestões de botões que representem possíveis respostas do usuário (como se fossem opções interativas).
-Devolva-as em formato JSON dentro das tags <options> e </options> para que o sistema possa extraí-las.
-
-Formato exato:
-<options>[{"label":"🍷 Mais estrutura","prompt":"Mostre-me um vinho mais encorpado"},{"label":"🌿 Mais frescor","prompt":"Sugira-me um vinho mais fresco"}]</options>
-
-Os botões devem ser:
-– relevantes para o contexto e a última pergunta formulada pelo sommelier,
-– variados (sem repetir entre respostas),
-– naturais e elegantes em tom francês,
-– nunca genéricos ou vazios.
-
-Exemplo:
-<options>[{"label":"🍇 Borgonha","prompt":"Recomende algo da Borgonha"},{"label":"💎 Mais exclusivo","prompt":"Mostre-me um vinho mais prestigioso"}]</options>
----`.trim(),
-      },
-      pl: {
-        htmlLang: "pl",
-        title: "Sommelier Win Francuskich · Tomos.bot",
-        headerTitle: "🇫🇷 Sommelier",
-        placeholder: "Zapytaj mnie o francuskie wino...",
-        micAria: "Włącz dyktowanie głosowe",
-        micUnavailable: "Rozpoznawanie mowy nie jest dostępne w tej przeglądarce.",
-        themeToggle: {
-          toLight: "Powrót do jasnego trybu",
-          toDark: "Włącz tryb ciemny",
-        },
-        languageSelectorLabel: "Wybierz język",
-        welcome: {
-          title: "Witamy u Twojego Wirtualnego Sommeliera!",
-          subtitle: "Odkryj znakomite francuskie wina na każdą okazję.",
-        },
-        initialQuestion: "Na jaką okazję chcesz otrzymać rekomendację?",
-        initialOptions: {
-          lunch: "🍽️ Lunch",
-          dinner: "🍷 Kolacja",
-          aperitif: "🥂 Aperitif",
-          special: "🎉 Specjalna okazja",
-        },
-        prompts: {
-          aperitif: "Poleć mi francuskie wino na aperitif.",
-        },
-        mealQuestion: (mealLabel) =>
-          `Świetnie pasuje do ${mealLabel}, jakie danie podasz?`,
-        mealTypes: {
-          lunch: "lunchu",
-          dinner: "kolacji",
-        },
-        mealOptions: {
-          redMeat: {
-            label: "🥩 Czerwone mięsa",
-            prompt: (mealLabel) =>
-              `Poleć mi francuskie wino do czerwonych mięs podczas ${mealLabel}.`,
-          },
-          fish: {
-            label: "🐟 Ryby",
-            prompt: (mealLabel) =>
-              `Poleć mi francuskie wino do ryb podczas ${mealLabel}.`,
-          },
-          pasta: {
-            label: "🍝 Makarony",
-            prompt: (mealLabel) =>
-              `Poleć mi francuskie wino do makaronów podczas ${mealLabel}.`,
-          },
-          salad: {
-            label: "🥗 Sałatki",
-            prompt: (mealLabel) =>
-              `Poleć mi francuskie wino do sałatek podczas ${mealLabel}.`,
-          },
-        },
-        specialQuestion:
-          "Wspaniale! Na jaki rodzaj specjalnej okazji potrzebujesz porady?",
-        specialOptions: {
-          birthday: {
-            label: "🎂 Urodziny",
-            prompt: "Poleć wyjątkowe francuskie wino na urodziny.",
-          },
-          romantic: {
-            label: "💕 Romantyczna kolacja",
-            prompt: "Poleć francuskie wino na romantyczną kolację.",
-          },
-          gift: {
-            label: "🎁 Prezent",
-            prompt: "Poleć niezapomniane francuskie wino na prezent.",
-          },
-          celebration: {
-            label: "🏆 Wielkie świętowanie",
-            prompt: "Poleć prestiżowe francuskie wino na wielkie świętowanie.",
-          },
-        },
-        errorMessages: {
-          network:
-            "Przepraszam, wystąpił błąd podczas łączenia z serwerem. Spróbuj ponownie.",
-          fetch: "Błąd podczas pobierania odpowiedzi.",
-        },
-        vivino: "Zobacz na Vivino →",
-        modalAriaLabel: (wineName) => `Szczegóły degustacji dla ${wineName}`,
-        modalCloseAria: "Zamknij kartę wina",
-        modalLabels: {
-          region: "Region",
-          cepage: "Szczep",
-          aromes: "Aromaty",
-          bouche: "Smak",
-          temperature: "Temperatura podania",
-          prix: "Średnia cena",
-        },
-        modalSeparator: ":",
-        modalSeparatorTrailingSpace: " ",
-        genericWineProfile: {
-          region: "Francja",
-          cepage: "Tradycyjna kupaża",
-          aromes: "dojrzałe owoce, nuty kwiatowe i odrobina przypraw",
-          bouche: "zrównoważone, harmonijne zakończenie",
-          temperature: "Podawaj w temperaturze 10–18 °C w zależności od stylu",
-          prix: "Sprawdź ceny w serwisie Vivino",
-        },
-        wineDetails: {
-          "Château Margaux": {
-            region: "Bordeaux",
-            cepage: "Cabernet Sauvignon, Merlot",
-            aromes: "czarna porzeczka, fiołek, szlachetne drewno",
-            bouche: "jedwabiste taniny, elegancka struktura",
-            temperature: "16-18 °C",
-            prix: "~€250",
-          },
-          "Chablis Premier Cru": {
-            region: "Burgundia",
-            cepage: "Chardonnay",
-            aromes: "cytrusy, białe kwiaty, krzemień",
-            bouche: "żywe, mineralne, słony finisz",
-            temperature: "10-12 °C",
-            prix: "~€35",
-          },
-          "Côtes du Rhône": {
-            region: "Dolina Rodanu",
-            cepage: "Grenache, Syrah, Mourvèdre",
-            aromes: "ciemne owoce, słodkie przyprawy, zioła garrigue",
-            bouche: "pełne, soczyste, miękkie taniny",
-            temperature: "15-17 °C",
-            prix: "~€18",
-          },
-          "Champagne Brut": {
-            region: "Szampania",
-            cepage: "Pinot Noir, Chardonnay, Meunier",
-            aromes: "zielone jabłko, brioche, cytrusy",
-            bouche: "drobne bąbelki, świeża energia",
-            temperature: "8-10 °C",
-            prix: "~€40",
-          },
-          "Rosé de Provence": {
-            region: "Prowansja",
-            cepage: "Grenache, Cinsault, Syrah",
-            aromes: "świeże czerwone owoce, biała brzoskwinia, zioła",
-            bouche: "lekkie, odświeżające, delikatne zakończenie",
-            temperature: "8-10 °C",
-            prix: "~€15",
-          },
-        },
-        speechRecognitionLocale: "pl-PL",
-        systemPrompt: `Jesteś "Sommelier Tomos.bot", współczesnym paryskim sommelierem cenionym za pewny smak i naturalną elegancję.
-Mówisz wyłącznie po polsku, w stylu nowoczesnym, płynnym i ciepłym — precyzyjnym, lecz bez akademickiej sztywności.
-Twoje odpowiedzi są krótkie (maksymalnie dwa lub trzy zdania), z poetyckim akcentem, jakbyś doradzał gościowi przy gwiazdkowym stole w Paryżu.
-
-Polecasz wyłącznie autentyczne i uznane francuskie wina.
-Wspominaj zawsze:
-– region (Bordeaux, Burgundia, Loara, Rodan, Alzacja, Szampania, Prowansja itd.),
-– główną odmianę winorośli,
-– oraz krótką charakterystykę sensoryczną: aromaty, teksturę lub wrażenia ("świeże i mineralne", "aksamitne taniny", "okrągłe i eleganckie podniebienie").
-
-Zawsze dopasowuj swoje rady do kontekstu: rodzaju potrawy, pory dnia, pory roku czy okazji (lunch, kolacja, aperitif, romantyczne spotkanie, świętowanie...).
-Sugeruj maksymalnie dwie lub trzy opcje, każdą opisaną w jednym zdaniu.
-Jeśli wino jest prestiżowe, subtelnie nawiązuj do jego renomy lub stylu, bez przesady.
-
-Nigdy nie wymyślaj fikcyjnych win: wymieniaj tylko prawdziwe francuskie apelacje lub winnice.
-Gdy wspominasz o winie, apelacji albo winnicy, zawsze opakuj nazwę w znacznik HTML <span class="wine-name"></span>, aby wyróżnić ją wizualnie.
-Przykłady: <span class="wine-name">Château Margaux</span>, <span class="wine-name">Chablis Premier Cru</span>, <span class="wine-name">Côtes du Rhône</span>.
-
-Twój ton ma oddawać pewność siebie, pasję i prostotę wielkiego paryskiego sommeliera.
-
-Po każdej odpowiedzi dodaj naturalne i eleganckie pytanie uzupełniające, zachęcające do dalszej rozmowy.
-👉 To pytanie powinno zawsze pojawić się w **nowej linii** (z poprzedzającym je przełamaniem wiersza) oraz w **pogrubieniu HTML** (między <b>...</b>), z dyskretną emotikoną (🍷, 🍇, 🥂, 🌿 lub 💫).
-Stosuj znaczniki HTML, np. <br><b>🍷 Wolisz coś bardziej treściwego czy lżejszego?</b>
-Nie powtarzaj wciąż tego samego typu pytania: zmieniaj ton i intencję zależnie od kontekstu, jak czujny sommelier.
-
----
-Po każdej odpowiedzi automatycznie generuj od 2 do 4 propozycji przycisków, reprezentujących możliwe reakcje użytkownika (jak opcje interaktywne).
-Zwracaj je w formacie JSON w obrębie znaczników <options> i </options>, aby system mógł je odczytać.
-
-Dokładny format:
-<options>[{"label":"🍷 Bardziej wyraziste","prompt":"Pokaż mi bardziej wyraziste wino"},{"label":"🌿 Świeższe","prompt":"Zaproponuj świeższe wino"}]</options>
-
-Przyciski muszą być:
-– adekwatne do kontekstu i ostatniego pytania sommeliera,
-– zróżnicowane (bez powtarzania między odpowiedziami),
-– naturalne i eleganckie w tonie francuskim,
-– nigdy ogólnikowe ani puste.
-
-Przykład:
-<options>[{"label":"🍇 Burgundia","prompt":"Poleć mi coś z Burgundii"},{"label":"💎 Bardziej prestiżowe","prompt":"Pokaż mi bardziej prestiżowe wino"}]</options>
----`.trim(),
-      },
-      zh: {
-        htmlLang: "zh-Hans",
-        title: "法国葡萄酒侍酒师 · Tomos.bot",
-        headerTitle: "🇫🇷 侍酒师",
-        placeholder: "向我咨询一款法国葡萄酒...",
-        micAria: "开启语音输入",
-        micUnavailable: "此浏览器不支持语音识别。",
-        themeToggle: {
-          toLight: "切换回亮色模式",
-          toDark: "开启夜间模式",
-        },
-        languageSelectorLabel: "选择语言",
-        welcome: {
-          title: "欢迎来到你的虚拟侍酒师！",
-          subtitle: "为每个时刻发现出色的法国美酒。",
-        },
-        initialQuestion: "你想为哪种场合寻求推荐？",
-        initialOptions: {
-          lunch: "🍽️ 午餐",
-          dinner: "🍷 晚餐",
-          aperitif: "🥂 开胃酒",
-          special: "🎉 特别场合",
-        },
-        prompts: {
-          aperitif: "请为开胃酒推荐一款法国葡萄酒。",
-        },
-        mealQuestion: (mealLabel) =>
-          `很适合${mealLabel}，你准备搭配什么菜肴？`,
-        mealTypes: {
-          lunch: "午餐",
-          dinner: "晚餐",
-        },
-        mealOptions: {
-          redMeat: {
-            label: "🥩 红肉",
-            prompt: (mealLabel) =>
-              `请推荐一款适合在${mealLabel}搭配红肉的法国葡萄酒。`,
-          },
-          fish: {
-            label: "🐟 鱼类",
-            prompt: (mealLabel) =>
-              `请推荐一款适合在${mealLabel}搭配鱼类的法国葡萄酒。`,
-          },
-          pasta: {
-            label: "🍝 意面",
-            prompt: (mealLabel) =>
-              `请推荐一款适合在${mealLabel}搭配意面的法国葡萄酒。`,
-          },
-          salad: {
-            label: "🥗 沙拉",
-            prompt: (mealLabel) =>
-              `请推荐一款适合在${mealLabel}搭配沙拉的法国葡萄酒。`,
-          },
-        },
-        specialQuestion: "太棒了！你想为哪种特别场合获得建议？",
-        specialOptions: {
-          birthday: {
-            label: "🎂 生日",
-            prompt: "请推荐一款适合生日的出色法国葡萄酒。",
-          },
-          romantic: {
-            label: "💕 浪漫晚餐",
-            prompt: "请推荐一款适合浪漫晚餐的法国葡萄酒。",
-          },
-          gift: {
-            label: "🎁 礼物",
-            prompt: "请推荐一款适合作为礼物的法国葡萄酒。",
-          },
-          celebration: {
-            label: "🏆 盛大庆祝",
-            prompt: "请推荐一款适合盛大庆祝的法国葡萄酒。",
-          },
-        },
-        followUps: {
-          general: [],
-          occasion: [],
-          pairing: [],
-          profile: [],
-          region: [],
-        },
-        errorMessages: {
-          network: "抱歉，连接服务器时出现错误，请重试。",
-          fetch: "获取回复时出错。",
-        },
-        vivino: "前往 Vivino 查看 →",
-        modalAriaLabel: (wineName) => `查看 ${wineName} 的品鉴详情`,
-        modalCloseAria: "关闭葡萄酒详情卡片",
-        modalLabels: {
-          region: "产区",
-          cepage: "葡萄品种",
-          aromes: "香气",
-          bouche: "口感",
-          temperature: "侍酒温度",
-          prix: "参考价格",
-        },
-        modalSeparator: "：",
-        modalSeparatorTrailingSpace: "",
-        genericWineProfile: {
-          region: "法国",
-          cepage: "经典调配",
-          aromes: "成熟果香、花香与一丝香料气息",
-          bouche: "平衡顺滑，余韵和谐",
-          temperature: "根据风格在 10 至 18 °C 之间侍酒",
-          prix: "价格信息请参考 Vivino",
-        },
-        wineDetails: {
-          "Château Margaux": {
-            region: "波尔多",
-            cepage: "赤霞珠、梅洛",
-            aromes: "黑加仑、紫罗兰、名贵橡木",
-            bouche: "单宁丝滑，质地优雅",
-            temperature: "16-18 °C",
-            prix: "约 €250",
-          },
-          "Chablis Premier Cru": {
-            region: "勃艮第",
-            cepage: "霞多丽",
-            aromes: "柑橘、白花、燧石",
-            bouche: "清新矿物感，咸鲜收尾",
-            temperature: "10-12 °C",
-            prix: "约 €35",
-          },
-          "Côtes du Rhône": {
-            region: "罗讷河谷",
-            cepage: "歌海娜、西拉、慕合怀特",
-            aromes: "黑色水果、甜香料、灌木丛气息",
-            bouche: "圆润饱满，单宁柔和",
-            temperature: "15-17 °C",
-            prix: "约 €18",
-          },
-          "Champagne Brut": {
-            region: "香槟",
-            cepage: "黑皮诺、霞多丽、皮诺·莫尼耶",
-            aromes: "青苹果、奶油面包、柑橘",
-            bouche: "气泡细腻，清爽利落",
-            temperature: "8-10 °C",
-            prix: "约 €40",
-          },
-          "Rosé de Provence": {
-            region: "普罗旺斯",
-            cepage: "歌海娜、神索、西拉",
-            aromes: "新鲜红色浆果、白桃、香草草本",
-            bouche: "轻盈爽口，余韵细腻",
-            temperature: "8-10 °C",
-            prix: "约 €15",
-          },
-        },
-        speechRecognitionLocale: "zh-CN",
-        systemPrompt: `你是“Sommelier Tomos.bot”，一位当代的巴黎侍酒师，以精准的品味与天生的优雅著称。
-你只使用中文交流，风格现代、流畅又温暖——精准却不呆板。
-你的回复应保持精炼（最多两到三句话），带着诗意的格调，宛如在米其林星级餐桌旁为贵宾出谋划策。
-
-你只推荐正宗且享有盛誉的法国葡萄酒。
-务必提及：
-– 产区（波尔多、勃艮第、卢瓦尔、罗讷河、阿尔萨斯、香槟、普罗旺斯等），
-– 主要葡萄品种，
-– 以及简洁的感官描述：香气、口感或风味（例如“清新矿物感”、“丝绒般单宁”、“圆润优雅的余韵”）。
-
-请始终根据语境调整建议：菜品类型、时间、季节或场合（午餐、晚餐、开胃、浪漫时刻、庆祝活动等）。
-最多给出两到三种选择，并各用一句话说明。
-若葡萄酒极具声望，可以含蓄地提及其名气或风格，但避免夸张。
-
-绝不杜撰不存在的葡萄酒：只引用真实的法国法定产区或酒庄。
-每当提到葡萄酒、法定产区或酒庄名称时，请务必使用 HTML 标签 <span class="wine-name"></span> 将其包裹，以凸显其视觉效果。
-例如：<span class="wine-name">Château Margaux</span>、<span class="wine-name">Chablis Premier Cru</span>、<span class="wine-name">Côtes du Rhône</span>。
-
-语调应传达出现代巴黎侍酒师的自信、热情与从容。
-
-每次回复后，都要附上一句自然优雅的追问，引导继续对话。
-👉 这句提问务必单独置于**新的一行**（换行后显示），并以**HTML 粗体**（<b>...</b>）呈现，同时配上一个含蓄的表情符号（🍷、🍇、🥂、🌿 或 💫）。
-请使用 HTML 标签，例如：<br><b>🍷 想试试更具层次还是更轻盈的风格？</b>
-避免重复相同类型的问题：应依据语境变化语气和意图，如同细心的侍酒师一般。
-
----
-在每次回复后，自动生成 2 至 4 个按钮建议，代表用户可能的回答（如同交互式选项）。
-请以 JSON 格式输出，并置于 <options> 与 </options> 标签之间，方便系统解析。
-
-格式示例：
-<options>[{"label":"🍷 更浓郁","prompt":"推荐一款更有力量的葡萄酒"},{"label":"🌿 更清新","prompt":"推荐一款更清爽的葡萄酒"}]</options>
-
-按钮需确保：
-– 与语境及侍酒师的最后提问紧密相关，
-– 具备多样性（不同回复之间不重复），
-– 语调自然、优雅，符合法式风格，
-– 绝不可空泛或毫无内容。
-
-例如：
-<options>[{"label":"🍇 勃艮第","prompt":"请推荐一款勃艮第葡萄酒"},{"label":"💎 更尊贵","prompt":"推荐一款更尊贵的葡萄酒"}]</options>
----`.trim(),
       },
     };
 
@@ -2719,8 +1517,8 @@ Przykład:
     const CHAT_API = "https://hotel-chat-proxy.vercel.app/api/chat";
     const OPENAI_API_KEY = window?.OPENAI_API_KEY || "";
 
-    let currentLanguage = "fr";
-    let currentLang = LANGUAGE_TO_OPTION_LANG[currentLanguage] || "EN";
+    let currentLanguage = "es";
+    let currentLang = LANGUAGE_TO_OPTION_LANG[currentLanguage] || "ES";
     let messages = [];
     let isTyping = false;
     let recognition;
@@ -2751,7 +1549,7 @@ Przykład:
     });
 
     function getTranslations() {
-      return TRANSLATIONS[currentLanguage] || TRANSLATIONS.fr;
+      return TRANSLATIONS[currentLanguage] || TRANSLATIONS.es;
     }
 
     function getSystemPrompt() {
@@ -2833,10 +1631,10 @@ Przykład:
           }
         }
       } catch (error) {
-        currentLanguage = "fr";
+        currentLanguage = "es";
       }
 
-      currentLang = LANGUAGE_TO_OPTION_LANG[currentLanguage] || "EN";
+      currentLang = LANGUAGE_TO_OPTION_LANG[currentLanguage] || "ES";
 
       if (languageSelect) {
         languageSelect.value = currentLanguage;
@@ -2848,7 +1646,7 @@ Przykład:
     }
 
     function applyLanguageSettings() {
-      currentLang = LANGUAGE_TO_OPTION_LANG[currentLanguage] || "EN";
+      currentLang = LANGUAGE_TO_OPTION_LANG[currentLanguage] || "ES";
       const t = getTranslations();
       document.documentElement.setAttribute("lang", t.htmlLang);
       document.title = t.title;
@@ -2930,7 +1728,7 @@ Przykład:
         const newLanguage = event.target.value;
         if (!TRANSLATIONS[newLanguage] || newLanguage === currentLanguage) return;
         currentLanguage = newLanguage;
-        currentLang = LANGUAGE_TO_OPTION_LANG[currentLanguage] || "EN";
+        currentLang = LANGUAGE_TO_OPTION_LANG[currentLanguage] || "ES";
         try {
           localStorage.setItem(LANGUAGE_STORAGE_KEY, newLanguage);
         } catch (error) {}
@@ -3197,10 +1995,13 @@ Przykład:
     function renderInitialOccasionButtons() {
       if (!initialOptionsContainer) return;
 
-      const labels = initialOptions[currentLang] || initialOptions.EN;
-      const extended = extendedOptions[currentLang] || extendedOptions.EN;
+      const labels = initialOptions[currentLang] || initialOptions.ES;
+      const extended = extendedOptions[currentLang] || extendedOptions.ES;
       const container = initialOptionsContainer;
       container.innerHTML = "";
+
+      const hasToggle = Boolean(labels?.more);
+      const shouldShowExtended = initialOptionsExpanded || !hasToggle;
 
       BASE_OCCASION_KEYS.forEach((key) => {
         const label = labels?.[key];
@@ -3211,7 +2012,7 @@ Przykład:
         }
       });
 
-      if (initialOptionsExpanded && extended) {
+      if (shouldShowExtended && extended) {
         Object.entries(extended).forEach(([key, label]) => {
           if (!label) return;
           const button = createOccasionButton(key, label);
@@ -3221,9 +2022,11 @@ Przykład:
         });
       }
 
-      const toggleLabel = initialOptionsExpanded
-        ? seeLessLabels[currentLang] || seeLessLabels.EN
-        : labels?.more;
+      const toggleLabel = hasToggle
+        ? initialOptionsExpanded
+          ? seeLessLabels[currentLang] || seeLessLabels.ES
+          : labels.more
+        : null;
 
       if (toggleLabel) {
         const toggleButton = createOccasionButton("toggle", toggleLabel, { toggle: true });
@@ -3262,26 +2065,14 @@ Przykład:
       }
 
       const t = getTranslations();
-
-      if (key === "lunch" || key === "dinner") {
+      const basePrompt = t.prompts?.[key];
+      if (basePrompt) {
         clearInitialOccasionOptions();
-        showMealOptions(key);
+        sendMessage(basePrompt);
         return;
       }
 
-      if (key === "aperitif") {
-        clearInitialOccasionOptions();
-        sendMessage(t.prompts.aperitif);
-        return;
-      }
-
-      if (key === "special") {
-        clearInitialOccasionOptions();
-        showSpecialOccasionOptions();
-        return;
-      }
-
-      const prompts = extendedOccasionPrompts[currentLang] || extendedOccasionPrompts.EN;
+      const prompts = extendedOccasionPrompts[currentLang] || extendedOccasionPrompts.ES;
       const prompt = prompts?.[key];
       if (prompt) {
         clearInitialOccasionOptions();
@@ -3290,7 +2081,7 @@ Przykład:
     }
 
     function getRandomOccasionKey() {
-      const extended = extendedOptions[currentLang] || extendedOptions.EN;
+      const extended = extendedOptions[currentLang] || extendedOptions.ES;
       const available = [
         ...BASE_OCCASION_KEYS,
         ...Object.keys(extended || {}),
