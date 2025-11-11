@@ -201,6 +201,53 @@
       z-index: 1;
     }
 
+    @media (max-width: 480px) {
+      .header {
+        padding: 18px 18px 16px;
+        gap: 12px;
+      }
+
+      .header-content {
+        gap: 12px;
+        min-width: 0;
+      }
+
+      .header-icon {
+        width: 46px;
+        height: 46px;
+        border-radius: 18px;
+      }
+
+      .header-titles {
+        gap: 4px;
+      }
+
+      .header-title {
+        font-size: 16px;
+        letter-spacing: 0.1em;
+      }
+
+      .header-actions {
+        gap: 4px;
+      }
+
+      .icon-button {
+        width: 32px;
+        height: 32px;
+      }
+
+      .language-select select {
+        padding: 6px 22px 6px 10px;
+        font-size: 10px;
+        letter-spacing: 0.05em;
+      }
+
+      .language-select::after {
+        right: 9px;
+        font-size: 10px;
+      }
+    }
+
     .header::after {
       content: '';
       position: absolute;
@@ -696,17 +743,36 @@
 
     @media (max-width: 360px) {
       .header {
-        padding: 22px 22px 18px;
+        padding: 16px 16px 14px;
       }
 
       .header-icon {
-        width: 48px;
-        height: 48px;
-        border-radius: 20px;
+        width: 42px;
+        height: 42px;
+        border-radius: 16px;
       }
 
       .header-title {
-        font-size: 18px;
+        font-size: 15px;
+        letter-spacing: 0.08em;
+      }
+
+      .header-actions {
+        gap: 3px;
+      }
+
+      .icon-button {
+        width: 30px;
+        height: 30px;
+      }
+
+      .language-select select {
+        padding: 6px 20px 6px 8px;
+        font-size: 10px;
+      }
+
+      .language-select::after {
+        right: 8px;
       }
 
       .messages-container {
