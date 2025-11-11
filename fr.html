@@ -1068,7 +1068,24 @@ Tu tono debe transmitir la confianza, la pasión y la sencillez de un gran somme
 Tras cada respuesta, añade siempre una pregunta de seguimiento natural y elegante para invitar a continuar la conversación.
 👉 Esta pregunta debe aparecer siempre en una **nueva línea** (con un salto de línea previo) y en **negrita HTML** (entre <b>...</b>), con un emoji discreto (🍷, 🍇, 🌿 o 💫).
 Usa etiquetas HTML: por ejemplo, <br><b>🍷 ¿Prefieres algo más estructurado o más ligero?</b>
-No repitas siempre el mismo tipo de pregunta: varía el tono y la intención según el contexto, como lo haría un sommelier atento.`.trim();
+No repitas siempre el mismo tipo de pregunta: varía el tono y la intención según el contexto, como lo haría un sommelier atento.
+
+---
+Después de cada respuesta, genera automáticamente entre 2 y 4 sugerencias de botones que representen posibles respuestas del usuario (como si fueran opciones interactivas).
+Debes devolverlas en formato JSON dentro de etiquetas <options> y </options> para que el sistema pueda extraerlas.
+
+Formato exacto:
+<options>[{"label":"🍷 Más estructurado","prompt":"Muéstrame un vino más estructurado"},{"label":"🌿 Más fresco","prompt":"Sugiere un vino más fresco"}]</options>
+
+Los botones deben ser:
+– relevantes al contexto y a la última pregunta formulada por el sommelier,
+– variados (no repetir entre respuestas),
+– naturales y elegantes en tono francés,
+– nunca genéricos o vacíos.
+
+Ejemplo:
+<options>[{"label":"🍇 Bourgogne","prompt":"Recomiéndame algo de Borgoña"},{"label":"💎 Más exclusivo","prompt":"Muéstrame un vino más prestigioso"}]</options>
+---`.trim();
 
     const TRANSLATIONS = {
       en: {
@@ -1146,118 +1163,11 @@ No repitas siempre el mismo tipo de pregunta: varía el tono y la intención seg
           },
         },
         followUps: {
-          general: [
-            {
-              label: "🔁 Another suggestion",
-              prompt: "Could you suggest another French wine option?",
-            },
-            {
-              label: "📍 Different region",
-              prompt: "Do you have something from a different French region?",
-            },
-            {
-              label: "💡 Surprise me",
-              prompt: "Surprise me with a distinctive French bottle.",
-            },
-          ],
-          occasion: [
-            {
-              label: "🥂 Intimate moment",
-              prompt: "It's an intimate gathering; which refined yet gentle bottle would you recommend?",
-            },
-            {
-              label: "🎉 Festive energy",
-              prompt: "I need something vibrant for a lively celebration.",
-            },
-            {
-              label: "👔 Formal dinner",
-              prompt: "Recommend a wine suited for a formal dinner setting.",
-            },
-          ],
-          pairing: [
-            {
-              label: "🥩 Rich & savoury",
-              prompt: "Suggest something structured for rich, savoury dishes.",
-            },
-            {
-              label: "🐟 Fresh & delicate",
-              prompt: "Recommend a crisp option for lighter seafood or vegetarian plates.",
-            },
-            {
-              label: "🧀 Cheese focus",
-              prompt: "What would pair beautifully with a French cheese selection?",
-            },
-          ],
-          budget: [
-            {
-              label: "💎 High-end treat",
-              prompt: "Show me a prestigious bottle for a generous budget.",
-            },
-            {
-              label: "💼 Mid-range balance",
-              prompt: "Recommend something elegant around a mid-range budget.",
-            },
-            {
-              label: "🌿 Accessible gem",
-              prompt: "Suggest a charming, good-value cuvée.",
-            },
-          ],
-          collection: [
-            {
-              label: "🏛️ Classic cellar",
-              prompt: "I'm looking for a cuvée that suits a classic, time-honoured cellar.",
-            },
-            {
-              label: "✨ Modern highlight",
-              prompt: "Recommend something with a contemporary, daring profile.",
-            },
-            {
-              label: "🌱 Emerging collector",
-              prompt: "It's for someone building their cellar—what refined yet approachable bottle fits?",
-            },
-          ],
-          gift: [
-            {
-              label: "🌟 Statement bottle",
-              prompt: "Recommend an impressive bottle that makes a statement as a gift.",
-            },
-            {
-              label: "🎀 Graceful & refined",
-              prompt: "Suggest a graceful, refined bottle that feels personal.",
-            },
-            {
-              label: "📦 Easy to enjoy",
-              prompt: "Choose something crowd-pleasing and ready to enjoy now.",
-            },
-          ],
-          profile: [
-            {
-              label: "🍒 Fruity & silky",
-              prompt: "Suggest a fruity, silky wine with gentle tannins.",
-            },
-            {
-              label: "🌿 Fresh & mineral",
-              prompt: "Recommend something fresh, vibrant, and mineral.",
-            },
-            {
-              label: "🔥 Spiced & powerful",
-              prompt: "Show me a spicier, more powerful profile.",
-            },
-          ],
-          region: [
-            {
-              label: "🍷 Bordeaux",
-              prompt: "Could you recommend something emblematic from Bordeaux?",
-            },
-            {
-              label: "🍇 Burgundy",
-              prompt: "Do you have a refined suggestion from Burgundy?",
-            },
-            {
-              label: "🌞 Rhône Valley",
-              prompt: "What would you choose from the Rhône Valley?",
-            },
-          ],
+          general: [],
+          occasion: [],
+          pairing: [],
+          profile: [],
+          region: [],
         },
         errorMessages: {
           network:
@@ -1404,118 +1314,11 @@ No repitas siempre el mismo tipo de pregunta: varía el tono y la intención seg
           },
         },
         followUps: {
-          general: [
-            {
-              label: "🔁 Otra sugerencia",
-              prompt: "¿Podrías proponerme otra opción de vino francés?",
-            },
-            {
-              label: "📍 Otra región",
-              prompt: "¿Tienes algo de otra región francesa?",
-            },
-            {
-              label: "💡 Sorpréndeme",
-              prompt: "Sorpréndeme con una etiqueta francesa diferente.",
-            },
-          ],
-          occasion: [
-            {
-              label: "🥂 Encuentro íntimo",
-              prompt: "Es un encuentro íntimo; recomiéndame una botella refinada pero suave.",
-            },
-            {
-              label: "🎉 Celebración animada",
-              prompt: "Necesito algo vibrante para una celebración animada.",
-            },
-            {
-              label: "👔 Cena formal",
-              prompt: "Sugiere un vino ideal para una cena formal.",
-            },
-          ],
-          pairing: [
-            {
-              label: "🥩 Platos intensos",
-              prompt: "Recomiéndame un vino estructurado para platos intensos.",
-            },
-            {
-              label: "🐟 Sabores ligeros",
-              prompt: "Propón algo fresco para pescados o cocina ligera.",
-            },
-            {
-              label: "🧀 Tabla de quesos",
-              prompt: "¿Qué vino luciría con una tabla de quesos franceses?",
-            },
-          ],
-          budget: [
-            {
-              label: "💎 Capricho premium",
-              prompt: "Muéstrame una botella prestigiosa para un presupuesto generoso.",
-            },
-            {
-              label: "💼 Equilibrio medio",
-              prompt: "Sugiere algo elegante dentro de un presupuesto medio.",
-            },
-            {
-              label: "🌿 Joya accesible",
-              prompt: "Busco una cuvée encantadora y de buen valor.",
-            },
-          ],
-          collection: [
-            {
-              label: "🏛️ Clásicos seguros",
-              prompt: "Busco una etiqueta que encaje en una vinoteca clásica y reconocida.",
-            },
-            {
-              label: "✨ Toque moderno",
-              prompt: "Prefiero una referencia con un perfil moderno y atrevido.",
-            },
-            {
-              label: "🌱 Colección joven",
-              prompt: "Es para alguien que inicia su colección; necesito algo refinado pero accesible.",
-            },
-          ],
-          gift: [
-            {
-              label: "🌟 Regalo impactante",
-              prompt: "Recomiéndame una botella que deslumbre como regalo.",
-            },
-            {
-              label: "🎀 Elegancia delicada",
-              prompt: "Sugiere un vino elegante y personal para obsequiar.",
-            },
-            {
-              label: "📦 Fácil de disfrutar",
-              prompt: "Quiero una opción amable y lista para disfrutar ahora.",
-            },
-          ],
-          profile: [
-            {
-              label: "🍒 Frutal y sedoso",
-              prompt: "Propón un vino frutal y sedoso, de taninos suaves.",
-            },
-            {
-              label: "🌿 Fresco y mineral",
-              prompt: "Sugiere algo fresco, vibrante y mineral.",
-            },
-            {
-              label: "🔥 Especiado e intenso",
-              prompt: "Muéstrame un perfil más especiado y con carácter.",
-            },
-          ],
-          region: [
-            {
-              label: "🍷 Burdeos",
-              prompt: "¿Puedes recomendar algo emblemático de Burdeos?",
-            },
-            {
-              label: "🍇 Borgoña",
-              prompt: "¿Tienes una sugerencia refinada de Borgoña?",
-            },
-            {
-              label: "🌞 Valle del Ródano",
-              prompt: "¿Qué elegirías del Valle del Ródano?",
-            },
-          ],
+          general: [],
+          occasion: [],
+          pairing: [],
+          profile: [],
+          region: [],
         },
         errorMessages: {
           network:
@@ -1662,118 +1465,11 @@ No repitas siempre el mismo tipo de pregunta: varía el tono y la intención seg
           },
         },
         followUps: {
-          general: [
-            {
-              label: "🔁 Autre idée",
-              prompt: "Pourrais-tu me proposer une autre option de vin français ?",
-            },
-            {
-              label: "📍 Autre région",
-              prompt: "As-tu quelque chose d'une autre région française ?",
-            },
-            {
-              label: "💡 Surprends-moi",
-              prompt: "Surprends-moi avec une cuvée française différente.",
-            },
-          ],
-          occasion: [
-            {
-              label: "🥂 Moment intime",
-              prompt: "C'est un moment intime ; quelle bouteille douce et raffinée suggères-tu ?",
-            },
-            {
-              label: "🎉 Ambiance festive",
-              prompt: "J'ai besoin d'une cuvée vive pour une célébration animée.",
-            },
-            {
-              label: "👔 Dîner formel",
-              prompt: "Quel vin conviendrait à un dîner formel ?",
-            },
-          ],
-          pairing: [
-            {
-              label: "🥩 Plats gourmands",
-              prompt: "Un vin structuré pour des plats riches et gourmands ?",
-            },
-            {
-              label: "🐟 Mets délicats",
-              prompt: "Recommande quelque chose de frais pour poissons ou cuisine légère.",
-            },
-            {
-              label: "🧀 Plateau de fromages",
-              prompt: "Quel vin magnifierait un plateau de fromages français ?",
-            },
-          ],
-          budget: [
-            {
-              label: "💎 Grand budget",
-              prompt: "Propose-moi une bouteille prestigieuse pour un budget généreux.",
-            },
-            {
-              label: "💼 Budget équilibré",
-              prompt: "Quelle cuvée élégante autour d'un budget intermédiaire ?",
-            },
-            {
-              label: "🌿 Pépite abordable",
-              prompt: "Je cherche une pépite française au bon rapport qualité-prix.",
-            },
-          ],
-          collection: [
-            {
-              label: "🏛️ Cave classique",
-              prompt: "Je cherche une cuvée qui s'intègre dans une cave classique et prestigieuse.",
-            },
-            {
-              label: "✨ Touche moderne",
-              prompt: "Je préfère une référence au style contemporain et audacieux.",
-            },
-            {
-              label: "🌱 Début de cave",
-              prompt: "C'est pour quelqu'un qui commence sa cave ; une bouteille raffinée mais accessible ?",
-            },
-          ],
-          gift: [
-            {
-              label: "🌟 Cadeau d'exception",
-              prompt: "Recommande-moi une bouteille qui fera forte impression en cadeau.",
-            },
-            {
-              label: "🎀 Élégance délicate",
-              prompt: "Suggère un vin élégant et personnel à offrir.",
-            },
-            {
-              label: "📦 Facile à partager",
-              prompt: "Je veux une option conviviale, prête à déguster dès maintenant.",
-            },
-          ],
-          profile: [
-            {
-              label: "🍒 Fruité & soyeux",
-              prompt: "Propose un vin fruité et soyeux aux tanins doux.",
-            },
-            {
-              label: "🌿 Frais & minéral",
-              prompt: "J'aimerais quelque chose de frais, vibrant et minéral.",
-            },
-            {
-              label: "🔥 Épicé & puissant",
-              prompt: "Montre-moi un profil plus épicé et affirmé.",
-            },
-          ],
-          region: [
-            {
-              label: "🍷 Bordeaux",
-              prompt: "Aurais-tu une recommandation emblématique de Bordeaux ?",
-            },
-            {
-              label: "🍇 Bourgogne",
-              prompt: "Une suggestion raffinée en provenance de Bourgogne ?",
-            },
-            {
-              label: "🌞 Vallée du Rhône",
-              prompt: "Que choisirais-tu dans la vallée du Rhône ?",
-            },
-          ],
+          general: [],
+          occasion: [],
+          pairing: [],
+          profile: [],
+          region: [],
         },
         errorMessages: {
           network:
@@ -2351,118 +2047,11 @@ No repitas siempre el mismo tipo de pregunta: varía el tono y la intención seg
           },
         },
         followUps: {
-          general: [
-            {
-              label: "🔁 再推荐一款",
-              prompt: "可以再推荐一款风格不同的法国葡萄酒吗？",
-            },
-            {
-              label: "📍 换个产区",
-              prompt: "能否换一个法国产区试试？",
-            },
-            {
-              label: "💡 想要惊喜",
-              prompt: "给我一款有惊喜感的法国酒款吧。",
-            },
-          ],
-          occasion: [
-            {
-              label: "🥂 私密时刻",
-              prompt: "这是一个私密雅致的时刻，有什么柔和细腻的选择？",
-            },
-            {
-              label: "🎉 欢庆氛围",
-              prompt: "需要一款充满活力、适合热闹庆祝的酒。",
-            },
-            {
-              label: "👔 正式晚宴",
-              prompt: "请推荐一款适合正式晚宴的酒款。",
-            },
-          ],
-          pairing: [
-            {
-              label: "🥩 浓郁菜肴",
-              prompt: "推荐一款结构感足、适合浓郁菜肴的葡萄酒。",
-            },
-            {
-              label: "🐟 清爽料理",
-              prompt: "想要搭配清爽的海鲜或素食，有什么建议？",
-            },
-            {
-              label: "🧀 法式奶酪",
-              prompt: "哪一款最适合搭配法式奶酪拼盘？",
-            },
-          ],
-          budget: [
-            {
-              label: "💎 奢华之选",
-              prompt: "预算充足，想要一款殿堂级的法国佳酿。",
-            },
-            {
-              label: "💼 平衡预算",
-              prompt: "推荐一款质感出众、价格适中的选择。",
-            },
-            {
-              label: "🌿 亲民佳作",
-              prompt: "有没有价格亲民但风味出色的酒？",
-            },
-          ],
-          collection: [
-            {
-              label: "🏛️ 经典收藏",
-              prompt: "推荐一款适合经典酒窖收藏的酒。",
-            },
-            {
-              label: "✨ 现代风格",
-              prompt: "我想要更现代、大胆一些的风格。",
-            },
-            {
-              label: "🌱 新手藏家",
-              prompt: "送给刚开始收藏的人，有没有优雅又容易入口的选择？",
-            },
-          ],
-          gift: [
-            {
-              label: "🌟 礼物亮点",
-              prompt: "推荐一款作为礼物非常有气场的酒。",
-            },
-            {
-              label: "🎀 细腻优雅",
-              prompt: "我想要一款气质优雅、别致的礼物酒。",
-            },
-            {
-              label: "📦 易于分享",
-              prompt: "有没有一款大众都容易接受、马上就能享用的酒？",
-            },
-          ],
-          profile: [
-            {
-              label: "🍒 果香丝滑",
-              prompt: "想要果香充沛、单宁柔和的风格。",
-            },
-            {
-              label: "🌿 清新矿物",
-              prompt: "请推荐清新、矿物感强的葡萄酒。",
-            },
-            {
-              label: "🔥 香料厚重",
-              prompt: "有没有香料感丰富、力量感更强的酒？",
-            },
-          ],
-          region: [
-            {
-              label: "🍷 波尔多",
-              prompt: "能推荐一款经典的波尔多酒吗？",
-            },
-            {
-              label: "🍇 勃艮第",
-              prompt: "有没有优雅的勃艮第之选？",
-            },
-            {
-              label: "🌞 罗讷河谷",
-              prompt: "想尝试罗讷河谷的特色酒款，有何建议？",
-            },
-          ],
+          general: [],
+          occasion: [],
+          pairing: [],
+          profile: [],
+          region: [],
         },
         errorMessages: {
           network: "抱歉，连接服务器时出现错误，请重试。",
@@ -2984,6 +2573,20 @@ No repitas siempre el mismo tipo de pregunta: varía el tono y la intención seg
       addMessage("assistant", t.specialQuestion, options);
     }
 
+    function renderOptionButtons(options) {
+      const container = document.createElement("div");
+      container.classList.add("options-container", "follow-up-options");
+      options.forEach((opt) => {
+        const button = document.createElement("button");
+        button.classList.add("option-button");
+        button.textContent = opt.label;
+        button.onclick = () => sendMessage(opt.prompt);
+        container.appendChild(button);
+      });
+      const lastMessage = document.querySelector("#messages").lastElementChild;
+      if (lastMessage) lastMessage.appendChild(container);
+    }
+
     function addMessage(role, content, options = []) {
       if (!messagesContainer) return null;
 
@@ -3364,8 +2967,23 @@ No repitas siempre el mismo tipo de pregunta: varía el tono y la intención seg
         const reply = data?.choices?.[0]?.message?.content || t.errorMessages.fetch;
         messages.push({ role: "assistant", content: reply });
         typingIndicator?.remove();
-        addMessage("assistant", reply);
-        await generateFollowUpOptions(reply);
+        const cleanResponse = reply.replace(/<options>.*?<\/options>/s, "").trim();
+        const displayResponse = cleanResponse || reply;
+        addMessage("assistant", displayResponse);
+        let renderedDynamicOptions = false;
+        const optionsMatch = reply.match(/<options>(.*?)<\/options>/s);
+        if (optionsMatch) {
+          try {
+            const options = JSON.parse(optionsMatch[1]);
+            renderOptionButtons(options);
+            renderedDynamicOptions = true;
+          } catch (e) {
+            console.error("Error al parsear las opciones dinámicas:", e);
+          }
+        }
+        if (!renderedDynamicOptions) {
+          await generateFollowUpOptions(reply);
+        }
       } catch (error) {
         typingIndicator?.remove();
         addMessage("assistant", t.errorMessages.network);
