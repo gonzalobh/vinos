@@ -2072,6 +2072,7 @@ No repitas siempre el mismo tipo de pregunta: varía el tono y la intención seg
     const LANGUAGE_STORAGE_KEY = "language-preference";
     const THEME_STORAGE_KEY = "theme-preference";
     const CHAT_API = "https://hotel-chat-proxy.vercel.app/api/chat";
+    const OPENAI_API_KEY = window?.OPENAI_API_KEY || "";
 
     let currentLanguage = "fr";
     let messages = [];
@@ -2553,6 +2554,74 @@ No repitas siempre el mismo tipo de pregunta: varía el tono y la intención seg
       return messageDiv;
     }
 
+    function showFollowUpOptions(options) {
+      if (!options || options.length === 0) return;
+      const container = document.createElement("div");
+      container.className = "options-container";
+      options.forEach((opt) => {
+        if (!opt) return;
+        const btn = document.createElement("button");
+        btn.className = "option-button";
+        btn.textContent = opt.label;
+        btn.addEventListener("click", () => {
+          sendMessage(opt.prompt);
+          container.remove();
+        });
+        container.appendChild(btn);
+      });
+      if (container.childElementCount === 0) {
+        return;
+      }
+      const target = messagesContainer || document.getElementById("messages");
+      target?.appendChild(container);
+      container.scrollIntoView({ behavior: "smooth" });
+    }
+
+    async function generateFollowUpOptions(assistantMessage) {
+      if (!assistantMessage || !OPENAI_API_KEY) return;
+      try {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(assistantMessage, "text/html");
+        const ultimaPregunta = doc.querySelector("b")?.textContent?.trim() || "";
+        if (!ultimaPregunta) return;
+
+        const completion = await fetch("https://api.openai.com/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${OPENAI_API_KEY}`,
+          },
+          body: JSON.stringify({
+            model: "gpt-4o-mini",
+            messages: [
+              {
+                role: "system",
+                content:
+                  "Eres un asistente que genera opciones contextuales para botones de un chat de sommelier.",
+              },
+              {
+                role: "user",
+                content: `Genera 3 opciones contextuales en JSON según esta pregunta: ${ultimaPregunta}`,
+              },
+            ],
+          }),
+        });
+
+        if (!completion.ok) return;
+
+        const data = await completion.json();
+        const content = data?.choices?.[0]?.message?.content;
+        if (!content) return;
+
+        const options = JSON.parse(content);
+        if (Array.isArray(options) && options.length) {
+          showFollowUpOptions(options);
+        }
+      } catch (error) {
+        console.error("Unable to generate follow-up options:", error);
+      }
+    }
+
     function showTypingIndicator() {
       if (!messagesContainer) return null;
       const typingDiv = document.createElement("div");
@@ -2609,6 +2678,7 @@ No repitas siempre el mismo tipo de pregunta: varía el tono y la intención seg
         messages.push({ role: "assistant", content: reply });
         typingIndicator?.remove();
         addMessage("assistant", reply);
+        await generateFollowUpOptions(reply);
       } catch (error) {
         typingIndicator?.remove();
         addMessage("assistant", t.errorMessages.network);
