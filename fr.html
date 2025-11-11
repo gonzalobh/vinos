@@ -976,43 +976,6 @@
         animation: none !important;
       }
     }
-    .share-button {
-      position: absolute;
-      top: 10px;
-      right: 12px;
-      background: transparent;
-      border: none;
-      color: rgba(197, 163, 79, 0.75);
-      cursor: pointer;
-      opacity: 0;
-      transition: opacity 0.3s ease, color 0.3s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0;
-    }
-    .share-button i {
-      width: 18px;
-      height: 18px;
-      display: block;
-    }
-    .message-bubble:hover .share-button {
-      opacity: 1;
-    }
-    .share-button:hover,
-    .share-button:focus-visible {
-      color: var(--color-accent);
-      opacity: 1;
-      outline: none;
-    }
-    @media (max-width: 600px) {
-      .share-button {
-        opacity: 1;
-        top: 8px;
-        right: 10px;
-        font-size: 18px;
-      }
-    }
   </style>
   <base target="_blank">
 </head>
@@ -1178,8 +1141,6 @@ No repitas siempre el mismo tipo de pregunta: varía el tono y la intención seg
           fetch: "Error while retrieving the response.",
         },
         vivino: "View on Vivino →",
-        shareButtonTitle: "Share response",
-        shareCopiedMessage: "Text copied to share 🍇",
         modalAriaLabel: (wineName) => `Tasting details for ${wineName}`,
         modalCloseAria: "Close the wine sheet",
         modalLabels: {
@@ -1324,8 +1285,6 @@ No repitas siempre el mismo tipo de pregunta: varía el tono y la intención seg
           fetch: "Error al recuperar la respuesta.",
         },
         vivino: "Ver en Vivino →",
-        shareButtonTitle: "Compartir respuesta",
-        shareCopiedMessage: "Texto copiado para compartir 🍇",
         modalAriaLabel: (wineName) => `Detalles de cata de ${wineName}`,
         modalCloseAria: "Cerrar la ficha del vino",
         modalLabels: {
@@ -1470,8 +1429,6 @@ No repitas siempre el mismo tipo de pregunta: varía el tono y la intención seg
           fetch: "Erreur lors de la récupération de la réponse.",
         },
         vivino: "Voir sur Vivino →",
-        shareButtonTitle: "Partager la réponse",
-        shareCopiedMessage: "Texte copié pour partager 🍇",
         modalAriaLabel: (wineName) => `Détails de dégustation pour ${wineName}`,
         modalCloseAria: "Fermer la fiche du vin",
         modalLabels: {
@@ -1616,8 +1573,6 @@ No repitas siempre el mismo tipo de pregunta: varía el tono y la intención seg
           fetch: "Fehler beim Abrufen der Antwort.",
         },
         vivino: "Auf Vivino ansehen →",
-        shareButtonTitle: "Antwort teilen",
-        shareCopiedMessage: "Text zum Teilen kopiert 🍇",
         modalAriaLabel: (wineName) => `Verkostungsnotizen für ${wineName}`,
         modalCloseAria: "Weinkarte schließen",
         modalLabels: {
@@ -1762,8 +1717,6 @@ No repitas siempre el mismo tipo de pregunta: varía el tono y la intención seg
           fetch: "Erro ao obter a resposta.",
         },
         vivino: "Ver no Vivino →",
-        shareButtonTitle: "Compartilhar resposta",
-        shareCopiedMessage: "Texto copiado para compartilhar 🍇",
         modalAriaLabel: (wineName) => `Detalhes de degustação de ${wineName}`,
         modalCloseAria: "Fechar a ficha do vinho",
         modalLabels: {
@@ -1908,8 +1861,6 @@ No repitas siempre el mismo tipo de pregunta: varía el tono y la intención seg
           fetch: "Błąd podczas pobierania odpowiedzi.",
         },
         vivino: "Zobacz na Vivino →",
-        shareButtonTitle: "Udostępnij odpowiedź",
-        shareCopiedMessage: "Tekst skopiowano do udostępnienia 🍇",
         modalAriaLabel: (wineName) => `Szczegóły degustacji dla ${wineName}`,
         modalCloseAria: "Zamknij kartę wina",
         modalLabels: {
@@ -2052,8 +2003,6 @@ No repitas siempre el mismo tipo de pregunta: varía el tono y la intención seg
           fetch: "获取回复时出错。",
         },
         vivino: "前往 Vivino 查看 →",
-        shareButtonTitle: "分享回复",
-        shareCopiedMessage: "文本已复制，准备分享 🍇",
         modalAriaLabel: (wineName) => `查看 ${wineName} 的品鉴详情`,
         modalCloseAria: "关闭葡萄酒详情卡片",
         modalLabels: {
@@ -2577,81 +2526,6 @@ No repitas siempre el mismo tipo de pregunta: varía el tono y la intención seg
       const bubble = document.createElement("div");
       bubble.className = "message-bubble";
       bubble.innerHTML = content;
-
-      if (role === "assistant") {
-        const translations = getTranslations();
-        const shareButton = document.createElement("button");
-        shareButton.type = "button";
-        shareButton.className = "share-button";
-        const shareTitle = translations.shareButtonTitle || "Partager la réponse";
-        shareButton.setAttribute("title", shareTitle);
-        shareButton.setAttribute("aria-label", shareTitle);
-
-        const icon = document.createElement("i");
-        icon.setAttribute("data-lucide", "share-2");
-        shareButton.appendChild(icon);
-
-        shareButton.addEventListener("click", async (event) => {
-          event.preventDefault();
-          event.stopPropagation();
-          const messageText = bubble.innerText.trim();
-          if (!messageText) return;
-
-          const shareData = {
-            title: "Sommelier Tomos.bot 🍷",
-            text: messageText,
-            url: window.location.href,
-          };
-
-          if (navigator.share) {
-            try {
-              await navigator.share(shareData);
-              return;
-            } catch (error) {
-              if (error && error.name === "AbortError") {
-                return;
-              }
-            }
-          }
-
-          const notifyCopy = () => {
-            const copiedMessage = translations.shareCopiedMessage || "Texte copié pour partager 🍇";
-            alert(copiedMessage);
-          };
-
-          const copyToClipboard = async () => {
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-              await navigator.clipboard.writeText(messageText);
-              return;
-            }
-
-            const textarea = document.createElement("textarea");
-            textarea.value = messageText;
-            textarea.setAttribute("readonly", "");
-            textarea.style.position = "absolute";
-            textarea.style.left = "-9999px";
-            document.body.appendChild(textarea);
-            textarea.select();
-            document.execCommand("copy");
-            document.body.removeChild(textarea);
-          };
-
-          try {
-            await copyToClipboard();
-          } catch (clipboardError) {
-            // Ignore clipboard errors and still notify the user
-          }
-          notifyCopy();
-        });
-
-        bubble.appendChild(shareButton);
-
-        if (window.lucide && typeof window.lucide.createIcons === "function") {
-          window.lucide.createIcons();
-        } else {
-          createIcons({ icons });
-        }
-      }
 
       messageDiv.appendChild(bubble);
 
