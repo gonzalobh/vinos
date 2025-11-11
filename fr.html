@@ -553,6 +553,39 @@
       margin-top: 18px;
     }
 
+    .options-wrapper {
+      max-height: 280px;
+      overflow: hidden;
+      transition: max-height 0.4s ease;
+    }
+
+    .options-wrapper.expanded {
+      max-height: 1000px;
+    }
+
+    .show-more-btn {
+      display: block;
+      margin: 12px auto 0;
+      background: rgba(197, 163, 79, 0.2);
+      border: 1px solid rgba(197, 163, 79, 0.35);
+      border-radius: 999px;
+      padding: 10px 20px;
+      font-size: 14px;
+      letter-spacing: 0.08em;
+      color: rgba(30, 30, 30, 0.8);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    body[data-theme="light"] .show-more-btn {
+      background: rgba(197, 163, 79, 0.22);
+      color: #1a1a1a;
+    }
+
+    .show-more-btn:hover {
+      background: rgba(197, 163, 79, 0.35);
+    }
+
     .option-button {
       padding: 12px 20px;
       border-radius: 999px;
@@ -2570,7 +2603,104 @@ Ejemplo:
         action: () => handleOptionClick(key),
       }));
 
-      addMessage("assistant", t.initialQuestion, options);
+      const messageElement = addMessage("assistant", t.initialQuestion, options);
+
+      if (!messageElement) return;
+
+      const optionsContainer = messageElement.querySelector(".options-container");
+      if (!optionsContainer) return;
+
+      optionsContainer.id = "occasionButtons";
+
+      const wrapper = document.createElement("div");
+      wrapper.className = "options-wrapper";
+
+      const parent = optionsContainer.parentElement;
+      if (parent) {
+        parent.insertBefore(wrapper, optionsContainer);
+        wrapper.appendChild(optionsContainer);
+
+        const showMoreBtn = document.createElement("button");
+        showMoreBtn.type = "button";
+        showMoreBtn.className = "show-more-btn";
+        showMoreBtn.id = "showMoreBtn";
+        showMoreBtn.textContent = "+ Ver más";
+        showMoreBtn.style.display = "none";
+        showMoreBtn.setAttribute("aria-controls", "occasionButtons");
+        showMoreBtn.setAttribute("aria-expanded", "false");
+        parent.insertBefore(showMoreBtn, wrapper.nextSibling);
+      }
+
+      setupOccasionShowMore();
+    }
+
+    function setupOccasionShowMore() {
+      const wrapper = document.querySelector(".options-wrapper");
+      const showMoreBtn = document.getElementById("showMoreBtn");
+
+      if (!wrapper || !showMoreBtn) return;
+
+      const allButtons = Array.from(wrapper.querySelectorAll(".option-button"));
+      if (allButtons.length === 0) {
+        showMoreBtn.style.display = "none";
+        return;
+      }
+
+      const computeLimit = () => {
+        if (window.innerWidth >= 1024) {
+          return allButtons.length;
+        }
+        return window.innerHeight < 700 ? 6 : 10;
+      };
+
+      const applyCollapsedState = () => {
+        const limitVisible = computeLimit();
+        wrapper.classList.remove("expanded");
+
+        if (allButtons.length > limitVisible) {
+          allButtons.forEach((btn, index) => {
+            btn.style.display = index < limitVisible ? "inline-flex" : "none";
+          });
+          showMoreBtn.style.display = "block";
+          showMoreBtn.textContent = "+ Ver más";
+          showMoreBtn.setAttribute("aria-expanded", "false");
+        } else {
+          allButtons.forEach((btn) => {
+            btn.style.display = "inline-flex";
+          });
+          showMoreBtn.style.display = "none";
+          showMoreBtn.textContent = "+ Ver más";
+          showMoreBtn.setAttribute("aria-expanded", "false");
+        }
+      };
+
+      applyCollapsedState();
+
+      showMoreBtn.onclick = () => {
+        if (showMoreBtn.style.display === "none") return;
+
+        if (wrapper.classList.contains("expanded")) {
+          applyCollapsedState();
+        } else {
+          wrapper.classList.add("expanded");
+          allButtons.forEach((btn) => {
+            btn.style.display = "inline-flex";
+          });
+          showMoreBtn.textContent = "− Ver menos";
+          showMoreBtn.setAttribute("aria-expanded", "true");
+        }
+      };
+
+      const onResize = () => {
+        applyCollapsedState();
+      };
+
+      if (window.__occasionResizeHandler) {
+        window.removeEventListener("resize", window.__occasionResizeHandler);
+      }
+
+      window.__occasionResizeHandler = onResize;
+      window.addEventListener("resize", onResize);
     }
 
     function stripOptionLabel(optionLabel) {
@@ -2708,7 +2838,17 @@ Ejemplo:
           button.className = "option-button";
           button.textContent = option.text;
           button.onclick = () => {
-            optionsContainer.remove();
+            const wrapper = optionsContainer.parentElement;
+            if (wrapper && wrapper.classList.contains("options-wrapper")) {
+              wrapper.remove();
+              document.getElementById("showMoreBtn")?.remove();
+              if (window.__occasionResizeHandler) {
+                window.removeEventListener("resize", window.__occasionResizeHandler);
+                window.__occasionResizeHandler = null;
+              }
+            } else {
+              optionsContainer.remove();
+            }
             option.action();
           };
           optionsContainer.appendChild(button);
