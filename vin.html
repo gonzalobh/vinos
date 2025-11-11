@@ -264,18 +264,6 @@
       text-transform: uppercase;
     }
 
-    .header-subtitle {
-      font-size: 12px;
-      font-weight: 500;
-      letter-spacing: 0.5em;
-      text-transform: uppercase;
-      color: rgba(245, 245, 245, 0.6);
-    }
-
-    body[data-theme="light"] .header-subtitle {
-      color: rgba(32, 32, 32, 0.5);
-    }
-
     .icon-button {
       position: relative;
       z-index: 1;
@@ -916,8 +904,7 @@
       <div class="header-content">
         <span class="header-icon" id="headerIcon"></span>
         <div class="header-titles">
-          <h1 class="header-title">Sommelier Français</h1>
-          <span class="header-subtitle">par Tomos.bot</span>
+          <h1 class="header-title">🇫🇷 Sommelier</h1>
         </div>
       </div>
       <div class="header-actions">
@@ -968,8 +955,7 @@
       en: {
         htmlLang: "en",
         title: "French Wine Sommelier · Tomos.bot",
-        headerTitle: "French Sommelier",
-        headerSubtitle: "by Tomos.bot",
+        headerTitle: "🇫🇷 Sommelier",
         placeholder: "Ask me for a French wine...",
         micAria: "Enable voice dictation",
         micUnavailable: "Voice recognition is not available in this browser.",
@@ -1137,8 +1123,7 @@ Do not repeat the same type of question each time: vary your tone and intention 
       es: {
         htmlLang: "es",
         title: "Sumiller de Vinos Franceses · Tomos.bot",
-        headerTitle: "Sumiller Francés",
-        headerSubtitle: "por Tomos.bot",
+        headerTitle: "🇫🇷 Sumiller",
         placeholder: "Pregúntame por un vino francés...",
         micAria: "Activar dictado por voz",
         micUnavailable: "El reconocimiento de voz no está disponible en este navegador.",
@@ -1306,8 +1291,7 @@ No repitas siempre el mismo tipo de pregunta: varía el tono y la intención seg
       fr: {
         htmlLang: "fr",
         title: "Sommelier de Vins Français · Tomos.bot",
-        headerTitle: "Sommelier Français",
-        headerSubtitle: "par Tomos.bot",
+        headerTitle: "🇫🇷 Sommelier",
         placeholder: "Demandez-moi un vin français...",
         micAria: "Activer la dictée vocale",
         micUnavailable: "La reconnaissance vocale n'est pas disponible sur ce navigateur.",
@@ -1475,8 +1459,7 @@ Ne répète pas toujours le même type de question : varie ton ton et ton intent
       de: {
         htmlLang: "de",
         title: "Französischer Weinsommelier · Tomos.bot",
-        headerTitle: "Französischer Sommelier",
-        headerSubtitle: "von Tomos.bot",
+        headerTitle: "🇫🇷 Sommelier",
         placeholder: "Frag mich nach einem französischen Wein...",
         micAria: "Spracherkennung aktivieren",
         micUnavailable: "Die Spracherkennung ist in diesem Browser nicht verfügbar.",
@@ -1644,8 +1627,7 @@ Ne répète pas toujours le même type de question : varie ton ton et ton intent
       pt: {
         htmlLang: "pt",
         title: "Sommelier de Vinhos Franceses · Tomos.bot",
-        headerTitle: "Sommelier Francês",
-        headerSubtitle: "por Tomos.bot",
+        headerTitle: "🇫🇷 Sommelier",
         placeholder: "Peça-me um vinho francês...",
         micAria: "Ativar ditado por voz",
         micUnavailable: "O reconhecimento de voz não está disponível neste navegador.",
@@ -1813,8 +1795,7 @@ Não repita sempre o mesmo tipo de pergunta: varie o tom e a intenção conforme
       pl: {
         htmlLang: "pl",
         title: "Sommelier Win Francuskich · Tomos.bot",
-        headerTitle: "Francuski Sommelier",
-        headerSubtitle: "od Tomos.bot",
+        headerTitle: "🇫🇷 Sommelier",
         placeholder: "Zapytaj mnie o francuskie wino...",
         micAria: "Włącz dyktowanie głosowe",
         micUnavailable: "Rozpoznawanie mowy nie jest dostępne w tej przeglądarce.",
@@ -1982,8 +1963,7 @@ Nie powtarzaj wciąż tego samego typu pytania: zmieniaj ton i intencję zależn
       zh: {
         htmlLang: "zh-Hans",
         title: "法国葡萄酒侍酒师 · Tomos.bot",
-        headerTitle: "法国侍酒师",
-        headerSubtitle: "由 Tomos.bot 提供",
+        headerTitle: "🇫🇷 侍酒师",
         placeholder: "向我咨询一款法国葡萄酒...",
         micAria: "开启语音输入",
         micUnavailable: "此浏览器不支持语音识别。",
@@ -2171,7 +2151,6 @@ Nie powtarzaj wciąż tego samego typu pytania: zmieniaj ton i intencję zależn
     let themeToggleButton;
     let themeIcon;
     let headerTitle;
-    let headerSubtitle;
     let languageSelect;
     let languageLabel;
 
@@ -2186,7 +2165,6 @@ Nie powtarzaj wciąż tego samego typu pytania: zmieniaj ton i intencję zależn
 
     function initializeApp() {
       headerTitle = document.querySelector(".header-title");
-      headerSubtitle = document.querySelector(".header-subtitle");
       themeToggleButton = document.getElementById("themeToggle");
       themeIcon = document.getElementById("themeIcon");
       languageSelect = document.getElementById("languageSelect");
@@ -2271,7 +2249,6 @@ Nie powtarzaj wciąż tego samego typu pytania: zmieniaj ton i intencję zależn
       document.documentElement.setAttribute("lang", t.htmlLang);
       document.title = t.title;
       if (headerTitle) headerTitle.textContent = t.headerTitle;
-      if (headerSubtitle) headerSubtitle.textContent = t.headerSubtitle;
       if (input) input.placeholder = t.placeholder;
       if (micButton) {
         micButton.setAttribute("aria-label", t.micAria);
