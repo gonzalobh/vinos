@@ -804,14 +804,6 @@ if (name === "send") {
       function startChatExperience() {
         messages = [{ role: "system", content: SYSTEM_PROMPT }];
         messagesContainer.innerHTML = "";
-        showWelcome();
-        setTimeout(() => {
-          const welcome = document.querySelector(".welcome-screen");
-          if (welcome) {
-            welcome.remove();
-          }
-          showInitialOptions();
-        }, 1600);
         input.focus();
       }
 
@@ -970,99 +962,6 @@ if (name === "send") {
           sendButton.disabled = false;
           input.focus();
         }
-      }
-
-function showWelcome() {
-  const welcomeDiv = document.createElement("div");
-  welcomeDiv.className = "welcome-screen";
-
-  const icon = document.createElement("span");
-  icon.className = "welcome-icon";
-  // Usa la misma copa que el encabezado
-  renderIcon(icon, "wine", { width: 48, height: 48, strokeWidth: 1 });
-
-  const title = document.createElement("h2");
-  title.className = "welcome-title";
-  title.textContent = "Bienvenue auprès de votre Sommelier Virtuel !";
-
-  const subtitle = document.createElement("p");
-  subtitle.className = "welcome-subtitle";
-  subtitle.textContent = "Découvrez les plus grands vins français pour chaque occasion.";
-
-  welcomeDiv.appendChild(icon);
-  welcomeDiv.appendChild(title);
-  welcomeDiv.appendChild(subtitle);
-
-  messagesContainer.appendChild(welcomeDiv);
-}
-
-      function showInitialOptions() {
-        const options = [
-          {
-            text: "🍽️ Déjeuner",
-            action: () => showMealOptions("déjeuner"),
-          },
-          {
-            text: "🍷 Dîner",
-            action: () => showMealOptions("dîner"),
-          },
-          {
-            text: "🥂 Apéritif",
-            action: () => sendMessage("Suggère-moi un vin français pour un apéritif"),
-          },
-          {
-            text: "🎉 Occasion spéciale",
-            action: () => showSpecialOccasionOptions(),
-          },
-        ];
-
-        addMessage("assistant", "Pour quelle occasion souhaitez-vous une recommandation ?", options);
-      }
-
-      function showMealOptions(mealType) {
-        const options = [
-          {
-            text: "🥩 Viandes rouges",
-            action: () => sendMessage(`Suggère-moi un vin français pour accompagner des viandes rouges lors du ${mealType}`),
-          },
-          {
-            text: "🐟 Poissons",
-            action: () => sendMessage(`Suggère-moi un vin français pour accompagner des poissons lors du ${mealType}`),
-          },
-          {
-            text: "🍝 Pâtes",
-            action: () => sendMessage(`Suggère-moi un vin français pour accompagner des pâtes lors du ${mealType}`),
-          },
-          {
-            text: "🥗 Salades",
-            action: () => sendMessage(`Suggère-moi un vin français pour accompagner des salades lors du ${mealType}`),
-          },
-        ];
-
-        addMessage("assistant", `Parfait pour le ${mealType}, quel type de plat servirez-vous ?`, options);
-      }
-
-      function showSpecialOccasionOptions() {
-        const options = [
-          {
-            text: "🎂 Anniversaire",
-            action: () => sendMessage("Suggère-moi un vin français d'exception pour un anniversaire"),
-          },
-          {
-            text: "💕 Dîner romantique",
-            action: () => sendMessage("Suggère-moi un vin français pour un dîner romantique"),
-          },
-          {
-            text: "🎁 Cadeau",
-            action: () => sendMessage("Suggère-moi un vin français mémorable à offrir"),
-          },
-          {
-            text: "🏆 Grande célébration",
-            action: () => sendMessage("Suggère-moi un vin français prestigieux pour une grande célébration"),
-          },
-        ];
-
-        addMessage("assistant", "Magnifique ! Pour quel type d'occasion spéciale souhaitez-vous être conseillé ?", options);
       }
 
       form.addEventListener("submit", (e) => {
