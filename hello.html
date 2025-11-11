@@ -144,6 +144,25 @@
         max-height: none;
         margin: 0 auto;
       }
+
+      .options-container.initial-options {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding-bottom: 6px;
+        padding-right: 12px;
+        -webkit-overflow-scrolling: touch;
+        scroll-snap-type: x proximity;
+      }
+
+      .options-container.initial-options .option-button {
+        flex: 0 0 auto;
+        scroll-snap-align: start;
+      }
+
+      .options-container.initial-options .option-button.toggle-button {
+        position: sticky;
+        right: 0;
+      }
     }
 
     @supports (height: 100dvh) {
@@ -543,6 +562,10 @@
       margin-top: 16px;
     }
 
+    .options-container.initial-options {
+      position: relative;
+    }
+
     .options-container.follow-up-options {
       width: 100%;
       margin-left: 0;
@@ -572,6 +595,10 @@
       border-color: rgba(216, 187, 108, 0.45);
       color: var(--color-ivory);
       box-shadow: 0 22px 40px rgba(0, 0, 0, 0.35);
+    }
+
+    .option-button.toggle-button {
+      flex: 0 0 auto;
     }
 
     body[data-theme="light"] .option-button {
@@ -1044,6 +1071,233 @@
   <!-- Carga de Lucide Icons -->
     <script type="module">
     import { createIcons, icons } from "https://cdn.jsdelivr.net/npm/lucide@latest/+esm";
+
+    const initialOptions = {
+      ES: {
+        lunch: "🍽️ Almuerzo",
+        dinner: "🍷 Cena",
+        aperitif: "🥂 Aperitivo",
+        special: "🎉 Ocasión especial",
+        more: "➕ Ver más",
+      },
+      EN: {
+        lunch: "🍽️ Lunch",
+        dinner: "🍷 Dinner",
+        aperitif: "🥂 Aperitif",
+        special: "🎉 Special occasion",
+        more: "➕ See more",
+      },
+      FR: {
+        lunch: "🍽️ Déjeuner",
+        dinner: "🍷 Dîner",
+        aperitif: "🥂 Apéritif",
+        special: "🎉 Occasion spéciale",
+        more: "➕ Voir plus",
+      },
+      ZH: {
+        lunch: "🍽️ 午餐",
+        dinner: "🍷 晚餐",
+        aperitif: "🥂 开胃酒",
+        special: "🎉 特别场合",
+        more: "➕ 更多",
+      },
+      DE: {
+        lunch: "🍽️ Mittagessen",
+        dinner: "🍷 Abendessen",
+        aperitif: "🥂 Aperitif",
+        special: "🎉 Besonderer Anlass",
+        more: "➕ Mehr anzeigen",
+      },
+      PL: {
+        lunch: "🍽️ Obiad",
+        dinner: "🍷 Kolacja",
+        aperitif: "🥂 Aperitif",
+        special: "🎉 Wyjątkowa okazja",
+        more: "➕ Pokaż więcej",
+      },
+      PT: {
+        lunch: "🍽️ Almoço",
+        dinner: "🍷 Jantar",
+        aperitif: "🥂 Aperitivo",
+        special: "🎉 Ocasião especial",
+        more: "➕ Ver mais",
+      },
+    };
+
+    const extendedOptions = {
+      ES: {
+        brunch: "🌅 Brunch elegante",
+        picnic: "🌄 Picnic campestre",
+        friends: "🔥 Noche entre amigos",
+        terrace: "🌙 Cena en terraza",
+        music: "🎶 Degustación con música",
+        autumn: "🍁 Comida de otoño",
+        seaside: "⛱️ Vacaciones junto al mar",
+        cozy: "🏠 Noche acogedora",
+        surprise: "🎁 Sorpréndeme",
+      },
+      EN: {
+        brunch: "🌅 Elegant brunch",
+        picnic: "🌄 Country picnic",
+        friends: "🔥 Night with friends",
+        terrace: "🌙 Dinner on terrace",
+        music: "🎶 Musical tasting",
+        autumn: "🍁 Autumn meal",
+        seaside: "⛱️ Seaside holidays",
+        cozy: "🏠 Cozy night",
+        surprise: "🎁 Surprise me",
+      },
+      FR: {
+        brunch: "🌅 Brunch élégant",
+        picnic: "🌄 Pique-nique champêtre",
+        friends: "🔥 Soirée entre amis",
+        terrace: "🌙 Dîner en terrasse",
+        music: "🎶 Dégustation musicale",
+        autumn: "🍁 Repas d’automne",
+        seaside: "⛱️ Vacances au bord de mer",
+        cozy: "🏠 Soir cocooning",
+        surprise: "🎁 Surprends-moi",
+      },
+      ZH: {
+        brunch: "🌅 优雅早午餐",
+        picnic: "🌄 田园野餐",
+        friends: "🔥 朋友聚会",
+        terrace: "🌙 露台晚餐",
+        music: "🎶 音乐品酒",
+        autumn: "🍁 秋季餐点",
+        seaside: "⛱️ 海边度假",
+        cozy: "🏠 温馨夜晚",
+        surprise: "🎁 给我惊喜",
+      },
+      DE: {
+        brunch: "🌅 Eleganter Brunch",
+        picnic: "🌄 Picknick im Grünen",
+        friends: "🔥 Abend mit Freunden",
+        terrace: "🌙 Abendessen auf der Terrasse",
+        music: "🎶 Degustation mit Musik",
+        autumn: "🍁 Herbstliches Essen",
+        seaside: "⛱️ Urlaub am Meer",
+        cozy: "🏠 Gemütlicher Abend",
+        surprise: "🎁 Überrasch mich",
+      },
+      PL: {
+        brunch: "🌅 Elegancki brunch",
+        picnic: "🌄 Piknik na świeżym powietrzu",
+        friends: "🔥 Wieczór ze znajomymi",
+        terrace: "🌙 Kolacja na tarasie",
+        music: "🎶 Degustacja z muzyką",
+        autumn: "🍁 Jesienny posiłek",
+        seaside: "⛱️ Wakacje nad morzem",
+        cozy: "🏠 Przytulny wieczór",
+        surprise: "🎁 Zaskocz mnie",
+      },
+      PT: {
+        brunch: "🌅 Brunch elegante",
+        picnic: "🌄 Piquenique no campo",
+        friends: "🔥 Noite com amigos",
+        terrace: "🌙 Jantar no terraço",
+        music: "🎶 Degustação com música",
+        autumn: "🍁 Refeição de outono",
+        seaside: "⛱️ Férias à beira-mar",
+        cozy: "🏠 Noite aconchegante",
+        surprise: "🎁 Surpreenda-me",
+      },
+    };
+
+    const extendedOccasionPrompts = {
+      ES: {
+        brunch: "Recomiéndame un vino francés para un brunch elegante.",
+        picnic: "Sugiere un vino francés ideal para un picnic campestre.",
+        friends: "Quiero un vino francés para una noche entre amigos.",
+        terrace: "Recomiéndame un vino francés para una cena en terraza.",
+        music: "Sugiere un vino francés para una degustación con música.",
+        autumn: "Recomiéndame un vino francés para una comida de otoño.",
+        seaside: "Sugiere un vino francés para vacaciones junto al mar.",
+        cozy: "Quiero un vino francés para una noche acogedora.",
+      },
+      EN: {
+        brunch: "Recommend a French wine for an elegant brunch.",
+        picnic: "Suggest a French wine for a country picnic.",
+        friends: "Recommend a French wine for a night with friends.",
+        terrace: "Suggest a French wine for dinner on the terrace.",
+        music: "Recommend a French wine for a tasting with music.",
+        autumn: "Suggest a French wine for an autumn meal.",
+        seaside: "Recommend a French wine for seaside holidays.",
+        cozy: "Suggest a French wine for a cozy night.",
+      },
+      FR: {
+        brunch: "Recommande-moi un vin français pour un brunch élégant.",
+        picnic: "Suggère un vin français pour un pique-nique champêtre.",
+        friends: "Je veux un vin français pour une soirée entre amis.",
+        terrace: "Propose un vin français pour un dîner en terrasse.",
+        music: "Suggère un vin français pour une dégustation musicale.",
+        autumn: "Recommande un vin français pour un repas d’automne.",
+        seaside: "Suggère un vin français pour des vacances au bord de mer.",
+        cozy: "Je cherche un vin français pour une soirée cocooning.",
+      },
+      ZH: {
+        brunch: "请为优雅的早午餐推荐一款法国葡萄酒。",
+        picnic: "请推荐一款适合田园野餐的法国葡萄酒。",
+        friends: "请推荐一款适合朋友聚会的法国葡萄酒。",
+        terrace: "请推荐一款适合露台晚餐的法国葡萄酒。",
+        music: "请推荐一款适合音乐品酒的法国葡萄酒。",
+        autumn: "请推荐一款适合秋季餐点的法国葡萄酒。",
+        seaside: "请推荐一款适合海边度假的法国葡萄酒。",
+        cozy: "请推荐一款适合温馨夜晚的法国葡萄酒。",
+      },
+      DE: {
+        brunch: "Empfiehl mir einen französischen Wein für einen eleganten Brunch.",
+        picnic: "Schlage einen französischen Wein für ein Picknick im Grünen vor.",
+        friends: "Ich suche einen französischen Wein für einen Abend mit Freunden.",
+        terrace: "Empfiehl mir einen französischen Wein für ein Abendessen auf der Terrasse.",
+        music: "Schlage einen französischen Wein für eine Degustation mit Musik vor.",
+        autumn: "Empfiehl mir einen französischen Wein für ein herbstliches Essen.",
+        seaside: "Schlage einen französischen Wein für Urlaub am Meer vor.",
+        cozy: "Ich möchte einen französischen Wein für einen gemütlichen Abend.",
+      },
+      PL: {
+        brunch: "Poleć mi francuskie wino na elegancki brunch.",
+        picnic: "Zaproponuj francuskie wino na piknik na świeżym powietrzu.",
+        friends: "Potrzebuję francuskiego wina na wieczór ze znajomymi.",
+        terrace: "Poleć francuskie wino na kolację na tarasie.",
+        music: "Zaproponuj francuskie wino na degustację z muzyką.",
+        autumn: "Poleć francuskie wino na jesienny posiłek.",
+        seaside: "Zaproponuj francuskie wino na wakacje nad morzem.",
+        cozy: "Szukam francuskiego wina na przytulny wieczór.",
+      },
+      PT: {
+        brunch: "Recomende um vinho francês para um brunch elegante.",
+        picnic: "Sugira um vinho francês para um piquenique no campo.",
+        friends: "Quero um vinho francês para uma noite com amigos.",
+        terrace: "Indique um vinho francês para um jantar no terraço.",
+        music: "Sugira um vinho francês para uma degustação com música.",
+        autumn: "Recomende um vinho francês para uma refeição de outono.",
+        seaside: "Sugira um vinho francês para férias à beira-mar.",
+        cozy: "Quero um vinho francês para uma noite aconchegante.",
+      },
+    };
+
+    const seeLessLabels = {
+      ES: "Ver menos",
+      EN: "See less",
+      FR: "Voir moins",
+      ZH: "收起",
+      DE: "Weniger anzeigen",
+      PL: "Pokaż mniej",
+      PT: "Ver menos",
+    };
+
+    const LANGUAGE_TO_OPTION_LANG = {
+      en: "EN",
+      es: "ES",
+      fr: "FR",
+      de: "DE",
+      pt: "PT",
+      pl: "PL",
+      zh: "ZH",
+    };
+
+    const BASE_OCCASION_KEYS = ["lunch", "dinner", "aperitif", "special"];
 
     // Cada idioma define su propio systemPrompt dentro de TRANSLATIONS.
 
@@ -2377,6 +2631,7 @@ Przykład:
     const OPENAI_API_KEY = window?.OPENAI_API_KEY || "";
 
     let currentLanguage = "fr";
+    let currentLang = LANGUAGE_TO_OPTION_LANG[currentLanguage] || "EN";
     let messages = [];
     let isTyping = false;
     let recognition;
@@ -2397,6 +2652,8 @@ Przykład:
     let headerTitle;
     let languageSelect;
     let languageLabel;
+    let initialOptionsContainer = null;
+    let initialOptionsExpanded = false;
 
     document.addEventListener("DOMContentLoaded", () => {
       createIcons({ icons });
@@ -2484,6 +2741,8 @@ Przykład:
         currentLanguage = "fr";
       }
 
+      currentLang = LANGUAGE_TO_OPTION_LANG[currentLanguage] || "EN";
+
       if (languageSelect) {
         languageSelect.value = currentLanguage;
       }
@@ -2494,6 +2753,7 @@ Przykład:
     }
 
     function applyLanguageSettings() {
+      currentLang = LANGUAGE_TO_OPTION_LANG[currentLanguage] || "EN";
       const t = getTranslations();
       document.documentElement.setAttribute("lang", t.htmlLang);
       document.title = t.title;
@@ -2523,6 +2783,10 @@ Przykład:
 
       if (activeWineModal) {
         closeWineModal();
+      }
+
+      if (initialOptionsContainer) {
+        renderInitialOccasionButtons();
       }
     }
 
@@ -2571,6 +2835,7 @@ Przykład:
         const newLanguage = event.target.value;
         if (!TRANSLATIONS[newLanguage] || newLanguage === currentLanguage) return;
         currentLanguage = newLanguage;
+        currentLang = LANGUAGE_TO_OPTION_LANG[currentLanguage] || "EN";
         try {
           localStorage.setItem(LANGUAGE_STORAGE_KEY, newLanguage);
         } catch (error) {}
@@ -2710,6 +2975,8 @@ Przykład:
     function startChatExperience() {
       messages = [{ role: "system", content: getSystemPrompt() }];
       isTyping = false;
+      initialOptionsContainer = null;
+      initialOptionsExpanded = false;
       if (messagesContainer) {
         messagesContainer.innerHTML = "";
       }
@@ -2754,26 +3021,133 @@ Przykład:
 
     function showInitialOptions() {
       const t = getTranslations();
-      const options = [
-        {
-          text: t.initialOptions.lunch,
-          action: () => showMealOptions("lunch"),
-        },
-        {
-          text: t.initialOptions.dinner,
-          action: () => showMealOptions("dinner"),
-        },
-        {
-          text: t.initialOptions.aperitif,
-          action: () => sendMessage(t.prompts.aperitif),
-        },
-        {
-          text: t.initialOptions.special,
-          action: () => showSpecialOccasionOptions(),
-        },
-      ];
+      const message = addMessage("assistant", t.initialQuestion);
+      if (!message) return;
 
-      addMessage("assistant", t.initialQuestion, options);
+      initialOptionsExpanded = false;
+      const container = document.createElement("div");
+      container.className = "options-container initial-options";
+      message.appendChild(container);
+      initialOptionsContainer = container;
+      renderInitialOccasionButtons();
+    }
+
+    function renderInitialOccasionButtons() {
+      if (!initialOptionsContainer) return;
+
+      const labels = initialOptions[currentLang] || initialOptions.EN;
+      const extended = extendedOptions[currentLang] || extendedOptions.EN;
+      const container = initialOptionsContainer;
+      container.innerHTML = "";
+
+      BASE_OCCASION_KEYS.forEach((key) => {
+        const label = labels?.[key];
+        if (!label) return;
+        const button = createOccasionButton(key, label);
+        if (button) {
+          container.appendChild(button);
+        }
+      });
+
+      if (initialOptionsExpanded && extended) {
+        Object.entries(extended).forEach(([key, label]) => {
+          if (!label) return;
+          const button = createOccasionButton(key, label);
+          if (button) {
+            container.appendChild(button);
+          }
+        });
+      }
+
+      const toggleLabel = initialOptionsExpanded
+        ? seeLessLabels[currentLang] || seeLessLabels.EN
+        : labels?.more;
+
+      if (toggleLabel) {
+        const toggleButton = createOccasionButton("toggle", toggleLabel, { toggle: true });
+        if (toggleButton) {
+          container.appendChild(toggleButton);
+        }
+      }
+    }
+
+    function createOccasionButton(key, label, options = {}) {
+      if (!label) return null;
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "option-button";
+      if (options.toggle) {
+        button.classList.add("toggle-button");
+        button.addEventListener("click", () => {
+          initialOptionsExpanded = !initialOptionsExpanded;
+          renderInitialOccasionButtons();
+        });
+      } else {
+        button.addEventListener("click", () => handleOccasionSelection(key));
+      }
+      button.textContent = label;
+      return button;
+    }
+
+    function handleOccasionSelection(key) {
+      if (key === "toggle") return;
+      if (key === "surprise") {
+        const randomKey = getRandomOccasionKey();
+        if (randomKey) {
+          handleOccasionSelection(randomKey);
+        }
+        return;
+      }
+
+      const t = getTranslations();
+
+      if (key === "lunch" || key === "dinner") {
+        clearInitialOccasionOptions();
+        showMealOptions(key);
+        return;
+      }
+
+      if (key === "aperitif") {
+        clearInitialOccasionOptions();
+        sendMessage(t.prompts.aperitif);
+        return;
+      }
+
+      if (key === "special") {
+        clearInitialOccasionOptions();
+        showSpecialOccasionOptions();
+        return;
+      }
+
+      const prompts = extendedOccasionPrompts[currentLang] || extendedOccasionPrompts.EN;
+      const prompt = prompts?.[key];
+      if (prompt) {
+        clearInitialOccasionOptions();
+        sendMessage(prompt);
+      }
+    }
+
+    function getRandomOccasionKey() {
+      const extended = extendedOptions[currentLang] || extendedOptions.EN;
+      const available = [
+        ...BASE_OCCASION_KEYS,
+        ...Object.keys(extended || {}),
+      ].filter((optionKey) => optionKey !== "surprise");
+
+      if (available.length === 0) {
+        return null;
+      }
+
+      const randomIndex = Math.floor(Math.random() * available.length);
+      return available[randomIndex] || null;
+    }
+
+    function clearInitialOccasionOptions() {
+      if (initialOptionsContainer) {
+        initialOptionsContainer.remove();
+        initialOptionsContainer = null;
+      }
+      initialOptionsExpanded = false;
     }
 
     function showMealOptions(mealKey) {
