@@ -728,7 +728,6 @@
       color: var(--color-ink);
     }
 
-    .mic-button,
     .send-button {
       width: 52px;
       height: 52px;
@@ -744,22 +743,8 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    .mic-button:hover,
     .send-button:hover {
       transform: translateY(-3px);
-    }
-
-    .mic-button:hover {
-      border-color: rgba(216, 187, 108, 0.5);
-      background: rgba(197, 163, 79, 0.22);
-      color: var(--color-ivory);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.38);
-    }
-
-    .mic-button.recording {
-      border-color: rgba(216, 187, 108, 0.6);
-      background: rgba(216, 187, 108, 0.24);
-      box-shadow: 0 22px 40px rgba(197, 163, 79, 0.35);
     }
 
     .send-button {
@@ -775,14 +760,12 @@
       box-shadow: 0 30px 60px rgba(197, 163, 79, 0.4);
     }
 
-    .mic-button:disabled,
     .send-button:disabled {
       opacity: 0.5;
       cursor: not-allowed;
       transform: none;
     }
 
-    body[data-theme="light"] .mic-button,
     body[data-theme="light"] .send-button {
       border-color: rgba(0, 0, 0, 0.08);
       background: rgba(255, 255, 255, 0.75);
@@ -794,11 +777,6 @@
       background: linear-gradient(135deg, #f4e6c0, #f0dba0);
       border-color: rgba(197, 163, 79, 0.55);
       box-shadow: 0 22px 42px rgba(197, 163, 79, 0.35);
-    }
-
-    body[data-theme="light"] .mic-button:hover {
-      background: rgba(197, 163, 79, 0.24);
-      color: var(--color-ink);
     }
 
     .icon svg,
@@ -912,7 +890,6 @@
         padding: 14px 20px;
       }
 
-      .mic-button,
       .send-button {
         width: 48px;
         height: 48px;
@@ -1074,7 +1051,6 @@
       .message,
       .message-bubble,
       .option-button,
-      .mic-button,
       .send-button,
       .floating-reset,
       .floating-reset svg {
@@ -1135,9 +1111,6 @@
           autocomplete="off"
         />
       </div>
-      <button type="button" class="mic-button" id="micButton" aria-label="Activer la dictée vocale">
-        <span class="icon" id="micIcon"></span>
-      </button>
       <button type="submit" class="send-button" id="sendButton">
         <span class="icon" id="sendIcon"></span>
       </button>
@@ -1319,15 +1292,10 @@ Propón entre 3 y 5 botones pertinentes usando los platos, bebidas o servicios d
 
       let messages = [{ role: "system", content: SYSTEM_PROMPT }];
       let isTyping = false;
-      let recognition;
-      let isRecording = false;
-
       const messagesContainer = document.getElementById("messages");
       const form = document.getElementById("form");
       const input = document.getElementById("input");
       const sendButton = document.getElementById("sendButton");
-      const micButton = document.getElementById("micButton");
-      const micIcon = document.getElementById("micIcon");
       const sendIcon = document.getElementById("sendIcon");
       const headerIcon = document.getElementById("headerIcon");
       const themeToggleButton = document.getElementById("themeToggle");
@@ -1360,19 +1328,6 @@ Propón entre 3 y 5 botones pertinentes usando los platos, bebidas o servicios d
     "M12 15v7",
     "M12 15a5 5 0 0 0 5-5c0-2-.5-4-2-8H9c-1.5 4-2 6-2 8a5 5 0 0 0 5 5Z"
   ],
-          mic: [
-            "M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z",
-            "M19 10v2a7 7 0 0 1-14 0v-2",
-            "M12 19v3"
-          ],
-          "mic-off": [
-            "M2 2l20 20",
-            "M18.89 13.23A7.12 7.12 0 0 0 19 12v-2",
-            "M5 10v2a7 7 0 0 0 12 5",
-            "M15 9.34V5a3 3 0 0 0-5.68-1.33",
-            "M9 9v3a3 3 0 0 0 5.12 2.12",
-            "M12 19v3"
-          ],
           send: [
             "M22 2L11 13",
             "M22 2l-7 20-4-9-9-4 20-7z"
@@ -1411,7 +1366,6 @@ if (name === "send") {
 
       // Renderizar iconos iniciales
       renderIcon(headerIcon, "wine", { width: 32, height: 32, strokeWidth: 1.4 });
-      renderIcon(micIcon, "mic", { width: 20, height: 20, strokeWidth: 1.6 });
       renderIcon(sendIcon, "send", { width: 20, height: 20, strokeWidth: 1.6 });
 
       function applyTheme(theme, { persist = true } = {}) {
@@ -1657,19 +1611,6 @@ if (name === "send") {
           }, 650);
         }
 
-        if (isRecording && recognition) {
-          try {
-            recognition.stop();
-          } catch (error) {
-            console.warn("Recognition stop failed during reset:", error);
-          }
-          isRecording = false;
-          if (micButton) {
-            micButton.classList.remove("recording");
-          }
-          renderIcon(micIcon, "mic", { width: 20, height: 20, strokeWidth: 1.6 });
-        }
-
         isTyping = false;
 
         if (messagesContainer) {
@@ -1692,67 +1633,6 @@ if (name === "send") {
         }
       }
 
-      function setupSpeechRecognition() {
-        if (!micButton) return;
-
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-
-        if (!SpeechRecognition) {
-          micButton.disabled = true;
-          micButton.setAttribute("title", "Reconnaissance vocale non disponible sur ce navigateur.");
-          return;
-        }
-
-        recognition = new SpeechRecognition();
-        recognition.lang = "fr-FR";
-        recognition.interimResults = false;
-        recognition.continuous = false;
-
-        recognition.addEventListener("start", () => {
-          isRecording = true;
-          micButton.classList.add("recording");
-          renderIcon(micIcon, "mic-off", { width: 20, height: 20, strokeWidth: 1.8 });
-        });
-
-        recognition.addEventListener("end", () => {
-          isRecording = false;
-          micButton.classList.remove("recording");
-          renderIcon(micIcon, "mic", { width: 20, height: 20, strokeWidth: 1.6 });
-        });
-
-        recognition.addEventListener("error", () => {
-          isRecording = false;
-          micButton.classList.remove("recording");
-          renderIcon(micIcon, "mic", { width: 20, height: 20, strokeWidth: 1.6 });
-        });
-
-        recognition.addEventListener("result", (event) => {
-          const transcript = Array.from(event.results)
-            .map((result) => result[0].transcript)
-            .join(" ")
-            .trim();
-
-          if (transcript) {
-            input.value = transcript;
-            input.focus();
-          }
-        });
-
-        micButton.addEventListener("click", () => {
-          if (isRecording) {
-            recognition.stop();
-            return;
-          }
-
-          try {
-            recognition.start();
-          } catch {
-            recognition.stop();
-          }
-        });
-      }
-
-      setupSpeechRecognition();
       startChatExperience();
 
       if (resetChatButton) {
