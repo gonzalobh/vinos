@@ -1285,6 +1285,30 @@ By the glass starting at $5.500.
 Your role is to assist guests in choosing dishes, wines, and pairings, answer questions about ingredients or chef recommendations, and offer harmonious suggestions with elegance and precision.
 `.trim();
 
+      const STRUCTURED_RESPONSE_INSTRUCTION = `
+Eres el asistente gastronómico del restaurante Marvento. Analiza siempre el menú y el hilo de la conversación antes de responder.
+Responde EXCLUSIVAMENTE en un JSON válido con esta forma exacta:
+{
+  "message": "Texto principal elegante en español de Chile que oriente al comensal. Incluye recomendaciones o contexto gastronómico cuando sea útil.",
+  "follow_up_question": "Pregunta breve y amable que mantenga el diálogo guiado.",
+  "suggested_replies": [
+    {
+      "label": "Texto que se mostrará en el botón (incluye emojis si aportan claridad).",
+      "value": "Mensaje que debe enviarse al asistente si la persona pulsa el botón."
+    }
+  ]
+}
+- El arreglo "suggested_replies" debe contener entre 2 y 5 opciones, siempre coherentes con el menú y con la pregunta planteada.
+- Si necesitas preguntar algo cerrado (por ejemplo, tipo de proteína, maridaje, preferencias), ajusta los botones a esas alternativas.
+- No agregues texto fuera del JSON ni utilices Markdown.
+`.trim();
+
+      const INITIAL_GREETING_PROMPT = `
+Inicia la experiencia con un saludo cálido y distinguido que haga referencia a Marvento y ofrezca ayuda personalizada.
+Formula de inmediato una primera pregunta basada en el menú (por ejemplo, si desean recomendaciones por categoría, maridajes, dietas, etc.).
+Propón entre 3 y 5 botones pertinentes usando los platos, bebidas o servicios disponibles.
+`.trim();
+
 
       const THEME_STORAGE_KEY = "theme-preference";
 
@@ -1422,10 +1446,200 @@ if (name === "send") {
         });
       }
 
-      function startChatExperience() {
+      async function startChatExperience() {
         messages = [{ role: "system", content: SYSTEM_PROMPT }];
-        messagesContainer.innerHTML = "";
-        input.focus();
+
+        if (messagesContainer) {
+          messagesContainer.innerHTML = "";
+        }
+
+        if (input) {
+          input.value = "";
+          input.focus();
+        }
+
+        await handleAssistantTurn({ isInitial: true });
+      }
+
+      async function handleAssistantTurn({ isInitial = false } = {}) {
+        if (isTyping) {
+          return;
+        }
+
+        isTyping = true;
+
+        const typingIndicator = showTypingIndicator();
+
+        if (sendButton) {
+          sendButton.disabled = true;
+        }
+
+        try {
+          const structured = await fetchAssistantResponse({ isInitial });
+          if (typingIndicator && typeof typingIndicator.remove === "function") {
+            typingIndicator.remove();
+          }
+
+          const mainText = structured.message ? structured.message.trim() : "";
+          const questionText = structured.follow_up_question ? structured.follow_up_question.trim() : "";
+          const combinedText = [mainText, questionText].filter(Boolean).join("\n\n");
+
+          const options = buildOptionActions(structured.suggested_replies);
+
+          const displayedText = combinedText || "Estoy listo para seguir ayudándole.";
+
+          addMessage("assistant", displayedText, options);
+          messages.push({ role: "assistant", content: displayedText });
+        } catch (error) {
+          console.error("Assistant turn failed:", error);
+          if (typingIndicator && typeof typingIndicator.remove === "function") {
+            typingIndicator.remove();
+          }
+          addMessage(
+            "assistant",
+            "Le pido disculpas, ha ocurrido un inconveniente con la conexión. ¿Desea que lo intentemos nuevamente?",
+            [
+              {
+                text: "🔄 Reintentar",
+                action: () => {
+                  const hasUserMessages = messages.some((msg) => msg.role === "user");
+                  if (hasUserMessages) {
+                    handleAssistantTurn();
+                  } else {
+                    handleAssistantTurn({ isInitial: true });
+                  }
+                }
+              }
+            ]
+          );
+        } finally {
+          isTyping = false;
+
+          if (sendButton) {
+            sendButton.disabled = false;
+          }
+
+          if (input) {
+            input.focus();
+          }
+        }
+      }
+
+      async function fetchAssistantResponse({ isInitial = false } = {}) {
+        const requestMessages = [...messages];
+
+        if (isInitial) {
+          requestMessages.push({ role: "user", content: INITIAL_GREETING_PROMPT });
+        }
+
+        requestMessages.push({ role: "system", content: STRUCTURED_RESPONSE_INSTRUCTION });
+
+        const response = await fetch(CHAT_API, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            messages: requestMessages,
+            system: messages[0]?.content || SYSTEM_PROMPT
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+
+        const data = await response.json();
+        const reply = data?.choices?.[0]?.message?.content || "";
+
+        return parseStructuredResponse(reply);
+      }
+
+      function parseStructuredResponse(rawContent) {
+        if (typeof rawContent !== "string") {
+          return { message: "", follow_up_question: "", suggested_replies: [] };
+        }
+
+        const trimmed = rawContent.trim();
+
+        if (!trimmed) {
+          return { message: "", follow_up_question: "", suggested_replies: [] };
+        }
+
+        try {
+          const firstBrace = trimmed.indexOf("{");
+          const lastBrace = trimmed.lastIndexOf("}");
+
+          if (firstBrace === -1 || lastBrace === -1) {
+            throw new Error("JSON braces not found");
+          }
+
+          const jsonSubstring = trimmed.slice(firstBrace, lastBrace + 1);
+          const parsed = JSON.parse(jsonSubstring);
+
+          return {
+            message: typeof parsed.message === "string" ? parsed.message : "",
+            follow_up_question:
+              typeof parsed.follow_up_question === "string" ? parsed.follow_up_question : "",
+            suggested_replies: Array.isArray(parsed.suggested_replies) ? parsed.suggested_replies : []
+          };
+        } catch (error) {
+          console.warn("Failed to parse structured response:", error, rawContent);
+          return {
+            message: trimmed,
+            follow_up_question: "",
+            suggested_replies: []
+          };
+        }
+      }
+
+      function buildOptionActions(suggestedReplies) {
+        if (!Array.isArray(suggestedReplies) || suggestedReplies.length === 0) {
+          return [];
+        }
+
+        return suggestedReplies
+          .map((entry) => {
+            if (!entry) return null;
+
+            if (typeof entry === "string") {
+              const label = entry.trim();
+              if (!label) return null;
+              return {
+                text: label,
+                action: () => sendMessage(label)
+              };
+            }
+
+            if (typeof entry === "object") {
+              const label =
+                typeof entry.label === "string"
+                  ? entry.label.trim()
+                  : typeof entry.title === "string"
+                  ? entry.title.trim()
+                  : typeof entry.text === "string"
+                  ? entry.text.trim()
+                  : "";
+              const value =
+                typeof entry.value === "string"
+                  ? entry.value.trim()
+                  : typeof entry.payload === "string"
+                  ? entry.payload.trim()
+                  : typeof entry.text === "string"
+                  ? entry.text.trim()
+                  : label;
+
+              if (!label || !value) {
+                return null;
+              }
+
+              return {
+                text: label,
+                action: () => sendMessage(value)
+              };
+            }
+
+            return null;
+          })
+          .filter(Boolean);
       }
 
       function handleChatReset() {
@@ -1600,38 +1814,14 @@ if (name === "send") {
         const sanitizedText = text.trim();
         if (!sanitizedText) return;
 
-        isTyping = true;
         messages.push({ role: "user", content: sanitizedText });
         addMessage("user", sanitizedText);
 
-        const typingIndicator = showTypingIndicator();
-        sendButton.disabled = true;
-
-        try {
-          const response = await fetch(CHAT_API, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ messages, system: messages[0]?.content || SYSTEM_PROMPT }),
-          });
-
-          if (!response.ok) {
-            throw new Error("Network response was not ok");
-          }
-
-          const data = await response.json();
-          const reply = data?.choices?.[0]?.message?.content || "Erreur lors de la récupération de la réponse.";
-
-          messages.push({ role: "assistant", content: reply });
-          typingIndicator.remove();
-          addMessage("assistant", reply);
-        } catch (error) {
-          typingIndicator.remove();
-          addMessage("assistant", "Je suis désolé, une erreur est survenue lors de la connexion au serveur. Veuillez réessayer.");
-        } finally {
-          isTyping = false;
-          sendButton.disabled = false;
-          input.focus();
+        if (input) {
+          input.value = "";
         }
+
+        await handleAssistantTurn();
       }
 
       form.addEventListener("submit", (e) => {
