@@ -1292,7 +1292,6 @@ Your role is to assist guests in choosing dishes, wines, and pairings, answer qu
       let isTyping = false;
       let recognition;
       let isRecording = false;
-      let initialOptionsContainer = null;
 
       const messagesContainer = document.getElementById("messages");
       const form = document.getElementById("form");
@@ -1423,86 +1422,10 @@ if (name === "send") {
         });
       }
 
-      const MENU_CATEGORY_MAP = {
-        "🥗 STARTERS": { label: "🥗 Entradas", value: "entradas" },
-        "🥪 SANDWICHES": { label: "🥪 Sándwiches", value: "sándwiches" },
-        "🥬 SALADS": { label: "🥬 Ensaladas", value: "ensaladas" },
-        "🍛 MAIN COURSES": { label: "🍛 Platos principales", value: "platos principales" },
-        "🍕 PIZZAS": { label: "🍕 Pizzas", value: "pizzas" },
-        "🍝 PASTA": { label: "🍝 Pastas", value: "pastas" },
-        "🍟 SIDES": { label: "🍟 Acompañamientos", value: "acompañamientos" },
-        "👧 KIDS MENU": { label: "👶 Menú infantil", value: "menú infantil" },
-        "🍰 DESSERTS": { label: "🍰 Postres", value: "postres" },
-        "☕ COFFEES AND TEAS": { label: "☕ Cafés y tés", value: "cafés y tés" },
-        "🥤 BEVERAGES AND JUICES": { label: "🥤 Bebidas y jugos", value: "bebidas y jugos" },
-        "🍸 COCKTAILS AND SOURS": { label: "🍸 Cócteles y sours", value: "cócteles y sours" },
-        "🍷 WINES": { label: "🍷 Vinos y maridajes", value: "vinos y maridajes" }
-      };
-
-      function extractMenuCategoriesFromSystemPrompt() {
-        const lines = SYSTEM_PROMPT.split("\n").map((line) => line.trim());
-        const categories = [];
-
-        lines.forEach((line) => {
-          const mapping = MENU_CATEGORY_MAP[line];
-          if (mapping && !categories.some((category) => category.value === mapping.value)) {
-            categories.push({ ...mapping });
-          }
-        });
-
-        return categories;
-      }
-
-      function handleInitialOptionSelection(value) {
-        if (!value || isTyping) return;
-        if (input) {
-          input.value = "";
-        }
-        sendMessage(value);
-      }
-
-      function createInitialOptionsButtons(categories) {
-        const container = document.createElement("div");
-        container.className = "options-container initial-options";
-
-        categories.forEach(({ label, value }) => {
-          const button = document.createElement("button");
-          button.type = "button";
-          button.className = "option-button";
-          button.textContent = label;
-          button.addEventListener("click", () => handleInitialOptionSelection(value));
-          container.appendChild(button);
-        });
-
-        return container;
-      }
-
-      function showWelcomeExperience() {
-        const welcomeMessage =
-          "👋 Bienvenido a Marvento. Soy su asistente gastronómico, encantado de acompañarle en su experiencia. ¿Qué tipo de plato le gustaría disfrutar hoy?";
-        const messageDiv = addMessage("assistant", welcomeMessage);
-        const categories = extractMenuCategoriesFromSystemPrompt();
-
-        if (categories.length > 0 && messageDiv) {
-          if (initialOptionsContainer && initialOptionsContainer.isConnected) {
-            initialOptionsContainer.remove();
-          }
-          initialOptionsContainer = createInitialOptionsButtons(categories);
-          messageDiv.appendChild(initialOptionsContainer);
-        }
-      }
-
       function startChatExperience() {
         messages = [{ role: "system", content: SYSTEM_PROMPT }];
-        if (messagesContainer) {
-          messagesContainer.innerHTML = "";
-          messagesContainer.scrollTop = 0;
-        }
-        if (input) {
-          input.value = "";
-          input.focus();
-        }
-        showWelcomeExperience();
+        messagesContainer.innerHTML = "";
+        input.focus();
       }
 
       function handleChatReset() {
