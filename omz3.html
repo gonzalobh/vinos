@@ -1290,6 +1290,132 @@ Propón entre 3 y 5 botones pertinentes usando los platos, bebidas o servicios d
 
       const THEME_STORAGE_KEY = "theme-preference";
 
+      const menuItems = [
+        "Pinzas de jaiba",
+        "Machas a la parmesana",
+        "Machas a la parmesana (10 units)",
+        "Ceviche de reineta",
+        "Ceviche mixto with yellow leche de tigre",
+        "Pulpo al olivo",
+        "Crab croquettes",
+        "Seafood empanadas",
+        "Seafood empanadas (6 units)",
+        "Grilled skirt steak with chimichurri and toast",
+        "Caprese empanadas",
+        "Caprese empanadas (6 units)",
+        "Soup of the day",
+        "Build your own OMZ burger",
+        "Vegetarian burger",
+        "Romaine salad",
+        "Del Huerto",
+        "Gamberetto",
+        "Lomo saltado",
+        "Seared tuna with olive tapenade",
+        "Atún sellado con tapenade de aceitunas",
+        "Pepper steak with fries",
+        "Caldillo de congrio",
+        "Paella for two",
+        "Paella para dos",
+        "Hake curry",
+        "Fish of the day",
+        "Fish of the day — served with salad, quinoa, rustic purée, rice, or fries",
+        "Bacon-wrapped beef filet with blue cheese sauce and fried polenta",
+        "Braised beef with rustic potato and spicy sauce",
+        "Olas",
+        "Margarita",
+        "Arenas",
+        "OMZ",
+        "Arriera",
+        "Vegetarian",
+        "Vegetarian — Zucchini, pepper, carrot, green onion (optional mozzarella)",
+        "Italiana",
+        "Tricornio de mar",
+        "Tricornio de mar — Black pasta stuffed with ricotta, shrimp, and crab in butter and chives sauce",
+        "Lasagna bolognese with blue cheese sauce",
+        "Eggplant lasagna with creamy mushrooms and spinach",
+        "Ravioli OMZ",
+        "Rice",
+        "Quinoa",
+        "Mashed potatoes",
+        "Green mix",
+        "French fries",
+        "Chicken nuggets",
+        "Reineta sticks",
+        "Breaded chicken sticks",
+        "Mini burger",
+        "Tagliatelle Alfredo",
+        "Cheese empanadas",
+        "Cheese empanadas (3 units)",
+        "Chocolate lava cake with ice cream",
+        "Celestino pancake",
+        "Nutella flan",
+        "Tres leches cake",
+        "Homemade ice cream",
+        "Chocolate tart",
+        "Crème caramel",
+        "Homemade flan",
+        "Espresso",
+        "Double espresso",
+        "Cappuccino",
+        "Macchiato",
+        "Americano",
+        "Hot chocolate",
+        "Herbal infusion"
+      ];
+
+      const highlightableMenuItems = [...new Set(menuItems)].sort((a, b) => b.length - a.length);
+
+      const HIGHLIGHT_START = "__HIGHLIGHT_START__";
+      const HIGHLIGHT_END = "__HIGHLIGHT_END__";
+
+      function isWordCharacter(char) {
+        if (!char) return false;
+        if (char >= "0" && char <= "9") return true;
+        const lower = char.toLowerCase();
+        const upper = char.toUpperCase();
+        return lower !== upper;
+      }
+
+      function escapeRegExp(string) {
+        return string.replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&");
+      }
+
+      function highlightMenuItems(text) {
+        if (!text) return "";
+
+        let result = text;
+
+        highlightableMenuItems.forEach((item) => {
+          const escapedItem = escapeRegExp(item);
+          const regex = new RegExp(`['"“”‘’]?${escapedItem}['"“”‘’]?`, "gi");
+          result = result.replace(regex, (match, offset, original) => {
+            const startIndex = offset;
+            const endIndex = offset + match.length;
+            const beforeChar = startIndex > 0 ? original[startIndex - 1] : "";
+            const afterChar = endIndex < original.length ? original[endIndex] : "";
+
+            if (isWordCharacter(beforeChar) || isWordCharacter(afterChar)) {
+              return match;
+            }
+
+            return `${HIGHLIGHT_START}${item}${HIGHLIGHT_END}`;
+          });
+        });
+
+        return result;
+      }
+
+      function formatAssistantContent(text) {
+        const highlightedText = highlightMenuItems(text || "");
+        const tempContainer = document.createElement("div");
+        tempContainer.textContent = highlightedText;
+        let safeHtml = tempContainer.innerHTML.replace(/\n/g, "<br>");
+        safeHtml = safeHtml
+          .split(HIGHLIGHT_START).join("<strong>")
+          .split(HIGHLIGHT_END).join("</strong>");
+        return safeHtml;
+      }
+
       let messages = [{ role: "system", content: SYSTEM_PROMPT }];
       let isTyping = false;
       const messagesContainer = document.getElementById("messages");
@@ -1645,7 +1771,11 @@ if (name === "send") {
 
         const bubble = document.createElement("div");
         bubble.className = "message-bubble";
-        bubble.textContent = content;
+        if (role === "user") {
+          bubble.textContent = content;
+        } else {
+          bubble.innerHTML = formatAssistantContent(content);
+        }
 
         messageDiv.appendChild(bubble);
         messagesContainer.appendChild(messageDiv);
