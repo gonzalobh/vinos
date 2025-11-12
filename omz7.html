@@ -1421,6 +1421,9 @@ Propón entre 3 y 5 botones pertinentes usando los platos, bebidas o servicios d
       const themeIcon = document.getElementById("themeIcon");
       const resetChatButton = document.getElementById("resetChatBtn");
 
+      let initialOptionsContainer = null;
+      let initialOptionsExpanded = false;
+
       // Función para renderizar iconos usando Lucide
       function renderIcon(element, name, options = {}) {
         if (!element) return;
@@ -1522,21 +1525,6 @@ if (name === "send") {
           const nextTheme = currentTheme === "dark" ? "light" : "dark";
           applyTheme(nextTheme);
         });
-      }
-
-      async function startChatExperience() {
-        messages = [{ role: "system", content: SYSTEM_PROMPT }];
-
-        if (messagesContainer) {
-          messagesContainer.innerHTML = "";
-        }
-
-        if (input) {
-          input.value = "";
-          input.focus();
-        }
-
-        await handleAssistantTurn({ isInitial: true });
       }
 
       async function handleAssistantTurn({ isInitial = false } = {}) {
@@ -1718,6 +1706,11 @@ if (name === "send") {
             return null;
           })
           .filter(Boolean);
+      }
+
+      function showInitialOptions() {
+        messages = [{ role: "system", content: SYSTEM_PROMPT }];
+        handleAssistantTurn({ isInitial: true });
       }
 
       function handleChatReset() {
@@ -1904,6 +1897,55 @@ function addMessage(role, content, options = []) {
           form.dispatchEvent(new Event("submit"));
         }
       });
+
+      function showWelcome() {
+        if (!messagesContainer) return;
+        const welcomeDiv = document.createElement("div");
+        welcomeDiv.className = "welcome-screen";
+
+        const icon = document.createElement("span");
+        icon.className = "welcome-icon";
+        renderIcon(icon, "wine", { width: 48, height: 48, strokeWidth: 1 });
+
+        const title = document.createElement("h2");
+        title.className = "welcome-title";
+        title.textContent = "¡Bienvenido a tu Sumiller Virtual!";
+
+        const subtitle = document.createElement("p");
+        subtitle.className = "welcome-subtitle";
+        subtitle.textContent = "Descubre los grandes vinos franceses para cada ocasión.";
+
+        welcomeDiv.appendChild(icon);
+        welcomeDiv.appendChild(title);
+        welcomeDiv.appendChild(subtitle);
+
+        messagesContainer.appendChild(welcomeDiv);
+      }
+
+      function startChatExperience() {
+        messages = [];
+        isTyping = false;
+        initialOptionsContainer = null;
+        initialOptionsExpanded = false;
+        if (messagesContainer) {
+          messagesContainer.innerHTML = "";
+        }
+        if (sendButton) {
+          sendButton.disabled = false;
+        }
+
+        // 👇 Muestra el mensaje de bienvenida 3 segundos
+        showWelcome();
+        setTimeout(() => {
+          const welcome = document.querySelector(".welcome-screen");
+          if (welcome) {
+            welcome.remove();
+          }
+          showInitialOptions();
+        }, 3000);
+
+        input?.focus();
+      }
     }
   </script>
 </body>
