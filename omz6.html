@@ -1758,13 +1758,74 @@ if (name === "send") {
         resetChatButton.addEventListener("click", handleChatReset);
       }
 
+function highlightMenuItems(text) {
+  const items = [
+    "Pinzas de jaiba", "Machas a la parmesana", "Tomate, pesto, mozarella y aceituna",
+    "Ceviche de reineta", "Ceviche mixto con leche de tigre amarilla", "Pulpo al olivo",
+    "Croquetas de jaiba", "Empanadas de mariscos", "Empanadas capresse",
+    "Entraña a la parrilla, chimichurri y tostadas", "Crema del día",
+    "Arma tu hamburguesa OMZ", "Vegetariano",
+    "Romana", "Del huerto", "Gamberetto",
+    "Merluza al curry", "Pescado del día", "Filete de res envuelto en tocino",
+    "Plateada al jugo y papa rota", "Lomo saltado", "Atún con tapenade de aceitunas",
+    "Filete pimienta y papas fritas", "Caldillo de congrio", "Paella para dos personas",
+    "Olas", "Margarita", "Arenas", "OMZ", "Arriera", "Vegetariana", "Italiana",
+    "Tricornio de mar", "Lasaña bolognesa", "Lasaña berenjena", "Ravioli OMZ",
+    "Arroz", "Quinoa", "Puré", "Mix verde", "Papas fritas",
+    "Nuggets de pollo", "Bastones de reineta", "Bastones de pollo apanado",
+    "Hamburguesa casera", "Tagliatelle Alfredo", "Empanadas de queso",
+    "Volcán de chocolate con helado", "Panqueque Celestino", "Flan de Nutella",
+    "Torta tres leches", "Helado de la casa", "Tarta de chocolate",
+    "Leche asada", "Flan casero",
+    "Espresso", "Espresso doble", "Capuccino", "Cortado", "Americano",
+    "Chocolate caliente", "Agua de hierbas naturales", "Leche caliente", "Té Twinings",
+    "Jugo de pulpa natural", "Jugo de fruta de temporada", "Limonada",
+    "Limonada menta-jengibre", "Limonada sabores", "Batido revitalizante",
+    "Jugo antiox",
+    "Coca Cola", "Sprite", "Fanta", "Canada Dry", "Agua mineral Cachantun",
+    "Agua tónica",
+    "Caipirinha", "Caipiroska", "Tequila Margarita", "Mojito Cubano", "Mojito Polaco",
+    "Mojito Marvento", "Ramazzotti", "Mojitos sabores", "Aperol Spritz", "Moscow Mule",
+    "Kir Royal Matanzino", "Medio Macho", "La Ola", "Blueberry Sparkling",
+    "Pisco Sour", "Arándano Sour", "Mango Sour", "Pisco Sour Catedral",
+    "Pisco Sour Premium Peruano", "Pisco Sour Premium Peruano Catedral",
+    "Copa Riccadonna Brut", "Riccadonna Asti", "Riccadonna Brut", "Moscato Rosé",
+    "Prosecco", "Undurraga Brut Royal", "Undurraga Brut",
+    "Kunstmann sin alcohol", "Schop Kunstmann Torobayo", "Schop Royal Lager",
+    "Royal Lager", "IPA", "Austral Lager", "Austral Calafate", "Heineken",
+    "Kunstmann Torobayo", "Cerveza Royal Golden", "Cerveza Royal Maracuyá",
+    "Michelada", "Artesanales Viejo Lobo",
+    "Fernet Branca", "Vodka Finlandia", "Stolichnaya", "Stolichnaya Gold",
+    "Elit by Stolichnaya", "Whiskey Jack Daniel’s Old N7", "Jack Daniel’s Honey",
+    "Johnnie Walker Black", "Johnnie Walker Red", "Tequila El Jimador Blanco",
+    "Tequila El Jimador Reposado", "Pisco Alto del Carmen", "Mistral 35°",
+    "Mistral 40°", "Gin Beefeater", "Gin Pajarillo Amarillo", "Gin Hendrick’s",
+    "Gin Tropical", "Ron Flor de Caña 4 años", "Ron Flor de Caña 5 años",
+    "Ron Flor de Caña 7 años", "Ron Flor de Caña 12 años", "Appleton V/X",
+    "Havana Club", "Disaronno", "Drambuie", "Frangelico", "Carolans", "Baileys",
+    "Limoncello", "Jägermeister", "Shot de Jägermeister",
+    "Viu Manent", "Casillero del Diablo Reserva Chardonnay", "Gran Reserva Carménère",
+    "Gran Reserva Cabernet Sauvignon", "Marques de Casa Concha Cabernet Sauvignon",
+    "Viento Mar Pinot Noir Single Vineyard", "Suelo de Piedras Cabernet Sauvignon Single Vineyard",
+    "Armador Carménère", "Armador Cabernet Sauvignon", "Secreto Sauvignon Blanc",
+    "Secreto Carmenere", "Secreto Cabernet Sauvignon", "Reserva Chardonnay",
+    "Reserva Malbec", "Reserva Sauvignon Blanc", "Secreto Pinot Noir", "Single Viognier",
+    "Single Vineyard Cabernet Sauvignon", "Single Vineyard Carmenere",
+    "Single Vineyard Malbec", "Viu Secreto Carmenere", "Viu Secreto Sauvignon Blanc"
+  ];
+
+  const escaped = items.map(i => i.replace(/[.*+?^${}()|[\]\\]/g, '\$&'));
+  const regex = new RegExp(`\\b(${escaped.join('|')})\\b`, 'gi');
+  return text.replace(regex, (match) => `<strong>${match}</strong>`);
+}
+
 function addMessage(role, content, options = []) {
   const messageDiv = document.createElement("div");
   messageDiv.className = `message ${role}`;
 
   const bubble = document.createElement("div");
   bubble.className = "message-bubble";
-  bubble.innerHTML = content; // ← Permite interpretar etiquetas HTML como <strong>
+  bubble.innerHTML = highlightMenuItems(content); // ← Permite interpretar etiquetas HTML como <strong>
 
 
         messageDiv.appendChild(bubble);
